@@ -1,0 +1,517 @@
+@startuml Wordle
+'https://plantuml.com/class-diagram
+skinparam groupInheritance 2
+skinparam Linetype ortho
+
+enum Status {
+    INITIAL
+    IN_PROGRESS
+    WRONG
+    PARTIAL
+    CORRECT
+}
+
+abstract class AbstractLetter {
+    + {abstract} getCharacter(): char
+    + {abstract} setCharacter(c: char): void
+    + {abstract} getStatus(): Status
+    + {abstract} setStatus(status: Status): void
+    + {abstract} isNull(): boolean
+    + equals(obj: Object): boolean
+    + toString(): String
+}
+
+class Letter extends AbstractLetter {
+    - status: Status
+    - character: char
+    + Letter(character: char)
+    + getCharacter(): char
+    + setCharacter(character: char): void
+    + getStatus(): Status
+    + setStatus(status: Status): void
+    + isNull(): boolean
+}
+
+abstract class AbstractWord {
+    + {abstract} getLetter(index: int): AbstractLetter
+    + {abstract} length(): int
+    + {abstract} isEmpty(): boolean
+    + {abstract} toString(): String
+    + equals(obj: Object): boolean
+}
+
+class Word extends AbstractWord {
+    - letters: AbstractLetter[]
+    + Word(word: String)
+    + getLetter(index: int): AbstractLetter
+    + length(): int
+    + isEmpty(): boolean
+    + toString(): String
+}
+
+AbstractLetter <-- Word
+AbstractLetter --> Status
+AbstractWord --> AbstractLetter
+Letter --> Status
+
+class ViewModel<T> {
+    - state: T
+    - viewName: String
+    + ViewModel(state: T)
+    + getState(): T
+    + getViewName(): String
+}
+
+class ViewManagerModel extends ViewModel {
+    + ViewManagerModel()
+}
+
+class ViewManager {
+    - cardLayout: CardLayout
+    - views: JPanel
+    - viewManagerModel: ViewManagerModel
+    + ViewManager(JPanel, CardLayout, ViewManagerModel)
+    + propertyChange(PropertyChangeEvent): void
+}
+ViewManager --> ViewManagerModel
+
+class OptionsViewModel extends ViewModel {
+    + OptionsViewModel()
+}
+
+class OptionsController {
+    + OptionsController(OptionsInputBoundary)
+    + execute(): void
+}
+OptionsController --> OptionsState
+OptionsController --> OptionsInputBoundary
+
+class OptionsPresenter extends OptionsOutputBoundary {
+    + OptionsPresenter(ViewManagerModel, OptionsViewModel, StartViewModel)
+    + prepareGameView(): void
+}
+OptionsPresenter --> OptionsViewModel
+OptionsPresenter --> StartViewModel
+
+interface OptionsOutputBoundary {
+    + prepareStartView(): void
+}
+
+class OptionsState {
+    - length: int
+    - maxGuesses: int
+    + OptionsState()
+    + getLength(): int
+    + setLength(length: int): void
+    + getMaxGuesses(): int
+    + setMaxGuesses(maxGuesses: int): void
+}
+OptionsViewModel --> OptionsState
+
+interface OptionsInputBoundary {
+    + {abstract} execute(inputData: OptionsState): void
+}
+
+class OptionsInteractor implements OptionsInputBoundary {
+    + OptionsInteractor(OptionsDataAccessInterface, OptionsOutputBoundary)
+    + execute(inputData: OptionsState): void
+}
+OptionsInteractor --> OptionsState
+OptionsInteractor --> OptionsOutputBoundary
+OptionsInteractor --> OptionsDataAccessInterface
+
+interface OptionsDataAccessInterface {
+    + getOptions(): OptionsState
+    + saveOptions(options: OptionsState): void
+}
+OptionsDataAccessInterface ..* OptionsState
+
+class OptionsView {
+    - optionsController: OptionsController
+    - viewName: String
+    + OptionsView(OptionsViewModel)
+}
+OptionsView --> OptionsViewModel
+OptionsView --> OptionsController
+
+
+class EndView {
+    - endController: EndController
+    - viewName: String
+    + EndView(EndViewModel)
+}
+EndView --* EndViewModel
+EndView --* EndController
+
+class EndViewModel extends ViewModel {
+    + EndViewModel()
+}
+EndViewModel --> GameState
+
+class EndPresenter implements EndOutputBoundary {
+    + EndPresenter(ViewManagerModel, EndViewModel, GameViewModel, StartViewModel, OptionsViewModel)
+    + prepareGameView(): void
+    + prepareOptionsView(): void
+    + prepareStartView(): void
+}
+EndPresenter --> EndViewModel
+EndPresenter --> GameViewModel
+EndPresenter --> StartViewModel
+EndPresenter --> OptionsViewModel
+
+interface EndOutputBoundary {
+    + prepareGameView(options: OptionsState): void
+    + prepareOptionsView(): void
+    + prepareStartView(): void
+}
+EndOutputBoundary --> OptionsState
+
+class EndController {
+    + EndController(EndInputBoundary)
+    + execute(): void
+}
+EndController --> EndInputBoundary
+' EndController --> EndInputData
+
+' class EndInputData {
+
+' }
+
+' class EndState {
+'     - words: AbstractWord[]
+'     - wordToGuess: AbstractWord
+'     + EndState()
+'     + toString(): String
+'     + getWords(): AbstractWord[]
+'     + setWords(words: AbstractWord[]): void
+'     + getWordToGuess(): AbstractWord
+'     + setWordToGuess(wordToGuess: AbstractWord): void
+' }
+
+interface EndInputBoundary {
+    + {abstract} execute(endInputData: GameState): void
+}
+EndInputBoundary --> GameState
+
+class EndInteractor implements EndInputBoundary {
+    + EndInteractor()
+    + execute(endInputData: GameState): void
+}
+EndInteractor --> EndOutputBoundary
+EndInteractor --> GameState
+    ' + drawFrame(frame: JFrame): void
+    ' + exportResults(): String
+    ' + copyResults(): void
+
+
+class GameViewModel extends ViewModel {
+    + GameViewModel()
+}
+
+class GameView {
+    - gameController: GameController
+    - viewName: String
+    + GameView(GameViewModel)
+}
+GameView --> GameViewModel
+GameView --> GameController
+
+class GameController {
+    + GameController(GameInputBoundary)
+    + execute(): void
+}
+GameController --> GameInputBoundary
+GameController --> GameState
+
+' class GameInputData {
+'     - length: int
+'     - maxGuesses: int
+'     + GameInputData(length: int, maxGuesses: int)
+'     + getLength(): int
+'     + getMaxGuesses(): int
+' }
+
+interface GameInputBoundary {
+    + {abstract} execute(gameInputData: GameState): void
+}
+
+    ' + {abstract} start(): void
+    ' + {abstract} getStatus(): GameState
+    ' + {abstract} update(input: char): GameState
+
+interface GameOutputBoundary {
+    + prepareGameView(state: GameState): void
+    + prepareEndView(state: GameState): void
+}
+GameOutputBoundary --> GameState
+class GamePresenter implements GameOutputBoundary {
+    + GamePresenter(ViewManagerModel, GameViewModel, EndViewModel)
+    + prepareGameView(): void
+    + prepareEndView(): void
+}
+GamePresenter --> GameViewModel
+GamePresenter --> EndViewModel
+
+class GameInteractor implements GameInputBoundary {
+    + GameInteractor(GameDataAccessInterface, GameOutputBoundary)
+    + execute(gameInputData: GameState): void
+}
+GameInteractor --> GameOutputBoundary
+GameInteractor --> GameState
+GameInteractor --> GameDataAccessInterface
+
+    ' - wordChecker: WordChecker
+    ' - status: GameStatus
+    ' + GameInteractor(config: Map<String, Object>)
+    ' + start(): void
+    ' + getStatus(): GameStatus
+    ' + update(input: char): GameStatus
+    ' - generateWord(length: int): String
+
+' class GameOutputData {
+'     - currentGuess: int
+'     - words: AbstractWord[]
+'     - wordToGuess: AbstractWord
+'     + GameOutputData()
+'     + toString(): String
+' }
+
+interface GameDataAccessInterface {
+    + getRandomWord(length: int): String
+    + isValidWord(word: String): boolean
+}
+
+class GameState {
+    - length: int
+    - maxGuesses: int
+    - currentGuess: int
+    - words: AbstractWord[]
+    - wordToGuess: AbstractWord
+    + GameState()
+    + toString(): String
+    + getLength(): int
+    + getMaxGuesses(): int
+    + getCurrentGuess(): int
+    + getWords(): AbstractWord[]
+    + getWordToGuess(): AbstractWord
+}
+GameState --* AbstractWord
+
+class StatsController {
+    + StatsController(StatsInputBoundary)
+    + execute(): void
+}
+StatsController --> StatsInputBoundary
+StatsController --> StatsInputData
+class StatsPresenter implements StatsOutputBoundary {
+    + StatsPresenter(ViewManagerModel, StatsViewModel, StartViewModel)
+    + prepareSuccessView(): void
+    + prepareFailView(): void
+    + prepareDefaultView(): void
+    + prepareStartView(): void
+}
+StatsPresenter --> StatsViewModel
+StatsPresenter --> StartViewModel
+StatsPresenter --> StatsOutputData
+
+class StatsViewModel extends ViewModel {
+    + StatsViewModel()
+}
+class StatsView {
+    - statsController: StatsController
+    - viewName: String
+    + StatsView(StatsViewModel)
+}
+StatsView --> StatsViewModel
+StatsView --> StatsController
+class StatsInputData
+interface StatsInputBoundary {
+    + {abstract} execute(inputData: StatsInputData): void
+}
+class StatsInteractor implements StatsInputBoundary {
+    + StatsInteractor(StatsDataAccessInterface, StatsOutputBoundary)
+    + execute(inputData: StatsInputData): void
+}
+StatsInteractor --> StatsInputData
+StatsInteractor --> StatsOutputBoundary
+StatsInteractor --> StatsDataAccessInterface
+interface StatsOutputBoundary {
+    + prepareSuccessView(): void
+    + prepareFailView(): void
+    + prepareDefaultView(): void
+    + prepareStartView(): void
+}
+interface StatsDataAccessInterface {
+    + getStats(): StatsState
+    + saveStats(stats: StatsState): void
+}
+StatsDataAccessInterface --> StatsState
+
+class StartViewModel extends ViewModel {
+    + StartViewModel()
+}
+class StartView {
+    - startController: StartController
+    - viewName: String
+    + StartView(StartViewModel)
+}
+StartView --> StartViewModel
+StartView --> StartController
+
+class StartController {
+    + StartController(StartInputBoundary)
+    + execute(): void
+}
+StartController --> StartInputBoundary
+interface StartInputBoundary {
+    + {abstract} execute(): void
+}
+class StartInteractor implements StartInputBoundary {
+    + StartInteractor(StartDataAccessInterface, StartOutputBoundary)
+    + execute(): void
+}
+StartInteractor --> StartOutputBoundary
+StartInteractor --> StartDataAccessInterface
+interface StartOutputBoundary {
+    + prepareGameView(): void
+    + prepareOptionsView(): void
+    + prepareStatsView(): void
+}
+interface StartDataAccessInterface {
+    + getDefaultTheme(): Theme
+}
+StartDataAccessInterface ..* Theme
+class StartPresenter implements StartOutputBoundary {
+    + StartPresenter(ViewManagerModel, StartViewModel, OptionsViewModel, StatsViewModel)
+    + prepareOptionsView(): void
+    + prepareStatsView(): void
+}
+StartPresenter --> StartViewModel
+StartPresenter --> OptionsViewModel
+StartPresenter --> StatsViewModel
+
+class FileDataAccessObject implements OptionsDataAccessInterface, StatsDataAccessInterface, StartDataAccessInterface {
+}
+class APIDataAccessObject implements GameDataAccessInterface {
+    + APIDataAccessObject()
+    + getRandomWord(length: int): String
+    + isValidWord(word: String): boolean
+}
+APIDataAccessObject --> APIWordGenerator
+APIDataAccessObject --> APIWordChecker
+
+interface WordGenerator {
+    + {abstract} getRandomWord(length: int): String
+}
+
+interface WordChecker {
+    + {abstract} isValidWord(word: String): boolean
+}
+
+abstract class API {
+    # baseUrl: String
+    + API(baseUrl: String)
+    + fetch(params: Map<String, Object>): JSONObject
+}
+
+class APIWordGenerator extends API implements WordGenerator {
+    + APIWordGenerator(baseUrl: String)
+    + getRandomWord(length: int): String
+}
+
+class APIWordChecker extends API implements WordChecker {
+    + APIWordChecker(baseUrl: String)
+    + isValidWord(word: String): boolean
+}
+
+class AppBuilder {
+    + AppBuilder()
+    + build(): JFrame
+    + addOptionsUseCase(): AppBuilder
+    + addGameUseCase(): AppBuilder
+    + addEndUseCase(): AppBuilder
+    + addStartUseCase(): AppBuilder
+}
+' AppBuilder --> ViewManagerModel
+' AppBuilder --> ViewManager
+' AppBuilder --> OptionsView
+' AppBuilder --> OptionsViewModel
+' AppBuilder --> GameView
+' AppBuilder --> GameViewModel
+' AppBuilder --> EndView
+' AppBuilder --> EndViewModel
+' AppBuilder --> StartView
+' AppBuilder --> StartViewModel
+' AppBuilder --> StatsView
+' AppBuilder --> StatsViewModel
+
+' AppBuilder --> OptionsOutputBoundary
+' AppBuilder --> OptionsPresenter
+' AppBulider --> OptionsInputBoundary
+' AppBuilder --> OptionsInteractor
+' AppBuilder --> OptionsController
+
+' AppBuilder --> GameOutputBoundary
+' AppBuilder --> GamePresenter
+' AppBuilder --> GameInputBoundary
+' AppBuilder --> GameInteractor
+' AppBuilder --> GameController
+
+' AppBuilder --> EndOutputBoundary
+' AppBuilder --> EndPresenter
+' AppBuilder --> EndInputBoundary
+' AppBuilder --> EndInteractor
+' AppBuilder --> EndController
+
+' AppBuilder --> StartOutputBoundary
+' AppBuilder --> StartPresenter
+' AppBuilder --> StartInputBoundary
+' AppBuilder --> StartInteractor
+' AppBuilder --> StartController
+
+' AppBuilder --> StatsOutputBoundary
+' AppBuilder --> StatsPresenter
+' AppBuilder --> StatsInputBoundary
+' AppBuilder --> StatsInteractor
+' AppBuilder --> StatsController
+
+' these might be better as static
+' still need to find where theme is set and used
+interface Theme {
+    + {abstract} getBackgroundColor(): Color
+    + {abstract} getTextColor(): Color
+    + {abstract} getFont(): Font
+    + {abstract} getColorForStatus(status: Status): Color
+    + {abstract} getLetterBox(): Shape
+}
+
+' Can potentially add an AnimatedTheme interface later
+' Also support for user-defined themes
+
+class LightTheme implements Theme {
+    + LightTheme()
+    + getBackgroundColor(): Color
+    + getTextColor(): Color
+    + getFont(): Font
+    + getColorForStatus(status: Status): Color
+    + getLetterBox(): Shape
+}
+
+class DarkTheme implements Theme {
+    + DarkTheme()
+    + getBackgroundColor(): Color
+    + getTextColor(): Color
+    + getFont(): Font
+    + getColorForStatus(status: Status): Color
+    + getLetterBox(): Shape
+}
+
+Theme --> Status
+WordGenerator --> WordChecker
+
+note "Can be extended to support\ndifferent languages or numbers" as N1
+WordGenerator .. N1
+WordChecker .. N1
+
+
+@enduml
