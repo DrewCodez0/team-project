@@ -9,12 +9,12 @@ public interface GameDataAccessInterface {
      * @param length the length of the word
      * @return a random word with the given length
      */
-    String getRandomWord(int length);
+    String getRandomWord(int length, String language);
 
     /**
      * Checks if the given word is a valid word.
      * @param word the word to check
      * @return true if the word is valid, false otherwise
      */
-    boolean isValidWord(String word);
+    boolean isValidWord(String word, String language);
 }

@@ -10,5 +10,5 @@ abstract class API {
         this.baseURL = baseURL;
     }
 
-    abstract JSONObject fetch(Map<String, Object> params);
+    protected abstract JSONObject fetch(Map<String, String> params);
 }

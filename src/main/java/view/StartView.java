@@ -1,5 +1,6 @@
 package view;
 
+import entity.Theme;
 import interface_adapter.start.StartController;
 import interface_adapter.start.StartViewModel;
 
@@ -23,13 +24,81 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
 
     public StartView(StartViewModel startViewModel) {
         this.startViewModel = startViewModel;
+        this.startViewModel.addPropertyChangeListener(this);
+
+        final JLabel title = new JLabel("Wordle");
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        final JPanel buttons = new JPanel();
+        play = new JButton("Play");
+        buttons.add(play);
+        options = new JButton("Options");
+        buttons.add(options);
+        stats = new JButton("Stats");
+        buttons.add(stats);
+        exit = new JButton("Exit");
+        buttons.add(exit);
+
+        play.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        if (evt.getSource().equals(play)) {
+                            startController.switchToGameView();
+                        }
+                    }
+                }
+        );
+
+        options.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        if (evt.getSource().equals(options)) {
+                            startController.switchToOptionsView();
+                        }
+                    }
+                }
+        );
+
+        stats.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        if (evt.getSource().equals(stats)) {
+                            startController.switchToStatsView();
+                        }
+                    }
+                }
+        );
+
+        exit.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        if  (evt.getSource().equals(exit)) {
+                            System.exit(0);
+                        }
+                    }
+                }
+        );
+
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        this.add(title);
+        this.add(buttons);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {}
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {}
+    public void propertyChange(PropertyChangeEvent evt) {
+        final Theme theme = (Theme) evt.getNewValue();
+        setTheme(theme);
+    }
+
+    private void setTheme(Theme theme) {
+        this.setBackground(theme.getBackgroundColor());
+        this.setForeground(theme.getTextColor());
+        this.setFont(theme.getFont());
+    }
 
     public String getViewName() {return viewName;}
 
