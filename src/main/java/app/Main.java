@@ -7,10 +7,11 @@ public class Main {
         AppBuilder appBuilder = new AppBuilder();
         JFrame application = appBuilder
                 .addStartView()
-                .addEndView()
-                .addGameView()
-                .addOptionsView()
-                .addStatsView()
+//                .addEndView()
+//                .addGameView()
+//                .addOptionsView()
+//                .addStatsView()
+                .addStartUseCase()
                 .build();
         application.pack();
         application.setLocationRelativeTo(null);

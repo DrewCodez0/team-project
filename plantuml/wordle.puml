@@ -88,7 +88,7 @@ OptionsController --> OptionsInputBoundary
 
 class OptionsPresenter extends OptionsOutputBoundary {
     + OptionsPresenter(ViewManagerModel, OptionsViewModel, StartViewModel)
-    + prepareGameView(): void
+    + prepareStartView(): void
 }
 OptionsPresenter --> OptionsViewModel
 OptionsPresenter --> StartViewModel
@@ -194,15 +194,16 @@ interface EndInputBoundary {
 EndInputBoundary --> GameState
 
 class EndInteractor implements EndInputBoundary {
-    + EndInteractor()
+    + EndInteractor(EndDataAccessInterface, EndOutputBoundary)
     + execute(endInputData: GameState): void
 }
 EndInteractor --> EndOutputBoundary
+EndInteractor --> EndDataAccessInterface
 EndInteractor --> GameState
     ' + drawFrame(frame: JFrame): void
     ' + exportResults(): String
     ' + copyResults(): void
-
+interface EndDataAccessInterface
 
 class GameViewModel extends ViewModel {
     + GameViewModel()
@@ -382,7 +383,8 @@ interface StartDataAccessInterface {
 }
 StartDataAccessInterface ..* Theme
 class StartPresenter implements StartOutputBoundary {
-    + StartPresenter(ViewManagerModel, StartViewModel, OptionsViewModel, StatsViewModel)
+    + StartPresenter(ViewManagerModel, StartViewModel, GameViewModel, OptionsViewModel, StatsViewModel)
+    + prepareGameView(): void
     + prepareOptionsView(): void
     + prepareStatsView(): void
 }
@@ -390,7 +392,7 @@ StartPresenter --> StartViewModel
 StartPresenter --> OptionsViewModel
 StartPresenter --> StatsViewModel
 
-class FileDataAccessObject implements OptionsDataAccessInterface, StatsDataAccessInterface, StartDataAccessInterface {
+class FileDataAccessObject implements OptionsDataAccessInterface, StatsDataAccessInterface, StartDataAccessInterface, EndDataAccessInterface {
 }
 class APIDataAccessObject implements GameDataAccessInterface {
     + APIDataAccessObject()

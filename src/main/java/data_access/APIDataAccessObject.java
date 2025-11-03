@@ -23,9 +23,9 @@ public class APIDataAccessObject implements GameDataAccessInterface {
      * @return a random word with the given length
      */
     @Override
-    public String getRandomWord(int length)
+    public String getRandomWord(int length, String language)
     {
-        return this.wordGenerator.getRandomWord(length);
+        return this.wordGenerator.getRandomWord(length, language);
     }
 
     /**
@@ -34,8 +34,8 @@ public class APIDataAccessObject implements GameDataAccessInterface {
      * @return true if the word is valid, false otherwise
      */
     @Override
-    public boolean isValidWord(String word)
+    public boolean isValidWord(String word, String language)
     {
-        return this.wordChecker.isValidWord(word);
+        return this.wordChecker.isValidWord(word, language);
     }
 }

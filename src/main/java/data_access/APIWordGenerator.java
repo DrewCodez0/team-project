@@ -6,12 +6,12 @@ import java.util.Map;
 
 public class APIWordGenerator extends API implements WordGenerator {
     public APIWordGenerator() {
-        super("https://random-word-api.herokuapp.com/word")
+        super("https://random-word-api.herokuapp.com/word");
     }
 
     @Override
-    private JSONObject fetch(Map<String, Object> params) {
-
+    protected JSONObject fetch(Map<String, String> params) {
+        return new JSONObject();
     }
 
     /**
@@ -20,7 +20,7 @@ public class APIWordGenerator extends API implements WordGenerator {
      * @return a random word with the given length
      */
     @Override
-    public String getRandomWord(int length) {
-
+    public String getRandomWord(int length, String language) {
+        return "test";
     }
 }

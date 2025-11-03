@@ -8,5 +8,5 @@ public interface StatsInputBoundary {
     /**
      * Executes the stats use case.
      */
-    void execute();
+    void execute(StatsInputData statsInputData);
 }
