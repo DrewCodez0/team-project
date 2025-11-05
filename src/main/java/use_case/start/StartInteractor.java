@@ -1,14 +1,15 @@
 package use_case.start;
 
 import entity.Theme;
+import interface_adapter.options.OptionsState;
 
 public class StartInteractor implements StartInputBoundary {
-    private final StartDataAccessInterface startDataAccessObject;
+    private final StartDataAccessInterface startDataAccess;
     private final StartOutputBoundary startPresenter;
 
-    public StartInteractor(StartDataAccessInterface startDataAccessInterface,
+    public StartInteractor(StartDataAccessInterface startDataAccess,
                            StartOutputBoundary startOutputBoundary) {
-        this.startDataAccessObject = startDataAccessInterface;
+        this.startDataAccess = startDataAccess;
         this.startPresenter = startOutputBoundary;
     }
 
@@ -20,8 +21,8 @@ public class StartInteractor implements StartInputBoundary {
     }
 
     @Override
-    public void prepareGameView() {
-        startPresenter.prepareGameView();
+    public void prepareGameView(OptionsState optionsState) {
+        startPresenter.prepareGameView(optionsState);
     }
 
     @Override

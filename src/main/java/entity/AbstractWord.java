@@ -7,6 +7,8 @@ public abstract class AbstractWord {
 
     public abstract boolean isEmpty();
 
+    public abstract boolean isFull();
+
     @Override
     public abstract String toString();
 

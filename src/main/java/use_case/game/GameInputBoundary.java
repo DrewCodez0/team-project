@@ -12,4 +12,14 @@ public interface GameInputBoundary {
      * @param gameInputData the input data
      */
     void execute(GameState gameInputData);
+
+    /**
+     * Returns to the start menu.
+     */
+    void prepareStartView();
+
+    /**
+     * Prepares the end view.
+     */
+    void prepareEndView(GameState gameState);
 }

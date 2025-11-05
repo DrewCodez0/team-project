@@ -11,6 +11,8 @@ public interface Theme {
 
     Color getTextColor();
 
+    Color getOutlineColor();
+
     Font getFont();
 
     Color getColorForStatus(Status status);

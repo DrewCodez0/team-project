@@ -76,7 +76,7 @@ public class AppBuilder {
 
     public AppBuilder addGameView() {
         gameViewModel = new GameViewModel();
-        gameView = new GameView(gameViewModel);
+        gameView = new GameView(gameViewModel, optionsViewModel);
         cardPanel.add(gameView, gameView.getViewName());
         return this;
     }
@@ -118,7 +118,7 @@ public class AppBuilder {
 
     public AppBuilder addGameUseCase() {
         final GameOutputBoundary gameOutputBoundary = new GamePresenter(viewManagerModel,
-                gameViewModel, endViewModel);
+                gameViewModel, startViewModel, endViewModel);
         final GameInputBoundary gameInteractor = new GameInteractor(apiDataAccessObject, gameOutputBoundary);
 
         GameController gameController = new GameController(gameInteractor);
@@ -157,4 +157,23 @@ public class AppBuilder {
 
         return application;
     }
+
+//    public JFrame buildWithKeys() {
+//        final JFrame application = new JFrame("Wordle");
+//        application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+//
+//        application.add(cardPanel);
+//        for (Component component : cardPanel.getComponents()) {
+//            if (component instanceof GameView) {
+//                System.out.println("test");
+//                application.addKeyListener((GameView)component);
+//                break;
+//            }
+//        }
+//
+//        viewManagerModel.setState(startView.getViewName());
+//        viewManagerModel.firePropertyChange();
+//
+//        return application;
+//    }
 }

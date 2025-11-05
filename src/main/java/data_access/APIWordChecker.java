@@ -11,7 +11,7 @@ public class APIWordChecker extends API implements WordChecker {
     private JSONObject wordData;
 
     public APIWordChecker() {
-        super(" https://api.dictionaryapi.dev/api/v2/entries/en/");
+        super("https://api.dictionaryapi.dev/api/v2/entries/en/");
         wordData = null;
     }
 

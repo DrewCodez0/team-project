@@ -8,10 +8,11 @@ public class Main {
         JFrame application = appBuilder
                 .addStartView()
 //                .addEndView()
-//                .addGameView()
-//                .addOptionsView()
+                .addOptionsView()
+                .addGameView()
 //                .addStatsView()
                 .addStartUseCase()
+                .addGameUseCase()
                 .build();
         application.pack();
         application.setLocationRelativeTo(null);

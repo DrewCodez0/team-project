@@ -13,6 +13,11 @@ public interface GameOutputBoundary {
     void prepareGameView(GameState state);
 
     /**
+     * Prepares the start view for the Game Use Case.
+     */
+    void prepareStartView();
+
+    /**
      * Prepares the end view for the Game Use Case.
      * @param state the state of the game
      */

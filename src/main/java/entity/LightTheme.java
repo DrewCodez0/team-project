@@ -4,12 +4,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 public class LightTheme implements Theme {
     private final Color backgroundColor;
     private final Color textColor;
+    private final Color outlineColor;
     private final Font font;
     private final Map<Status, Color> statusColors;
     private final Shape letterBox;
@@ -17,8 +18,9 @@ public class LightTheme implements Theme {
     public LightTheme() {
         this.backgroundColor = Color.white;
         this.textColor = Color.black;
-        this.font = new Font("Arial", Font.PLAIN, 20);
-        this.statusColors = new HashMap<>();
+        this.outlineColor = Color.gray;
+        this.font = new Font("Arial", Font.PLAIN, 30);
+        this.statusColors = new EnumMap<>(Status.class);
         this.statusColors.put(Status.INITIAL, new Color(100, 100, 100));
         this.statusColors.put(Status.IN_PROGRESS, new Color(120, 120, 120));
         this.statusColors.put(Status.WRONG, new Color(140, 120, 120));
@@ -35,6 +37,11 @@ public class LightTheme implements Theme {
     @Override
     public Color getTextColor() {
         return this.textColor;
+    }
+
+    @Override
+    public Color getOutlineColor() {
+        return this.outlineColor;
     }
 
     @Override
