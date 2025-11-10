@@ -23,13 +23,14 @@ public class GameState {
     private final AbstractWord wordToGuess;
 
     public GameState() {
-        this.wordToGuess = new Word("error");
+        this.wordToGuess = new Word("ERROR");
+//        this.wordToGuess = null;
         this.length = 5;
         this.maxGuesses = 6;
         this.currentGuess = 0;
-        this.currentLetter = 0;
-        this.words = new AbstractWord[length];
-        for (int i = 0; i < length; i++) {
+        this.currentLetter = -1;
+        this.words = new AbstractWord[this.maxGuesses];
+        for (int i = 0; i < this.maxGuesses; i++) {
             this.words[i] = new Word(this.length);
         }
     }
@@ -39,7 +40,7 @@ public class GameState {
         this.maxGuesses = maxGuesses;
         this.length = wordToGuess.length();
         this.currentGuess = 0;
-        this.currentLetter = 0;
+        this.currentLetter = -1;
         this.words = new AbstractWord[this.maxGuesses];
         for (int i = 0; i < this.maxGuesses; i++) {
             this.words[i] = new Word(this.length);
@@ -51,7 +52,7 @@ public class GameState {
         this.words = words;
         this.maxGuesses = words.length;
         this.currentGuess = 0;
-        this.currentLetter = 0;
+        this.currentLetter = -1;
         while (this.currentGuess < this.maxGuesses && !this.words[this.currentGuess].isEmpty()) {
             this.currentGuess++;
         }
@@ -59,7 +60,7 @@ public class GameState {
             AbstractLetter letter = this.words[this.currentGuess].getLetter(this.currentLetter);
             if (letter.getStatus() == Status.INITIAL) {
                 break;
-            } else {
+            } else { // This might cause an error later
                 this.currentLetter++;
             }
         }
@@ -90,11 +91,67 @@ public class GameState {
         return currentGuess;
     }
 
+    public AbstractLetter getCurrentLetter() { // TODO make this return the letter and have separate for index
+        return this.words[this.currentGuess].getLetter(this.currentLetter);
+    }
+
+    public int getCurrentLetterIndex() {
+        return currentLetter;
+    }
+
     public AbstractWord[] getWords() {
         return words;
     }
 
     public AbstractWord getWordToGuess() {
         return wordToGuess;
+    }
+
+    public void nextLetter(char c) {
+        if (currentLetter < this.length - 1) {
+            this.currentLetter++;
+            getCurrentLetter().setCharacter(c);
+        }
+    }
+
+    public void previousLetter() {
+        if (currentLetter >= 0) {
+            getCurrentLetter().resetCharacter();
+            if (currentLetter == length) {
+                this.currentLetter -= 2; // this shouldnt actually be reached i should probably remove it
+            } else {
+                this.currentLetter--;
+            }
+        }
+    }
+
+    // This assumes that the word is full
+    private void nextWord() {
+        this.currentLetter = -1;
+        this.currentGuess++;
+    }
+
+    private Status[] checkGuess() { // maybe this shouldnt be in gamestate
+        Status[] statuses = new Status[this.length];
+        for (int i = 0; i < this.length; i++) {
+            char guessChar = words[currentGuess].getLetter(i).getCharacter();
+            char expectedChar = wordToGuess.getLetter(i).getCharacter();
+            if (guessChar == expectedChar) {
+                statuses[i] = Status.CORRECT;
+            } else if (wordToGuess.toString().indexOf(guessChar) != -1) {
+                statuses[i] = Status.PARTIAL;
+            } else {
+                statuses[i] = Status.WRONG;
+            }
+        }
+        return statuses;
+    }
+
+    public void submit() {
+        Status[] statuses = checkGuess();
+        for (int i = 0; i < this.length; i++) {
+            words[currentGuess].getLetter(i).setStatus(statuses[i]);
+        }
+        nextWord();
     }
 }

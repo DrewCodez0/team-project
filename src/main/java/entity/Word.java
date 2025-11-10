@@ -36,6 +36,16 @@ public class Word extends AbstractWord {
         return true;
     }
 
+    @Override
+    public boolean isFull() {
+        for (AbstractLetter letter : letters) {
+            if (letter.isNull()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public String toString() {
         StringBuilder result = new StringBuilder();
         for (AbstractLetter letter : letters) {

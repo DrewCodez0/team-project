@@ -22,6 +22,13 @@ public class Letter extends AbstractLetter {
     @Override
     public void setCharacter(char c) {
         this.c = c;
+        this.status = Status.IN_PROGRESS;
+    }
+
+    @Override
+    public void resetCharacter() {
+        this.c = ' ';
+        this.status = Status.INITIAL;
     }
 
     @Override

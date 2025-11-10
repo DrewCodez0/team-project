@@ -1,7 +1,9 @@
 package interface_adapter.start;
 
 import interface_adapter.ViewManagerModel;
+import interface_adapter.game.GameState;
 import interface_adapter.game.GameViewModel;
+import interface_adapter.options.OptionsState;
 import interface_adapter.options.OptionsViewModel;
 import interface_adapter.stats.StatsViewModel;
 import use_case.start.StartOutputBoundary;
@@ -26,7 +28,10 @@ public class StartPresenter implements StartOutputBoundary {
     }
 
     @Override
-    public void prepareGameView() {
+    public void prepareGameView(OptionsState optionsState) {
+        gameViewModel.setState(new GameState());
+        gameViewModel.firePropertyChange();
+
         viewManagerModel.setState(gameViewModel.getViewName());
         viewManagerModel.firePropertyChange();
     }

@@ -8,6 +8,7 @@ import use_case.game.GameDataAccessInterface;
 public class APIDataAccessObject implements GameDataAccessInterface {
     private final WordGenerator wordGenerator;
     private final WordChecker wordChecker;
+    private static final int maxTries = 10;
 
     /**
      * Construct this DAO for generating and checking words with an API.
@@ -23,9 +24,15 @@ public class APIDataAccessObject implements GameDataAccessInterface {
      * @return a random word with the given length
      */
     @Override
-    public String getRandomWord(int length, String language)
+    public String getRandomWord(int length, String language) throws WordNotFoundException
     {
-        return this.wordGenerator.getRandomWord(length, language);
+        for (int i = 0; i < maxTries; i++) {
+                String word = this.wordGenerator.getRandomWord(length, language);
+                if (isValidWord(word, language)) {
+                    return word;
+                }
+        }
+        throw new WordNotFoundException("Word could not be generated after " + maxTries + " tries");
     }
 
     /**
@@ -34,8 +41,7 @@ public class APIDataAccessObject implements GameDataAccessInterface {
      * @return true if the word is valid, false otherwise
      */
     @Override
-    public boolean isValidWord(String word, String language)
-    {
+    public boolean isValidWord(String word, String language) {
         return this.wordChecker.isValidWord(word, language);
     }
 }

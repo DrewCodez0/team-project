@@ -5,6 +5,8 @@ public abstract class AbstractLetter {
 
     public abstract void setCharacter(char c);
 
+    public abstract void resetCharacter();
+
     public abstract Status getStatus();
 
     public abstract void setStatus(Status status);
