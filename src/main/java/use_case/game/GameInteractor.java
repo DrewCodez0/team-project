@@ -1,5 +1,6 @@
 package use_case.game;
 
+import data_access.WordNotFoundException;
 import interface_adapter.game.GameState;
 
 public class GameInteractor implements GameInputBoundary {
@@ -13,6 +14,13 @@ public class GameInteractor implements GameInputBoundary {
 
     @Override
     public void execute(GameState gameInputData) {
+//        if (gameInputData.getWordToGuess() == null) {
+//            try {
+//                gameDataAccess.getRandomWord(gameInputData.getLength(), gameInputData.getLanguage());
+//            } catch (WordNotFoundException e) {
+//                System.out.println(e.getMessage());
+//            }
+//        }
 //        System.out.println(gameDataAccess.getRandomWord(5, "en"));
     }
 

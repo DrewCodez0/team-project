@@ -29,7 +29,7 @@ public class APIWordGenerator extends API implements WordGenerator {
             if (!responseBody.isEmpty()) {
                 return new JSONObject().put("word", responseBody.get(0).toString());
             } else {
-                throw new IOException("Empty response");
+                throw new WordNotFoundException("Empty response");
             }
 
         } catch (IOException | JSONException ex) {

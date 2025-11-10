@@ -1,5 +1,6 @@
 package use_case.start;
 
+import data_access.Language;
 import entity.Theme;
 import interface_adapter.options.OptionsState;
 
@@ -22,6 +23,8 @@ public class StartInteractor implements StartInputBoundary {
 
     @Override
     public void prepareGameView(OptionsState optionsState) {
+//        int length = optionsState.getLength();
+//        Language language = optionsState.getLanguage();
         startPresenter.prepareGameView(optionsState);
     }
 

@@ -21,7 +21,8 @@ public class APIWordChecker extends API implements WordChecker {
     }
 
     /**
-     * Checks if the given word is a valid word.
+     * Checks if the given word is a valid word. For a word to be valid it must be in the dictionary
+     * used and must consist of only English characters to be typeable on a standard US keyboard.
      * @param word the word to check
      * @return true if the word is valid, false otherwise
      */

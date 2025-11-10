@@ -24,6 +24,7 @@ public class GameState {
 
     public GameState() {
         this.wordToGuess = new Word("ERROR");
+//        this.wordToGuess = null;
         this.length = 5;
         this.maxGuesses = 6;
         this.currentGuess = 0;
