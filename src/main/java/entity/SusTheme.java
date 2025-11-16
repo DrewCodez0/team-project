@@ -5,7 +5,7 @@ import java.awt.geom.Path2D;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class SusTheme implements Theme { // TODO make this extend darktheme to simplify things
+public class SusTheme implements Theme { // TODO make this extend darktheme to simplify things or just change stuff
     private final Color backgroundColor;
     private final Color textColor;
     private final Color outlineColor;
@@ -71,8 +71,7 @@ public class SusTheme implements Theme { // TODO make this extend darktheme to s
     public Color getColorForStatus(Status status) {
         return this.statusColors.get(status);
     }
-
-    // This will need AffineTransforms to adjust it later
+    
     @Override
     public Shape getLetterBox() {
         return this.letterBox;

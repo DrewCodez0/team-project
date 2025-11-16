@@ -54,7 +54,6 @@ public class DarkTheme implements Theme {
         return this.statusColors.get(status);
     }
 
-    // This will need AffineTransforms to adjust it later
     @Override
     public Shape getLetterBox() {
         return this.letterBox;

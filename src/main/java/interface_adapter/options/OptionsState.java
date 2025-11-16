@@ -2,6 +2,7 @@ package interface_adapter.options;
 
 import data_access.Language;
 import entity.DarkTheme;
+import entity.LightTheme;
 import entity.SusTheme;
 import entity.Theme;
 

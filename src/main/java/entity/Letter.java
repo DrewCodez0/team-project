@@ -2,32 +2,32 @@ package entity;
 
 public class Letter extends AbstractLetter {
     private Status status;
-    private Character c;
+    private Character character;
 
-    public Letter(char c) {
-        this.c = c;
+    public Letter(char character) {
+        this.character = character;
         this.status = Status.INITIAL;
     }
 
     public Letter() {
-        this.c = ' ';
+        this.character = ' ';
         this.status = Status.INITIAL;
     }
 
     @Override
     public char getCharacter() {
-        return this.c;
+        return this.character;
     }
 
     @Override
     public void setCharacter(char c) {
-        this.c = c;
+        this.character = c;
         this.status = Status.IN_PROGRESS;
     }
 
     @Override
     public void resetCharacter() {
-        this.c = ' ';
+        this.character = ' ';
         this.status = Status.INITIAL;
     }
 
@@ -43,6 +43,6 @@ public class Letter extends AbstractLetter {
 
     @Override
     public boolean isNull() {
-        return c.equals(' ');
+        return character.equals(' ');
     }
 }

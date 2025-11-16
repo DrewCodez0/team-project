@@ -11,8 +11,8 @@ public class StartController {
         this.startInteractor = startInputBoundary;
     }
 
-    public void execute(Theme theme) {
-        startInteractor.execute(theme);
+    public void prepareStartView() {
+        startInteractor.prepareStartView();
     }
 
     public void switchToGameView(OptionsState optionsState) {

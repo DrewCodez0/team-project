@@ -9,6 +9,8 @@ public abstract class AbstractWord {
 
     public abstract boolean isFull();
 
+    public abstract boolean isCorrect();
+
     @Override
     public abstract String toString();
 

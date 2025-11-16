@@ -7,7 +7,7 @@ public class Main {
         AppBuilder appBuilder = new AppBuilder();
         JFrame application = appBuilder
                 .addStartView()
-//                .addEndView()
+                .addEndView()
                 .addOptionsView()
                 .addGameView()
 //                .addStatsView()

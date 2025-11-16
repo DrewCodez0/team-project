@@ -1,7 +1,11 @@
 package app;
 
 import data_access.APIDataAccessObject;
+import data_access.APIWordChecker;
+import data_access.APIWordGenerator2;
 import data_access.FileDataAccessObject;
+import entity.SusTheme;
+import entity.Theme;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.end.EndController;
 import interface_adapter.end.EndPresenter;
@@ -42,7 +46,7 @@ public class AppBuilder {
     private final JPanel cardPanel = new JPanel();
     private final CardLayout cardLayout = new CardLayout();
     final ViewManagerModel viewManagerModel = new ViewManagerModel();
-    ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
+    private final ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
 
     private StartView startView;
     private StartViewModel startViewModel;
@@ -56,12 +60,14 @@ public class AppBuilder {
     private StatsViewModel statsViewModel;
 
     final FileDataAccessObject fileDataAccessObject = new FileDataAccessObject();
-    final APIDataAccessObject apiDataAccessObject = new APIDataAccessObject();
+    final APIDataAccessObject apiDataAccessObject = new APIDataAccessObject(
+            new APIWordGenerator2(), new APIWordChecker());
 
     public AppBuilder() {cardPanel.setLayout(cardLayout);}
 
     public AppBuilder addStartView() {
-        startViewModel = new StartViewModel();
+        Theme theme = fileDataAccessObject.getDefaultTheme();
+        startViewModel = new StartViewModel(theme);
         startView = new StartView(startViewModel);
         cardPanel.add(startView, startView.getViewName());
         return this;
@@ -99,7 +105,7 @@ public class AppBuilder {
         final StartOutputBoundary startOutputBoundary = new StartPresenter(viewManagerModel,
                 startViewModel, gameViewModel, optionsViewModel, statsViewModel);
         final StartInputBoundary startInteractor = new StartInteractor(
-                fileDataAccessObject, startOutputBoundary);
+                fileDataAccessObject, apiDataAccessObject, startOutputBoundary);
 
         StartController startController = new StartController(startInteractor);
         startView.setStartController(startController);

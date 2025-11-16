@@ -1,5 +1,10 @@
 package data_access;
 
 public interface WordGenerator {
-    abstract String getRandomWord(int length, String language);
+    /**
+     * Returns a random uppercase word with the given length.
+     * @param length the length of the word
+     * @return a random uppercase word with the given length
+     */
+    abstract String getRandomWord(int length, Language language);
 }

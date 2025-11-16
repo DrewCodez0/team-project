@@ -1,6 +1,5 @@
 package use_case.game;
 
-import data_access.WordNotFoundException;
 import interface_adapter.game.GameState;
 
 public class GameInteractor implements GameInputBoundary {
@@ -13,7 +12,9 @@ public class GameInteractor implements GameInputBoundary {
     }
 
     @Override
-    public void execute(GameState gameInputData) {
+    public void executeLetter(GameState gameInputData, char letter) {
+        gameInputData.nextLetter(letter);
+        gamePresenter.updateGameView(gameInputData);
 //        if (gameInputData.getWordToGuess() == null) {
 //            try {
 //                gameDataAccess.getRandomWord(gameInputData.getLength(), gameInputData.getLanguage());
@@ -22,6 +23,29 @@ public class GameInteractor implements GameInputBoundary {
 //            }
 //        }
 //        System.out.println(gameDataAccess.getRandomWord(5, "en"));
+    }
+
+    @Override
+    public void executeSubmit(GameState gameInputData) { // TODO check if at the end or if correct and switch to end
+        int guess = gameInputData.getCurrentGuess();
+        if (gameInputData.getWords()[guess].isFull()) {
+            String word = gameInputData.getWords()[guess].toString();
+            if (gameDataAccess.isValidWord(word, gameInputData.getLanguage())) {
+                gameInputData.submit();
+                gamePresenter.updateGameView(gameInputData);
+                if (gameInputData.finished()) {
+                    prepareEndView(gameInputData);
+                }
+            } else {
+                gamePresenter.shakeWord(gameInputData);
+            }
+        }
+    }
+
+    @Override
+    public void executeBackspace(GameState gameInputData) {
+        gameInputData.previousLetter();
+        gamePresenter.updateGameView(gameInputData);
     }
 
     @Override

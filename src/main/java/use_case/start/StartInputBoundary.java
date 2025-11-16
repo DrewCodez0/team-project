@@ -11,7 +11,7 @@ public interface StartInputBoundary {
     /**
      * Executes the Start use case.
      */
-    void execute(Theme theme);
+    void prepareStartView();
 
     void prepareGameView(OptionsState optionsState);
 
