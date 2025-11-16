@@ -1,10 +1,10 @@
 package interface_adapter.game;
 
+import data_access.Language;
 import entity.AbstractLetter;
 import entity.AbstractWord;
 import entity.Status;
 import entity.Word;
-
 import java.util.Map;
 
 public class GameState {
@@ -17,6 +17,7 @@ public class GameState {
     );
     private final int length;
     private final int maxGuesses;
+    private final Language language;
     private int currentGuess;
     private int currentLetter;
     private final AbstractWord[] words;
@@ -27,35 +28,57 @@ public class GameState {
 //        this.wordToGuess = null;
         this.length = 5;
         this.maxGuesses = 6;
+        this.language = Language.ENGLISH;
         this.currentGuess = 0;
         this.currentLetter = -1;
         this.words = new AbstractWord[this.maxGuesses];
+        initializeEmptyWords();
+    }
+
+    public GameState(AbstractWord wordToGuess, int maxGuesses, Language language) {
+        this.wordToGuess = wordToGuess;
+        this.maxGuesses = maxGuesses;
+        this.length = wordToGuess.length();
+        this.language = language;
+        this.currentGuess = 0;
+        this.currentLetter = -1;
+        this.words = new AbstractWord[this.maxGuesses];
+        initializeEmptyWords();
+    }
+
+    public GameState(AbstractWord wordToGuess, int maxGuesses) {
+        this(wordToGuess, maxGuesses, Language.ENGLISH);
+    }
+
+    public GameState(AbstractWord wordToGuess, AbstractWord[] words, Language language) {
+        this.wordToGuess = wordToGuess;
+        this.words = words;
+        this.length = wordToGuess.length();
+        this.maxGuesses = words.length;
+        this.language = language;
+        initializeCurrentGuess();
+        initializeCurrentLetter();
+    }
+
+    public GameState(AbstractWord wordToGuess, AbstractWord[] words) {
+        this(wordToGuess, words.length, Language.ENGLISH);
+    }
+
+    private void initializeEmptyWords() {
         for (int i = 0; i < this.maxGuesses; i++) {
             this.words[i] = new Word(this.length);
         }
     }
 
-    public GameState(AbstractWord wordToGuess, int maxGuesses) {
-        this.wordToGuess = wordToGuess;
-        this.maxGuesses = maxGuesses;
-        this.length = wordToGuess.length();
+    private void initializeCurrentGuess() {
         this.currentGuess = 0;
-        this.currentLetter = -1;
-        this.words = new AbstractWord[this.maxGuesses];
-        for (int i = 0; i < this.maxGuesses; i++) {
-            this.words[i] = new Word(this.length);
-        }
-    }
-    public GameState(AbstractWord wordToGuess, AbstractWord[] words) {
-        this.wordToGuess = wordToGuess;
-        this.length = wordToGuess.length();
-        this.words = words;
-        this.maxGuesses = words.length;
-        this.currentGuess = 0;
-        this.currentLetter = -1;
         while (this.currentGuess < this.maxGuesses && !this.words[this.currentGuess].isEmpty()) {
             this.currentGuess++;
         }
+    }
+
+    private void initializeCurrentLetter() {
+        this.currentLetter = -1;
         while (this.currentLetter < this.length) {
             AbstractLetter letter = this.words[this.currentGuess].getLetter(this.currentLetter);
             if (letter.getStatus() == Status.INITIAL) {
@@ -87,11 +110,15 @@ public class GameState {
         return maxGuesses;
     }
 
+    public Language getLanguage() {
+        return language;
+    }
+
     public int getCurrentGuess() {
         return currentGuess;
     }
 
-    public AbstractLetter getCurrentLetter() { // TODO make this return the letter and have separate for index
+    public AbstractLetter getCurrentLetter() {
         return this.words[this.currentGuess].getLetter(this.currentLetter);
     }
 
@@ -107,10 +134,10 @@ public class GameState {
         return wordToGuess;
     }
 
-    public void nextLetter(char c) {
+    public void nextLetter(char character) {
         if (currentLetter < this.length - 1) {
             this.currentLetter++;
-            getCurrentLetter().setCharacter(c);
+            getCurrentLetter().setCharacter(character);
         }
     }
 
@@ -152,6 +179,13 @@ public class GameState {
         for (int i = 0; i < this.length; i++) {
             words[currentGuess].getLetter(i).setStatus(statuses[i]);
         }
+        if (words[currentGuess].isCorrect()) {
+            System.out.println("correct");
+        }
         nextWord();
+    }
+
+    public boolean finished() {
+        return currentGuess == maxGuesses || words[currentGuess].isCorrect();
     }
 }

@@ -13,7 +13,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 public class StartView extends JPanel implements ActionListener, PropertyChangeListener {
-    private final String viewName = "start";
+    private static final String VIEW_NAME = "start";
 
     private final StartViewModel startViewModel;
     private StartController startController = null;
@@ -28,11 +28,11 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
         this.startViewModel.addPropertyChangeListener(this);
 
         Theme theme = this.startViewModel.getState();
-        setTheme(theme, this);
+        setTheme(this, theme);
 
         final JLabel title = new JLabel("Wordle");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        setTheme(theme, title);
+        setTheme(title, theme);
 
         final JPanel buttons = new JPanel();
         play = new JButton("Play");
@@ -47,7 +47,7 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
 //            button.setPreferredSize(new Dimension(90, 10));
 //        }
         buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
-        setTheme(theme, buttons);
+        setTheme(buttons, theme);
 
         play.addActionListener(
                 new ActionListener() {
@@ -101,16 +101,16 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         final Theme theme = (Theme) evt.getNewValue();
-        setTheme(theme, this);
+        setTheme(this, theme);
     }
 
-    private void setTheme(Theme theme, JComponent component) {
+    private void setTheme(JComponent component, Theme theme) {
         component.setBackground(theme.getBackgroundColor());
         component.setForeground(theme.getTextColor());
         component.setFont(theme.getFont());
     }
 
-    public String getViewName() {return viewName;}
+    public String getViewName() {return VIEW_NAME;}
 
     public void setStartController(StartController startController) {this.startController = startController;}
 }

@@ -17,6 +17,7 @@ public class Word extends AbstractWord {
         }
     }
 
+    @Override
     public AbstractLetter getLetter(int index) {
         return letters[index];
     }
@@ -40,6 +41,16 @@ public class Word extends AbstractWord {
     public boolean isFull() {
         for (AbstractLetter letter : letters) {
             if (letter.isNull()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean isCorrect() {
+        for (AbstractLetter letter : letters) {
+            if (letter.getStatus() != Status.CORRECT) {
                 return false;
             }
         }

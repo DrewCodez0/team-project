@@ -1,6 +1,5 @@
 package data_access;
 
-import entity.DarkTheme;
 import entity.Theme;
 import interface_adapter.options.OptionsState;
 import interface_adapter.stats.StatsState;
@@ -29,6 +28,6 @@ public class FileDataAccessObject implements OptionsDataAccessInterface,
 
     @Override
     public Theme getDefaultTheme() {
-        return new DarkTheme();
+        return getOptions().getTheme();
     }
 }

@@ -6,10 +6,10 @@ import interface_adapter.start.StartViewModel;
 import use_case.game.GameOutputBoundary;
 
 public class GamePresenter implements GameOutputBoundary {
-    private ViewManagerModel viewManagerModel;
-    private GameViewModel gameViewModel;
-    private StartViewModel startViewModel;
-    private EndViewModel endViewModel;
+    private final ViewManagerModel viewManagerModel;
+    private final GameViewModel gameViewModel;
+    private final StartViewModel startViewModel;
+    private final EndViewModel endViewModel;
 
     public GamePresenter(ViewManagerModel viewManagerModel, GameViewModel gameViewModel,
                          StartViewModel startViewModel, EndViewModel endViewModel) {
@@ -20,10 +20,14 @@ public class GamePresenter implements GameOutputBoundary {
     }
 
     @Override
-    public void prepareGameView(GameState gameState) {
-        /*
-         * this might not be needed
-         */
+    public void updateGameView(GameState gameState) {
+        gameViewModel.setState(gameState); // this is entirely unnecessary
+        gameViewModel.firePropertyChange();
+    }
+
+    @Override
+    public void shakeWord(GameState gameState) {
+        gameViewModel.firePropertyChange("shake");
     }
 
     @Override

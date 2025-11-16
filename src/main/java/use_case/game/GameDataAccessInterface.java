@@ -1,5 +1,6 @@
 package use_case.game;
 
+import data_access.Language;
 import data_access.WordNotFoundException;
 
 /**
@@ -12,12 +13,12 @@ public interface GameDataAccessInterface {
      * @return a random word with the given length
      * @throws WordNotFoundException If a word could not be found
      */
-    String getRandomWord(int length, String language) throws WordNotFoundException;
+    String getRandomWord(int length, Language language) throws WordNotFoundException;
 
     /**
      * Checks if the given word is a valid word.
      * @param word the word to check
      * @return true if the word is valid, false otherwise
      */
-    boolean isValidWord(String word, String language);
+    boolean isValidWord(String word, Language language);
 }

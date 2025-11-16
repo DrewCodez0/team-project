@@ -3,7 +3,6 @@ package entity;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Shape;
-import entity.Status;
 
 public interface Theme {
 

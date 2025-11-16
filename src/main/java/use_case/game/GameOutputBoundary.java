@@ -10,7 +10,9 @@ public interface GameOutputBoundary {
      * Prepares the game view for the Game Use Case.
      * @param state the state of the game
      */
-    void prepareGameView(GameState state);
+    void updateGameView(GameState state);
+
+    void shakeWord(GameState state);
 
     /**
      * Prepares the start view for the Game Use Case.

@@ -11,7 +11,11 @@ public interface GameInputBoundary {
      * Executes the Game Use Case
      * @param gameInputData the input data
      */
-    void execute(GameState gameInputData);
+    void executeLetter(GameState gameInputData, char letter);
+
+    void executeSubmit(GameState gameInputData);
+
+    void executeBackspace(GameState gameInputData);
 
     /**
      * Returns to the start menu.
