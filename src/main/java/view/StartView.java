@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class StartView extends JPanel implements ActionListener, PropertyChangeListener {
     private static final String VIEW_NAME = "start";
@@ -33,7 +34,7 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
 
         final JLabel title = new JLabel("Wordle");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        setTheme(title, theme);
+        setTitleTheme(title, theme);
 
         final JPanel buttons = new JPanel();
         final ArrayList<JButton> buttonList = new ArrayList<>();
@@ -48,6 +49,7 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
         for (JButton button : buttonList) {
             button.setPreferredSize(new Dimension(300, 100));
             button.setAlignmentX(Component.CENTER_ALIGNMENT);
+            setButtonTheme(button, theme);
             buttons.add(button);
         }
 
@@ -112,7 +114,19 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
     private void setTheme(JComponent component, Theme theme) {
         component.setBackground(theme.getBackgroundColor());
         component.setForeground(theme.getTextColor());
-        component.setFont(theme.getFont());
+        component.setFont(theme.getLetterFont());
+    }
+
+    private void setTitleTheme(JComponent component, Theme theme) {
+        component.setBackground(theme.getBackgroundColor());
+        component.setForeground(theme.getTextColor());
+        component.setFont(theme.getTitleFont());
+    }
+
+    private void setButtonTheme(JComponent component, Theme theme) {
+        component.setBackground(theme.getBackgroundColor());
+        component.setForeground(theme.getTextColor());
+        component.setFont(theme.getButtonFont()); // TODO make these all one function
     }
 
     public String getViewName() {return VIEW_NAME;}

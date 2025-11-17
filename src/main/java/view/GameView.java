@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 
 public class GameView extends JPanel implements ActionListener, PropertyChangeListener {
     private static final int SQUARE_SIZE = 80;
@@ -37,39 +38,34 @@ public class GameView extends JPanel implements ActionListener, PropertyChangeLi
 
         this.addPropertyChangeListener(this);
 
-        setTheme(this, getTheme());
+        ViewHelper.setTheme(this, getTheme());
 
         final JLabel title = new JLabel("Wordle");
         title.setHorizontalAlignment(SwingConstants.CENTER);
-        setTheme(title, getTheme());
+        ViewHelper.setTheme(title, getTheme(), ViewHelper.TITLE);
 
         // maybe this should be its own class encapsulated in a buffer
         this.gamePanel = new JPanel();
         gamePanel.setPreferredSize(new Dimension(this.optionsViewModel.getState().getLength() * GameView.SQUARE_SIZE,
-                this.optionsViewModel.getState().getMaxGuesses() * GameView.SQUARE_SIZE));
-        setTheme(gamePanel, getTheme());
-//        this.gamePanel.setBackground(Color.green);
+                this.optionsViewModel.getState().getMaxGuesses() * GameView.SQUARE_SIZE + 2 * MARGINS));
+        ViewHelper.setTheme(gamePanel, getTheme());
 
-        final JPanel buffer1 = createBufferPanel();
-        final JPanel buffer2 = createBufferPanel();
+        final JPanel buffer1 = ViewHelper.createBufferPanel(ViewHelper.MARGINS, 50, getTheme());
+        final JPanel buffer2 = ViewHelper.createBufferPanel(ViewHelper.MARGINS, 50, getTheme());
 
         final JPanel buttons = new JPanel();
+        final ArrayList<JButton> buttonList = new ArrayList<>();
         menu = new JButton("Menu");
-        buttons.add(menu);
+        buttonList.add(menu);
         submit = new JButton("Submit");
-        buttons.add(submit);
-        setTheme(buttons, getTheme());
+        buttonList.add(submit);
+        for (JButton button : buttonList) {
+            ViewHelper.setTheme(button, getTheme(), ViewHelper.BUTTON);
+            buttons.add(button);
+        }
+        ViewHelper.setTheme(buttons, getTheme());
 
-        menu.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        if (evt.getSource().equals(menu)) {
-
-                        }
-                    }
-                }
-        );
-
+        menu.addActionListener(this);
         submit.addActionListener(this);
 
         this.setLayout(new BorderLayout());
@@ -103,7 +99,6 @@ public class GameView extends JPanel implements ActionListener, PropertyChangeLi
         } else {
             this.gameController.execute(this.gameViewModel.getState(), e);
         }
-//        repaint();
     }
 
     @Override
@@ -121,87 +116,14 @@ public class GameView extends JPanel implements ActionListener, PropertyChangeLi
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
         final GameState gameState = this.gameViewModel.getState();
-        Shape shape = getTheme().getLetterBox();
-        AbstractWord[] words = gameState.getWords();
-//        int size = gamePanel.getSize().width / (gameState.getLength() + 1);
-        int size = GameView.SQUARE_SIZE;
-        for (int i = 0; i < gameState.getMaxGuesses(); i++) {
-            boolean current = i == gameState.getCurrentGuess();
-            for (int j = 0; j < gameState.getLength(); j++) {
-                drawLetter(g2d, words[i].getLetter(j), shape,
-                        size * j + size / 2,  size * i + size / 2, size, current);
-            }
-        }
-        gamePanel.setSize(gamePanel.getSize().width, (2 * gameState.getMaxGuesses() + 1) * size / 2);
-    }
-
-    /**
-     * Applies theme to the component.
-     * @param component the component to apply the theme to
-     * @param theme the theme to be applied
-     */
-    private void setTheme(JComponent component, Theme theme) {
-        component.setBackground(theme.getBackgroundColor());
-        component.setForeground(theme.getTextColor());
-        component.setFont(theme.getFont());
-    }
-
-    /**
-     * Draws a letter and its box.
-     * @param g the graphics used to draw
-     * @param letter the AbstractLetter to draw
-     * @param shape the shape of the letter box defined by the active Theme
-     * @param x the x location to draw the letter at
-     * @param y the y location to draw the letter at
-     * @param size the size of the letter box
-     * @param current whether the current guess is being drawn
-     */
-    private void drawLetter(Graphics2D g, AbstractLetter letter, Shape shape, int x, int y, int size, boolean current) {
-        float dx = x;
-        if (current) {
-            dx += shakeOffset;
-        }
-        AffineTransform transform = getTransform(dx, y, size);
-        drawBoxBackground(g, letter, shape, transform);
-        drawBoxOutline(g, shape, transform);
-        drawBoxLetter(g, letter, (int)dx, y, size);
-    }
-
-    @NotNull
-    private AffineTransform getTransform(float x, int y, int size) {
-        return new AffineTransform(size, 0, 0, size, x, y);
-    }
-
-    private void drawBoxBackground(Graphics2D g, AbstractLetter letter, Shape shape, AffineTransform transform) {
-        g.setPaint(getTheme().getColorForStatus(letter.getStatus()));
-        g.fill(transform.createTransformedShape(shape));
-    }
-
-    private void drawBoxOutline(Graphics2D g, Shape shape, AffineTransform transform) {
-        g.setPaint(getTheme().getOutlineColor());
-        g.draw(transform.createTransformedShape(shape));
-    }
-
-    private void drawBoxLetter(Graphics2D g, AbstractLetter letter, int x, int y, int size) {
-        g.setPaint(getTheme().getTextColor());
-        String c = Character.toString(letter.getCharacter());
-        FontMetrics fm = g.getFontMetrics(getTheme().getFont());
-        int letterX = x + (size - fm.stringWidth(c)) / 2;
-        int letterY = y + (size - fm.getHeight()) / 2 + fm.getAscent();
-        g.drawString(c, letterX, letterY);
+        ViewHelper.drawGameState(gameState, g2d, getTheme(), GameView.SQUARE_SIZE, shakeOffset);
+//        gamePanel.setSize(gamePanel.getSize().width, (2 * gameState.getMaxGuesses() + 1) * GameView.SQUARE_SIZE / 2);
     }
 
     public String getViewName() {return VIEW_NAME;}
 
     private Theme getTheme() {
         return this.optionsViewModel.getState().getTheme();
-    }
-
-    private JPanel createBufferPanel() {
-        final JPanel bufferPanel = new JPanel();
-        bufferPanel.setPreferredSize(new Dimension(GameView.MARGINS, 50));
-        setTheme(bufferPanel, getTheme());
-        return bufferPanel;
     }
 
     public void setGameController(GameController gameController) {this.gameController = gameController;}
