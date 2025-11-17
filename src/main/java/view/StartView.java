@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 
 public class StartView extends JPanel implements ActionListener, PropertyChangeListener {
     private static final String VIEW_NAME = "start";
@@ -35,17 +36,21 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
         setTheme(title, theme);
 
         final JPanel buttons = new JPanel();
+        final ArrayList<JButton> buttonList = new ArrayList<>();
         play = new JButton("Play");
-        buttons.add(play);
+        buttonList.add(play);
         options = new JButton("Options");
-        buttons.add(options);
+        buttonList.add(options);
         stats = new JButton("Stats");
-        buttons.add(stats);
+        buttonList.add(stats);
         exit = new JButton("Exit");
-        buttons.add(exit);
-//        for (JButton button : buttons.get) { //whatever this is
-//            button.setPreferredSize(new Dimension(90, 10));
-//        }
+        buttonList.add(exit);
+        for (JButton button : buttonList) {
+            button.setPreferredSize(new Dimension(300, 100));
+            button.setAlignmentX(Component.CENTER_ALIGNMENT);
+            buttons.add(button);
+        }
+
         buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
         setTheme(buttons, theme);
 
