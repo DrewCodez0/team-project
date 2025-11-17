@@ -67,6 +67,7 @@ public class ViewHelper {
      * @param shakeOffset the offset to apply if the boxes are being shaken
      */
     public static void drawGameState(GameState gameState, Graphics2D g2d, Theme theme, int size, float shakeOffset) {
+        g2d.setFont(theme.getLetterFont());
         final Shape shape = theme.getLetterBox();
         final AbstractWord[] words = gameState.getWords();
         final int yOffset = theme.getTitleFont().getSize() + MARGINS;
