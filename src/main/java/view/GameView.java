@@ -48,7 +48,7 @@ public class GameView extends JPanel implements ActionListener, PropertyChangeLi
         this.gamePanel = new JPanel();
         gamePanel.setPreferredSize(new Dimension(this.optionsViewModel.getState().getLength() * GameView.SQUARE_SIZE,
                 this.optionsViewModel.getState().getMaxGuesses() * GameView.SQUARE_SIZE + 2 * MARGINS));
-        ViewHelper.setTheme(gamePanel, getTheme());
+        ViewHelper.setTheme(gamePanel, getTheme(), ViewHelper.LETTER);
 
         final JPanel buffer1 = ViewHelper.createBufferPanel(ViewHelper.MARGINS, 50, getTheme());
         final JPanel buffer2 = ViewHelper.createBufferPanel(ViewHelper.MARGINS, 50, getTheme());

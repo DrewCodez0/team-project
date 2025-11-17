@@ -12,7 +12,7 @@ public class OptionsState {
     private int length;
     private Language language;
     public OptionsState(){
-        this.theme = new SusTheme();
+        this.theme = new DarkTheme();
         this.maxGuesses = 6;
         this.length = 5;
         this.language = Language.ENGLISH;
