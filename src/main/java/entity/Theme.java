@@ -12,7 +12,11 @@ public interface Theme {
 
     Color getOutlineColor();
 
-    Font getFont();
+    Font getLetterFont();
+
+    Font getTitleFont();
+
+    Font getButtonFont();
 
     Color getColorForStatus(Status status);
 

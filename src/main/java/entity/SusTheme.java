@@ -9,7 +9,9 @@ public class SusTheme implements Theme { // TODO make this extend darktheme to s
     private final Color backgroundColor;
     private final Color textColor;
     private final Color outlineColor;
-    private final Font font;
+    private final Font letterFont;
+    private final Font titleFont;
+    private final Font buttonFont;
     private final Map<Status, Color> statusColors;
     private final Shape letterBox;
 
@@ -17,7 +19,9 @@ public class SusTheme implements Theme { // TODO make this extend darktheme to s
         this.backgroundColor = Color.black;
         this.textColor = Color.white;
         this.outlineColor = Color.gray;
-        this.font = new Font("Arial", Font.PLAIN, 30);
+        this.letterFont = new Font("Tahoma", Font.PLAIN, 50);
+        this.titleFont = new Font("Broadway", Font.BOLD, 70);
+        this.buttonFont = new Font("Verdana", Font.PLAIN, 30);
         this.statusColors = new EnumMap<>(Status.class);
         this.statusColors.put(Status.INITIAL, new Color(30, 30, 30));
         this.statusColors.put(Status.IN_PROGRESS, new Color(57, 57, 57));
@@ -63,8 +67,18 @@ public class SusTheme implements Theme { // TODO make this extend darktheme to s
     }
 
     @Override
-    public Font getFont() {
-        return this.font;
+    public Font getLetterFont() {
+        return this.letterFont;
+    }
+
+    @Override
+    public Font getTitleFont() {
+        return this.titleFont;
+    }
+
+    @Override
+    public Font getButtonFont() {
+        return this.buttonFont;
     }
 
     @Override

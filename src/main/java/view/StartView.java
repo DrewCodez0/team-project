@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class StartView extends JPanel implements ActionListener, PropertyChangeListener {
     private static final String VIEW_NAME = "start";
@@ -32,20 +34,25 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
 
         final JLabel title = new JLabel("Wordle");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        setTheme(title, theme);
+        setTitleTheme(title, theme);
 
         final JPanel buttons = new JPanel();
+        final ArrayList<JButton> buttonList = new ArrayList<>();
         play = new JButton("Play");
-        buttons.add(play);
+        buttonList.add(play);
         options = new JButton("Options");
-        buttons.add(options);
+        buttonList.add(options);
         stats = new JButton("Stats");
-        buttons.add(stats);
+        buttonList.add(stats);
         exit = new JButton("Exit");
-        buttons.add(exit);
-//        for (JButton button : buttons.get) { //whatever this is
-//            button.setPreferredSize(new Dimension(90, 10));
-//        }
+        buttonList.add(exit);
+        for (JButton button : buttonList) {
+            button.setPreferredSize(new Dimension(300, 100));
+            button.setAlignmentX(Component.CENTER_ALIGNMENT);
+            setButtonTheme(button, theme);
+            buttons.add(button);
+        }
+
         buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
         setTheme(buttons, theme);
 
@@ -107,7 +114,19 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
     private void setTheme(JComponent component, Theme theme) {
         component.setBackground(theme.getBackgroundColor());
         component.setForeground(theme.getTextColor());
-        component.setFont(theme.getFont());
+        component.setFont(theme.getLetterFont());
+    }
+
+    private void setTitleTheme(JComponent component, Theme theme) {
+        component.setBackground(theme.getBackgroundColor());
+        component.setForeground(theme.getTextColor());
+        component.setFont(theme.getTitleFont());
+    }
+
+    private void setButtonTheme(JComponent component, Theme theme) {
+        component.setBackground(theme.getBackgroundColor());
+        component.setForeground(theme.getTextColor());
+        component.setFont(theme.getButtonFont()); // TODO make these all one function
     }
 
     public String getViewName() {return VIEW_NAME;}
