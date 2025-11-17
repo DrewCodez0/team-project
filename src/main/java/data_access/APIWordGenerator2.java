@@ -21,11 +21,11 @@ public class APIWordGenerator2 extends API implements WordGenerator {
      */
     @Override
     public String getRandomWord(int length, Language language) {
-        if (!language.equals(Language.ENGLISH)) {
-            throw new IllegalArgumentException("Language not supported");
-        }
-        JSONArray responseBody = fetch(String.format("?length=%s&type=uppercase", length));
-        return responseBody.getString(0).toUpperCase();
-//        return "ERROR";
+//        if (!language.equals(Language.ENGLISH)) {
+//            throw new IllegalArgumentException("Language not supported");
+//        }
+//        JSONArray responseBody = fetch(String.format("?length=%s&type=uppercase", length));
+//        return responseBody.getString(0).toUpperCase();
+        return "ERROR";
     }
 }
