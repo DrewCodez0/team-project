@@ -7,14 +7,28 @@ import entity.SusTheme;
 import entity.Theme;
 
 public class OptionsState {
+    private Theme theme;
+    private int maxGuesses;
+    private int length;
+    private Language language;
+    public OptionsState(){
+        this.theme = new SusTheme();
+        this.maxGuesses = 6;
+        this.length = 5;
+        this.language = Language.ENGLISH;
+    }
     public Theme getTheme() {
-        return new SusTheme();
+        return theme;
     }
+    public void setTheme(Theme theme) {this.theme = theme;}
     public int getMaxGuesses() {
-        return 6;
+        return maxGuesses;
     }
+    public void setMaxGuesses(int maxGuesses) {this.maxGuesses = maxGuesses;}
     public int getLength() {
-        return 5;
+        return length;
     }
-    public Language getLanguage() {return Language.ENGLISH;}
+    public void setLength(int length) {this.length = length;}
+    public Language getLanguage() {return language;}
+    public void setLanguage(Language language) {this.language = language;}
 }
