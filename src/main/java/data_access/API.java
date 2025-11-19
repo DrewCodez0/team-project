@@ -30,7 +30,7 @@ abstract class API {
                 throw new WordNotFoundException("Could not fetch word");
             }
             if (bodyString.charAt(0) == '{') {
-                throw new WordNotFoundException("Could not convert to JSONArray");
+                throw new JSONException("Could not convert to JSONArray");
             }
             final JSONArray responseBody = new JSONArray(bodyString);
             if (!responseBody.isEmpty()) {
@@ -39,7 +39,11 @@ abstract class API {
                 throw new WordNotFoundException("Empty response");
             }
         } catch (IOException | JSONException exp) {
-            throw new WordNotFoundException("Could not fetch word");
+            if (exp.getMessage().equals("Could not convert to JSONArray")) {
+                throw new JSONException("Could not convert to JSONArray");
+            } else {
+                throw new WordNotFoundException("Could not fetch word");
+            }
         }
     }
 }
