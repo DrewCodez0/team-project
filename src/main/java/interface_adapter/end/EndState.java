@@ -7,7 +7,7 @@ public class EndState {
     private int maxGuesses;
     private String message;
 
-    public EndState(String word) {
+    public EndState() {
         this.word = "";
         this.won = false;
         this.guessesUsed = 0;
