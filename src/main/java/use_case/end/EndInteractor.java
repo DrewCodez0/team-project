@@ -1,44 +1,45 @@
 package use_case.end;
 
-import data_access.Language;
-import entity.AbstractWord;
-import interface_adapter.game.GameState;
-
 public class EndInteractor implements EndInputBoundary {
-
     private final EndDataAccessInterface endDataAccess;
-    private final EndOutputBoundary presenter;
+    private final EndOutputBoundary endPresenter;
 
-    public EndInteractor(EndDataAccessInterface endDataAccess, EndOutputBoundary presenter) {
+    public EndInteractor(EndDataAccessInterface endDataAccess, EndOutputBoundary endOutputBoundary) {
         this.endDataAccess = endDataAccess;
-        this.presenter = presenter;
+        this.endPresenter = endOutputBoundary;
     }
 
     @Override
-    public void execute(GameState gameState) {
-        String wordToGuess = gameState.getWordToGuess().toString();
-        int maxGuesses = gameState.getMaxGuesses();
-        int guessesUsed = gameState.getCurrentGuess();
-        Language language = gameState.getLanguage();
-        boolean won = isWon(gameState);
-
+    public void execute(EndInputData endInputData) {
         EndGameRecord record = new EndGameRecord(
-                wordToGuess,
-                won,
-                guessesUsed,
-                maxGuesses
+                endInputData.getWord(),
+                endInputData.isWon(),
+                endInputData.getGuessesUsed()
         );
-        endDataAccess.saveEndGame(record);
 
-        EndOutputData outputData = new EndOutputData(wordToGuess, won, guessesUsed, maxGuesses);
-    }
-    private boolean playerWon(GameState state) {
-        for (AbstractWord word : state.getWords()) {
-            if (word != null && word.isCorrect()) {
-                return true;
-            }
+        endDataAccess.saveGameRecord(record);
+
+        EndOutputData outputData = new EndOutputData(
+                endInputData.getWord(),
+                endInputData.isWon(),
+                endInputData.getGuessesUsed(),
+                endInputData.getMaxGuesses()
+        );
+        if (endInputData.isWon()) {
+            endPresenter.prepareSuccessView(outputData);
+        } else {
+            endPresenter.prepareFailView(outputData);
         }
-        return false;
+    }
+
+    @Override
+    public void prepareStartView() {
+        endPresenter.prepareStartView();
+    }
+
+    @Override
+    public void prepareNewGame(EndInputData endInputData) {
+        endPresenter.prepareGameView(new interface_adapter.options.OptionsState());
     }
 }
 
