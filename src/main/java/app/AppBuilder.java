@@ -147,7 +147,7 @@ public class AppBuilder {
                 statsViewModel, startViewModel);
         final StatsInputBoundary statsInteractor = new StatsInteractor(fileDataAccessObject, statsOutputBoundary);
 
-        StatsController statsController = new StatsController(statsInteractor);
+        StatsController statsController = new StatsController(statsInteractor, statsOutputBoundary); //Added statsOutputBoundary
         statsView.setStatsController(statsController);
         return this;
     }
