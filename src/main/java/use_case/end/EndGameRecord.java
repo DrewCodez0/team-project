@@ -1,33 +1,49 @@
 package use_case.end;
 
 public class EndGameRecord {
-    private final String wordToGuess;
+    private final String word;
     private final boolean won;
     private final int guessesUsed;
-    private final int maxGuesses;
 
-    public EndGameRecord(String wordToGuess,
-                         boolean won,
-                         int guessesUsed,
-                         int maxGuesses) {
-
-        this.wordToGuess = wordToGuess;
+    public EndGameRecord(String word, boolean won, int guessesUsed) {
+        this.word = word;
         this.won = won;
         this.guessesUsed = guessesUsed;
-        this.maxGuesses = maxGuesses;
+    }
 
+    public String getWord() {
+        return word;
     }
-    public String getWordToGuess() {
-        return wordToGuess;
-    }
+
     public boolean isWon() {
         return won;
     }
+
     public int getGuessesUsed() {
         return guessesUsed;
     }
-    public int getMaxGuesses() {
-        return maxGuesses;
+
+    @Override
+    public String toString() {
+        return "EndGameRecord{" + "word='" + word + '\'' + ", " +
+                "won=" + won + ", guessesUsed=" + guessesUsed + '}';
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        EndGameRecord that = (EndGameRecord) obj;
+        return won == that.won && guessesUsed == that.guessesUsed &&
+                word.equals(that.word);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = word.hashCode();
+        result = 31 * result + (won ? 1 : 0);
+        result = 31 * result + guessesUsed;
+        return result;
+    }
 }
