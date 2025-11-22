@@ -1,6 +1,5 @@
 package use_case.start;
 
-//import data_access.Language;
 import data_access.WordNotFoundException;
 import entity.AbstractWord;
 import entity.Theme;
@@ -24,24 +23,23 @@ public class StartInteractor implements StartInputBoundary {
 
     @Override
     public void prepareStartView() {
-        Theme theme = startDataAccess.getDefaultTheme();
+        final Theme theme = startDataAccess.getDefaultTheme();
         startPresenter.prepareStartView(theme);
     }
 
     @Override
     public void prepareGameView(OptionsState optionsState) {
-            try {
-                String word = gameDataAccess.getRandomWord(optionsState.getLength(), optionsState.getLanguage());
-                System.out.println(word);
-                AbstractWord theword = new Word(word); // TODO replace this with a wordfactory
-                GameState gameState = new GameState(theword, optionsState.getMaxGuesses());
-                startPresenter.prepareGameView(gameState);
-            } catch (WordNotFoundException e) {
-                System.out.println(e.getMessage());
-            }
-//        int length = optionsState.getLength();
-//        Language language = optionsState.getLanguage();
-//        startPresenter.prepareGameView(optionsState);
+        // TODO put all of this into GameInteractor
+        try {
+            final String word = gameDataAccess.getRandomWord(optionsState.getLength(), optionsState.getLanguage());
+            // System.out.println(word);
+            final AbstractWord theword = new Word(word); // TODO replace this with a wordfactory
+            final GameState gameState = new GameState(theword, optionsState.getMaxGuesses());
+            startPresenter.prepareGameView(gameState);
+        }
+        catch (WordNotFoundException ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 
     @Override

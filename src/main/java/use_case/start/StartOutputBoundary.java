@@ -8,13 +8,14 @@ import interface_adapter.game.GameState;
  */
 public interface StartOutputBoundary {
     /**
-     * Prepares the start view for the Start Use Case
+     * Prepares the start view for the Start Use Case.
      * @param theme the Theme to use for the panel
      */
     void prepareStartView(Theme theme);
 
     /**
      * Prepares the game view for the Start Use Case.
+     * @param gameState the gamestate to use for the game
      */
     void prepareGameView(GameState gameState);
 

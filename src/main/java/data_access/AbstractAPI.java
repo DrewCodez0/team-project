@@ -1,18 +1,20 @@
 package data_access;
 
 import java.io.IOException;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
-abstract class API {
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+abstract class AbstractAPI {
     protected static final String CONTENT_TYPE_LABEL = "Content-Type";
     protected static final String CONTENT_TYPE_JSON = "application/json";
     protected final String baseURL;
 
-    protected API(String baseURL) {
+    protected AbstractAPI(String baseURL) {
         this.baseURL = baseURL;
     }
 
@@ -20,7 +22,7 @@ abstract class API {
         final OkHttpClient client = new OkHttpClient().newBuilder().build();
         final Request request = new Request.Builder()
                 .url(baseURL + params)
-                .addHeader(API.CONTENT_TYPE_LABEL, API.CONTENT_TYPE_JSON)
+                .addHeader(AbstractAPI.CONTENT_TYPE_LABEL, AbstractAPI.CONTENT_TYPE_JSON)
                 .build();
         try {
             final Response response = client.newCall(request).execute();

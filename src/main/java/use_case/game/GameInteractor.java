@@ -27,18 +27,20 @@ public class GameInteractor implements GameInputBoundary {
 
     @Override
     public void executeSubmit(GameState gameInputData) { // TODO check if at the end or if correct and switch to end
-        int guess = gameInputData.getCurrentGuess();
+        final int guess = gameInputData.getCurrentGuess();
         if (gameInputData.getWords()[guess].isFull()) {
-            String word = gameInputData.getWords()[guess].toString();
+            final String word = gameInputData.getWords()[guess].toString();
             if (gameDataAccess.isValidWord(word, gameInputData.getLanguage())) {
                 gameInputData.submit();
                 gamePresenter.updateGameView(gameInputData);
                 if (gameInputData.finished()) {
                     prepareEndView(gameInputData);
-                } else {
+                }
+                else {
                     gameInputData.nextWord();
                 }
-            } else {
+            }
+            else {
                 gamePresenter.shakeWord(gameInputData);
             }
         }
@@ -54,6 +56,7 @@ public class GameInteractor implements GameInputBoundary {
     public void prepareStartView() {
         gamePresenter.prepareStartView();
     }
+
     @Override
     public void prepareEndView(GameState gameState) {
         gamePresenter.prepareEndView(gameState);

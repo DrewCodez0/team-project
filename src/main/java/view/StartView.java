@@ -1,24 +1,27 @@
 package view;
 
-import entity.Theme;
-import interface_adapter.options.OptionsState;
-import interface_adapter.start.StartController;
-import interface_adapter.start.StartViewModel;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Arrays;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import entity.Theme;
+import interface_adapter.options.OptionsState;
+import interface_adapter.start.StartController;
+import interface_adapter.start.StartViewModel;
 
 public class StartView extends JPanel implements ActionListener, PropertyChangeListener {
     private static final String VIEW_NAME = "start";
 
-    private final StartViewModel startViewModel;
-    private StartController startController = null;
+    private StartController startController;
 
     private final JButton play;
     private final JButton options;
@@ -26,10 +29,9 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
     private final JButton exit;
 
     public StartView(StartViewModel startViewModel) {
-        this.startViewModel = startViewModel;
-        this.startViewModel.addPropertyChangeListener(this);
+        startViewModel.addPropertyChangeListener(this);
 
-        Theme theme = this.startViewModel.getState();
+        final Theme theme = startViewModel.getState();
         ViewHelper.setTheme(this, theme);
 
         final JLabel title = new JLabel("Wordle");
@@ -47,64 +49,54 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
         exit = new JButton("Exit");
         buttonList.add(exit);
         for (JButton button : buttonList) {
-            button.setPreferredSize(new Dimension(300, 100));
             button.setAlignmentX(Component.CENTER_ALIGNMENT);
             ViewHelper.setTheme(button, theme, ViewHelper.BUTTON);
             buttons.add(button);
         }
-
-//        buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
         buttons.setLayout(new GridLayout(0, 1));
         ViewHelper.setTheme(buttons, theme);
 
         play.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        if (evt.getSource().equals(play)) {
-                            startController.switchToGameView(new OptionsState()); //TODO
-                        }
+                evt -> {
+                    if (evt.getSource().equals(play)) {
+                        startController.switchToGameView(new OptionsState()); //TODO
                     }
                 }
         );
 
         options.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        if (evt.getSource().equals(options)) {
-                            startController.switchToOptionsView();
-                        }
+                evt -> {
+                    if (evt.getSource().equals(options)) {
+                        startController.switchToOptionsView();
                     }
                 }
         );
 
         stats.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        if (evt.getSource().equals(stats)) {
-                            startController.switchToStatsView();
-                        }
+                evt -> {
+                    if (evt.getSource().equals(stats)) {
+                        startController.switchToStatsView();
                     }
                 }
         );
 
         exit.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        if  (evt.getSource().equals(exit)) {
-                            System.exit(0);
-                        }
+                evt -> {
+                    if (evt.getSource().equals(exit)) {
+                        System.exit(0);
                     }
                 }
         );
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
         this.add(title);
         this.add(buttons);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {}
+    public void actionPerformed(ActionEvent e) {
+        // This doesnt need to do anything
+    }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
@@ -112,8 +104,11 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
         ViewHelper.setTheme(this, theme);
     }
 
+    public String getViewName() {
+        return VIEW_NAME;
+    }
 
-    public String getViewName() {return VIEW_NAME;}
-
-    public void setStartController(StartController startController) {this.startController = startController;}
+    public void setStartController(StartController startController) {
+        this.startController = startController;
+    }
 }

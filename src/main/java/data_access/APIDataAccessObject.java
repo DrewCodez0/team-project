@@ -6,12 +6,14 @@ import use_case.game.GameDataAccessInterface;
  * DAO for game data implemented using APIs.
  */
 public class APIDataAccessObject implements GameDataAccessInterface {
+    private static final int MAX_TRIES = 10;
     private final WordGenerator wordGenerator;
     private final WordChecker wordChecker;
-    private static final int MAX_TRIES = 10;
 
     /**
      * Construct this DAO for generating and checking words with an API.
+     * @param wordGenerator the word generator to use in this DAO
+     * @param wordChecker the word checker to use in this DAO
      */
     public APIDataAccessObject(WordGenerator wordGenerator, WordChecker wordChecker) {
         this.wordGenerator = wordGenerator;
@@ -25,13 +27,12 @@ public class APIDataAccessObject implements GameDataAccessInterface {
      * @return a random uppercase word with the given length
      */
     @Override
-    public String getRandomWord(int length, Language language) throws WordNotFoundException
-    {
+    public String getRandomWord(int length, Language language) throws WordNotFoundException {
         for (int i = 0; i < MAX_TRIES; i++) {
-                String word = this.wordGenerator.getRandomWord(length, language);
-                if (isValidWord(word, language)) {
-                    return word;
-                }
+            final String word = this.wordGenerator.getRandomWord(length, language);
+            if (isValidWord(word, language)) {
+                return word;
+            }
         }
         throw new WordNotFoundException("Word could not be generated after " + MAX_TRIES + " tries");
     }

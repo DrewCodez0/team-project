@@ -1,16 +1,18 @@
 package data_access;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
 
-public class APIWordGenerator extends API implements WordGenerator {
-    private static final Map<Language, String> languages = new EnumMap<>(Language.class);
+import org.json.JSONArray;
+import org.json.JSONException;
+
+public class APIWordGenerator extends AbstractAPI implements WordGenerator {
+    private static final Map<Language, String> LANGUAGES = new EnumMap<>(Language.class);
+
     static {
-        languages.put(Language.ENGLISH, "en");
+        LANGUAGES.put(Language.ENGLISH, "en");
     }
+
     public APIWordGenerator() {
         super("https://random-word-api.herokuapp.com/word");
     }
@@ -23,10 +25,11 @@ public class APIWordGenerator extends API implements WordGenerator {
      */
     @Override
     public String getRandomWord(int length, Language language) {
-        JSONArray responseBody = fetch(String.format("?length=%s&lang=%s", length, language));
+        final JSONArray responseBody = fetch(String.format("?length=%s&lang=%s", length, LANGUAGES.get(language)));
         try {
             return responseBody.getJSONObject(0).getString("word").toUpperCase();
-        } catch (JSONException ex) {
+        }
+        catch (JSONException ex) {
             throw new WordNotFoundException("Could not fetch word");
         }
     }

@@ -226,7 +226,7 @@ class GameView {
     - {static} SQUARE_SIZE: int
     - {static} MARGINS: int
     - {static} VIEW_NAME: String
-    ~ shakeOffset: float
+    - shakeOffset: float
     - gameViewModel: GameViewModel
     - optionsViewModel: OptionsViewModel
     - gameController: GameController
@@ -237,16 +237,19 @@ class GameView {
     + actionPerformed(e: ActionEvent): void
     + propertyChange(evt: PropertyChangeEvent): void
     + paint(g: Graphics): void
+    + getViewName(): String
+    + setGameController(gameController: GameController): void
+    - initializeButtons(buttonList: ArrayList<JButton>): JPanel
+    - initializeLayout(title: JLabel, gamePanel: JPanel, buttons: JPanel): void
+    - initializeInputHandlers(): void
     - setTheme(component: JComponent, theme: Theme): void
     - drawLetter(g: Graphics2D, letter: AbstractLetter, shape: Shape, x: int, y: int, size: int, current: boolean): void
     - getTransform(x: float, y: int, size: int): AffineTransform
     - drawBoxBackground(g: Graphics2D, letter: AbstractLetter, shape: Shape, transform: AffineTransform): void
     - drawBoxOutline(g: Graphics2D, shape: Shape, transform: AffineTransform): void
     - drawBoxLetter(g: Graphics2D, letter: AbstractLetter, x: int, y: int, size: int): void
-    + getViewName(): String
     - getTheme(): Theme
     - createBufferPanel(): JPanel
-    + setGameController(gameController: GameController): void
 }
 GameView --> GameViewModel
 GameView --> OptionsViewModel
@@ -749,6 +752,7 @@ class SusTheme implements Theme {
     - statusColors: Map<Status, Color>
     - letterBox: Shape
     + SusTheme()
+    - {static} getPath(): Path2D
     + getBackgroundColor(): Color
     + getTextColor(): Color
     + getOutlineColor(): Color

@@ -1,7 +1,7 @@
 package entity;
 
 public class Word extends AbstractWord {
-    private AbstractLetter[] letters;
+    private final AbstractLetter[] letters;
 
     public Word(String word) {
         letters = new AbstractLetter[word.length()];
@@ -57,8 +57,9 @@ public class Word extends AbstractWord {
         return true;
     }
 
+    @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
+        final StringBuilder result = new StringBuilder();
         for (AbstractLetter letter : letters) {
             result.append(letter.toString());
         }

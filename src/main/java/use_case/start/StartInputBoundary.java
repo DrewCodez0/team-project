@@ -1,6 +1,5 @@
 package use_case.start;
 
-import entity.Theme;
 import interface_adapter.options.OptionsState;
 
 /**
@@ -13,9 +12,19 @@ public interface StartInputBoundary {
      */
     void prepareStartView();
 
+    /**
+     * Executes the Game use case.
+     * @param optionsState the options to use for the game
+     */
     void prepareGameView(OptionsState optionsState);
 
+    /**
+     * Executes the Options use case.
+     */
     void prepareOptionsView();
 
+    /**
+     * Executes the Stats use case.
+     */
     void prepareStatsView();
 }

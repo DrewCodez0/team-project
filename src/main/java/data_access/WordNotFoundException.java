@@ -1,6 +1,6 @@
 package data_access;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 
 public class WordNotFoundException extends RuntimeException {
     public WordNotFoundException(String message) {

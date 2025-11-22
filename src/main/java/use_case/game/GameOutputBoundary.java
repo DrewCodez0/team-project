@@ -12,6 +12,10 @@ public interface GameOutputBoundary {
      */
     void updateGameView(GameState state);
 
+    /**
+     * Shakes the active word for this GameState.
+     * @param state the state of the game
+     */
     void shakeWord(GameState state);
 
     /**

@@ -1,6 +1,5 @@
 package interface_adapter.start;
 
-import entity.Theme;
 import interface_adapter.options.OptionsState;
 import use_case.start.StartInputBoundary;
 

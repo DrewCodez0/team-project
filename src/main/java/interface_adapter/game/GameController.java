@@ -1,7 +1,8 @@
 package interface_adapter.game;
 
-import use_case.game.GameInputBoundary;
 import java.awt.event.ActionEvent;
+
+import use_case.game.GameInputBoundary;
 
 public class GameController {
     public static final String ENTER = "ENTER";

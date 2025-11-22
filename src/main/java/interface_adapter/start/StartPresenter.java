@@ -4,7 +4,6 @@ import entity.Theme;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.game.GameState;
 import interface_adapter.game.GameViewModel;
-import interface_adapter.options.OptionsState;
 import interface_adapter.options.OptionsViewModel;
 import interface_adapter.stats.StatsViewModel;
 import use_case.start.StartOutputBoundary;
