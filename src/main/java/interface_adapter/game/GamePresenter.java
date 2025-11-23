@@ -5,6 +5,7 @@ import interface_adapter.end.EndViewModel;
 import interface_adapter.start.StartViewModel;
 import use_case.game.GameOutputBoundary;
 
+
 public class GamePresenter implements GameOutputBoundary {
     private final ViewManagerModel viewManagerModel;
     private final GameViewModel gameViewModel;
@@ -37,11 +38,7 @@ public class GamePresenter implements GameOutputBoundary {
     }
 
     @Override
-    public void prepareEndView(GameState gameState) { // this probably doesnt need gamestate
-        final GameState endState = gameViewModel.getState();
-        endViewModel.setState(endState);
-        endViewModel.firePropertyChange();
-
+    public void prepareEndView(GameState gameState) {
         viewManagerModel.setState(endViewModel.getViewName());
         viewManagerModel.firePropertyChange();
     }
