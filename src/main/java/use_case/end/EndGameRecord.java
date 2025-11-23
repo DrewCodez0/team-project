@@ -25,8 +25,7 @@ public class EndGameRecord {
 
     @Override
     public String toString() {
-        return "EndGameRecord{" + "word='" + word + '\'' + ", " +
-                "won=" + won + ", guessesUsed=" + guessesUsed + '}';
+        return String.format("EndGameRecord{word=%s, won=%s, guessesUsed=%s}", word, won, guessesUsed);
     }
 
     @Override
@@ -34,9 +33,8 @@ public class EndGameRecord {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
 
-        EndGameRecord that = (EndGameRecord) obj;
-        return won == that.won && guessesUsed == that.guessesUsed &&
-                word.equals(that.word);
+        final EndGameRecord that = (EndGameRecord) obj;
+        return won == that.won && guessesUsed == that.guessesUsed && word.equals(that.word);
     }
 
     @Override

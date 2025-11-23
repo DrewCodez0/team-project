@@ -1,14 +1,17 @@
 package data_access;
 
-import org.json.JSONArray;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class APIWordGenerator2 extends API implements WordGenerator {
-    private static final Map<Language, String> languages = new EnumMap<>(Language.class);
+import org.json.JSONArray;
+
+public class APIWordGenerator2 extends AbstractAPI implements WordGenerator {
+    private static final Map<Language, String> LANGUAGES = new EnumMap<>(Language.class);
+
     static {
-        languages.put(Language.ENGLISH, "english");
+        LANGUAGES.put(Language.ENGLISH, "english");
     }
+
     public APIWordGenerator2() {
         super("https://random-word-api.vercel.app/api");
     }
@@ -21,11 +24,10 @@ public class APIWordGenerator2 extends API implements WordGenerator {
      */
     @Override
     public String getRandomWord(int length, Language language) {
-//        if (!language.equals(Language.ENGLISH)) {
-//            throw new IllegalArgumentException("Language not supported");
-//        }
-//        JSONArray responseBody = fetch(String.format("?length=%s&type=uppercase", length));
-//        return responseBody.getString(0).toUpperCase();
-        return "ERROR";
+        if (!language.equals(Language.ENGLISH)) {
+            throw new IllegalArgumentException("Language not supported");
+        }
+        final JSONArray responseBody = fetch(String.format("?length=%s&type=uppercase", length));
+        return responseBody.getString(0).toUpperCase();
     }
 }

@@ -1,19 +1,25 @@
 package use_case.game;
 
+import data_access.WordNotFoundException;
+import entity.WordFactory;
 import interface_adapter.game.GameState;
+import interface_adapter.options.OptionsState;
+import interface_adapter.options.OptionsViewModel;
 import use_case.end.EndInputBoundary;
 import use_case.end.EndInputData;
-
 
 public class GameInteractor implements GameInputBoundary {
     private final GameDataAccessInterface gameDataAccess;
     private final GameOutputBoundary gamePresenter;
     private final EndInputBoundary endInteractor;
+    private final OptionsViewModel optionsViewModel;
 
-    public GameInteractor(GameDataAccessInterface gameDataAccess, GameOutputBoundary gameOutputBoundary, EndInputBoundary endInputBoundary) {
+    public GameInteractor(GameDataAccessInterface gameDataAccess, GameOutputBoundary gameOutputBoundary,
+                          EndInputBoundary endInputBoundary, OptionsViewModel optionsViewModel) {
         this.gameDataAccess = gameDataAccess;
         this.gamePresenter = gameOutputBoundary;
         this.endInteractor = endInputBoundary;
+        this.optionsViewModel = optionsViewModel;
     }
 
     @Override
@@ -31,17 +37,21 @@ public class GameInteractor implements GameInputBoundary {
     }
 
     @Override
-    public void executeSubmit(GameState gameInputData) { // TODO check if at the end or if correct and switch to end
-        int guess = gameInputData.getCurrentGuess();
+    public void executeSubmit(GameState gameInputData) {
+        final int guess = gameInputData.getCurrentGuess();
         if (gameInputData.getWords()[guess].isFull()) {
-            String word = gameInputData.getWords()[guess].toString();
+            final String word = gameInputData.getWords()[guess].toString();
             if (gameDataAccess.isValidWord(word, gameInputData.getLanguage())) {
                 gameInputData.submit();
                 gamePresenter.updateGameView(gameInputData);
                 if (gameInputData.finished()) {
                     prepareEndView(gameInputData);
                 }
-            } else {
+                else {
+                    gameInputData.nextWord();
+                }
+            }
+            else {
                 gamePresenter.shakeWord(gameInputData);
             }
         }
@@ -54,18 +64,33 @@ public class GameInteractor implements GameInputBoundary {
     }
 
     @Override
+    public void prepareNewGame() {
+        final OptionsState optionsState = optionsViewModel.getState();
+        try {
+            final String word = gameDataAccess.getRandomWord(optionsState.getLength(), optionsState.getLanguage());
+            final GameState gameState = new GameState(WordFactory.createWordToGuess(word),
+                    optionsState.getMaxGuesses());
+            gamePresenter.updateGameView(gameState);
+        }
+        catch (WordNotFoundException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    @Override
     public void prepareStartView() {
         gamePresenter.prepareStartView();
     }
+
     @Override
     public void prepareEndView(GameState gameState) {
-        String word = gameState.getWordToGuess().toString();
-        boolean won = gameState.getCurrentGuess() < gameState.getMaxGuesses() &&
-                gameState.getWords()[gameState.getCurrentGuess()].isCorrect();
-        int guessesUsed = gameState.getCurrentGuess() + 1;
-        int maxGuesses = gameState.getMaxGuesses();
+        final String word = gameState.getWordToGuess().toString();
+        final boolean won = gameState.getCurrentGuess() < gameState.getMaxGuesses()
+                && gameState.getWords()[gameState.getCurrentGuess()].isCorrect();
+        final int guessesUsed = gameState.getCurrentGuess() + 1;
+        final int maxGuesses = gameState.getMaxGuesses();
 
-        EndInputData endInputData = new EndInputData(word, won, guessesUsed, maxGuesses);
+        final EndInputData endInputData = new EndInputData(word, won, guessesUsed, maxGuesses);
         endInteractor.execute(endInputData);
     }
 }

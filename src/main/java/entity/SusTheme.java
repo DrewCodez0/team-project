@@ -1,9 +1,13 @@
 package entity;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Shape;
 import java.awt.geom.Path2D;
 import java.util.EnumMap;
 import java.util.Map;
+
+import org.jetbrains.annotations.NotNull;
 
 public class SusTheme implements Theme { // TODO make this extend darktheme to simplify things or just change stuff
     private final Color backgroundColor;
@@ -28,7 +32,12 @@ public class SusTheme implements Theme { // TODO make this extend darktheme to s
         this.statusColors.put(Status.WRONG, new Color(60, 50, 50));
         this.statusColors.put(Status.PARTIAL, new Color(181, 158, 61));
         this.statusColors.put(Status.CORRECT, new Color(82, 143, 79));
-        Path2D path = new Path2D.Float();
+        this.letterBox = getPath();
+    }
+
+    @NotNull
+    private static Path2D getPath() {
+        final Path2D path = new Path2D.Float();
         path.moveTo(0.298, 0.742);
         path.curveTo(0.283, 0.595, 0.28, 0.437, 0.297, 0.284);
         path.curveTo(0.309, 0.119, 0.367, 0.03, 0.509, 0.033);
@@ -48,7 +57,7 @@ public class SusTheme implements Theme { // TODO make this extend darktheme to s
         path.curveTo(0.121, 0.768, 0.156, 0.606, 0.152, 0.521);
         path.curveTo(0.158, 0.265, 0.194, 0.282, 0.297, 0.284);
         path.curveTo(0.28, 0.437, 0.283, 0.595, 0.298, 0.742);
-        this.letterBox = path;
+        return path;
     }
 
     @Override

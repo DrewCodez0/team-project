@@ -1,9 +1,7 @@
 package use_case.end;
 
-import interface_adapter.options.OptionsState;
-
 /**
- * The output boundary for the End Use Case
+ * The output boundary for the End Use Case.
  */
 public interface EndOutputBoundary {
 
@@ -21,9 +19,8 @@ public interface EndOutputBoundary {
 
     /**
      * Prepares the game view for a new game.
-     * @param options contains the options for a new game
      */
-    void prepareGameView(OptionsState options);
+    void prepareGameView();
 
     /**
      * Prepares the start view for the End Use Case.

@@ -4,9 +4,10 @@ import entity.Theme;
 import interface_adapter.options.OptionsState;
 import interface_adapter.stats.StatsState;
 import use_case.end.EndDataAccessInterface;
+import use_case.end.EndGameRecord;
 import use_case.options.OptionsDataAccessInterface;
-import use_case.stats.StatsDataAccessInterface;
 import use_case.start.StartDataAccessInterface;
+import use_case.stats.StatsDataAccessInterface;
 
 public class FileDataAccessObject implements OptionsDataAccessInterface,
         StatsDataAccessInterface, StartDataAccessInterface, EndDataAccessInterface {
@@ -24,10 +25,22 @@ public class FileDataAccessObject implements OptionsDataAccessInterface,
     }
 
     @Override
-    public void saveStats(StatsState stats) {}
+    public void saveStats(StatsState stats) {
+        // TODO
+    }
 
     @Override
     public Theme getDefaultTheme() {
         return getOptions().getTheme();
+    }
+
+    @Override
+    public void saveGameRecord(EndGameRecord record) {
+        // TODO
+    }
+
+    @Override
+    public EndGameRecord[] getGameRecords() {
+        return new EndGameRecord[0];
     }
 }

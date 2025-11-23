@@ -1,35 +1,46 @@
 package view;
 
-import entity.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
+
+import org.jetbrains.annotations.NotNull;
+
+import entity.Theme;
 import interface_adapter.game.GameController;
 import interface_adapter.game.GameState;
 import interface_adapter.game.GameViewModel;
 import interface_adapter.options.OptionsViewModel;
-import org.jetbrains.annotations.NotNull;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.geom.AffineTransform;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 
 public class GameView extends JPanel implements ActionListener, PropertyChangeListener {
     private static final int SQUARE_SIZE = 80;
     private static final int MARGINS = 25;
     private static final String VIEW_NAME = "game";
 
-    float shakeOffset = 0;
+    private float shakeOffset;
 
     private final GameViewModel gameViewModel;
     private final OptionsViewModel optionsViewModel;
-    private GameController gameController = null;
+    private GameController gameController;
 
     private final JButton menu;
     private final JButton submit;
-    private final JPanel gamePanel;
 
     public GameView(GameViewModel gameViewModel, OptionsViewModel optionsViewModel) {
         this.gameViewModel = gameViewModel;
@@ -45,40 +56,98 @@ public class GameView extends JPanel implements ActionListener, PropertyChangeLi
         ViewHelper.setTheme(title, getTheme(), ViewHelper.TITLE);
 
         // maybe this should be its own class encapsulated in a buffer
-        this.gamePanel = new JPanel();
+        final JPanel gamePanel = new JPanel();
         gamePanel.setPreferredSize(new Dimension(this.optionsViewModel.getState().getLength() * GameView.SQUARE_SIZE,
                 this.optionsViewModel.getState().getMaxGuesses() * GameView.SQUARE_SIZE + 2 * MARGINS));
         ViewHelper.setTheme(gamePanel, getTheme(), ViewHelper.LETTER);
 
-        final JPanel buffer1 = ViewHelper.createBufferPanel(ViewHelper.MARGINS, 50, getTheme());
-        final JPanel buffer2 = ViewHelper.createBufferPanel(ViewHelper.MARGINS, 50, getTheme());
-
-        final JPanel buttons = new JPanel();
         final ArrayList<JButton> buttonList = new ArrayList<>();
         menu = new JButton("Menu");
         buttonList.add(menu);
         submit = new JButton("Submit");
         buttonList.add(submit);
+        final JPanel buttons = initializeButtons(buttonList);
+
+        initializeLayout(title, gamePanel, buttons);
+        initializeInputHandlers();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource().equals(menu)) {
+            this.gameController.switchToStartView();
+        }
+        else if (e.getSource().equals(submit)) {
+            this.gameController.executeSubmit(this.gameViewModel.getState());
+        }
+        else {
+            this.gameController.execute(this.gameViewModel.getState(), e);
+        }
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        switch (evt.getPropertyName()) {
+            case "state":
+                repaint();
+                break;
+            case "shake":
+                final WordShake shake = new WordShake(this);
+                shake.start();
+                break;
+            case "new":
+                gameController.startNewGame();
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        final Graphics2D g2d = (Graphics2D) g;
+        final GameState gameState = this.gameViewModel.getState();
+        ViewHelper.drawGameState(gameState, g2d, getTheme(), GameView.SQUARE_SIZE, shakeOffset);
+    }
+
+    public String getViewName() {
+        return VIEW_NAME;
+    }
+
+    public void setGameController(GameController gameController) {
+        this.gameController = gameController;
+    }
+
+    @NotNull
+    private JPanel initializeButtons(ArrayList<JButton> buttonList) {
+        final JPanel buttons = new JPanel();
         for (JButton button : buttonList) {
             ViewHelper.setTheme(button, getTheme(), ViewHelper.BUTTON);
+            button.addActionListener(this);
             buttons.add(button);
         }
         ViewHelper.setTheme(buttons, getTheme());
+        return buttons;
+    }
 
-        menu.addActionListener(this);
-        submit.addActionListener(this);
-
+    private void initializeLayout(JLabel title, JPanel gamePanel, JPanel buttons) {
+        final JPanel buffer1 = ViewHelper.createBufferPanel(ViewHelper.MARGINS, 50, getTheme());
+        final JPanel buffer2 = ViewHelper.createBufferPanel(ViewHelper.MARGINS, 50, getTheme());
         this.setLayout(new BorderLayout());
         this.add(title, BorderLayout.NORTH);
         this.add(gamePanel, BorderLayout.CENTER);
         this.add(buffer1, BorderLayout.WEST);
         this.add(buffer2, BorderLayout.EAST);
         this.add(buttons, BorderLayout.SOUTH);
+    }
+
+    private void initializeInputHandlers() {
+        final InputMap inputMap = this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        final ActionMap actionMap = this.getActionMap();
+        final KeyAction action = new KeyAction(this, GameController.LETTER);
 
         final char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-        InputMap inputMap = this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        ActionMap actionMap = this.getActionMap();
-        final KeyAction action = new KeyAction(this, GameController.LETTER);
         for (char c : chars) {
             inputMap.put(KeyStroke.getKeyStroke(c), c);
             actionMap.put(c, action);
@@ -90,49 +159,15 @@ public class GameView extends JPanel implements ActionListener, PropertyChangeLi
         actionMap.put(GameController.BACKSPACE, new KeyAction(this, GameController.BACKSPACE));
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource().equals(menu)) {
-            this.gameController.switchToStartView();
-        } else if (e.getSource().equals(submit)) {
-            this.gameController.executeSubmit(this.gameViewModel.getState());
-        } else {
-            this.gameController.execute(this.gameViewModel.getState(), e);
-        }
-    }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals("state")) {
-            repaint();
-        } else if (evt.getPropertyName().equals("shake")) {
-            WordShake shake = new WordShake(this);
-            shake.start();
-        }
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        Graphics2D g2d = (Graphics2D) g;
-        final GameState gameState = this.gameViewModel.getState();
-        ViewHelper.drawGameState(gameState, g2d, getTheme(), GameView.SQUARE_SIZE, shakeOffset);
-//        gamePanel.setSize(gamePanel.getSize().width, (2 * gameState.getMaxGuesses() + 1) * GameView.SQUARE_SIZE / 2);
-    }
-
-    public String getViewName() {return VIEW_NAME;}
-
     private Theme getTheme() {
         return this.optionsViewModel.getState().getTheme();
     }
 
-    public void setGameController(GameController gameController) {this.gameController = gameController;}
-
     private static class KeyAction extends AbstractAction {
         private final GameView view;
         private final String type;
-        public KeyAction(GameView view, String type) {
-            super();
+
+        KeyAction(GameView view, String type) {
             this.view = view;
             this.type = type;
         }
@@ -141,30 +176,36 @@ public class GameView extends JPanel implements ActionListener, PropertyChangeLi
         public void actionPerformed(ActionEvent e) {
             view.actionPerformed(new ActionEvent(type, ActionEvent.ACTION_PERFORMED,
                     e.getActionCommand().toUpperCase()));
-//            view.firePropertyChange(e.getActionCommand().toUpperCase(), null, null);
         }
     }
 
     private static class WordShake extends Thread {
+        private static final int SHAKE_MODIFIER = 5;
+        private static final int SLEEP_TIME = 20;
+        private static final int SHAKE_FRAMES = 30;
+        private static final double SHAKE_FRAME_MODIFIER = 3.3;
         private final GameView view;
-        public WordShake(GameView view) {
+
+        WordShake(GameView view) {
             this.view = view;
         }
+
         @Override
         public void run() {
-            for (int i = 0; i < 30; i++) {
-                this.view.shakeOffset = shake(i / 3.3);
+            for (int i = 0; i < SHAKE_FRAMES; i++) {
+                this.view.shakeOffset = shake(i / SHAKE_FRAME_MODIFIER);
                 this.view.repaint();
                 try {
-                    sleep(20);
-                } catch (InterruptedException e) {
+                    sleep(SLEEP_TIME);
+                }
+                catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
                 }
             }
         }
 
         private float shake(double time) {
-            return (float)(Math.sin(time * Math.PI) * Math.exp(-Math.pow(time / 2.0 - 2, 2)) * 5);
+            return (float) (Math.sin(time * Math.PI) * Math.exp(-Math.pow(time / 2.0 - 2, 2)) * SHAKE_MODIFIER);
         }
     }
 }

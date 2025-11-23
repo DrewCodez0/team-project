@@ -16,12 +16,15 @@ public class EndInputData {
     public String getWord() {
         return word;
     }
+
     public boolean isWon() {
         return won;
     }
+
     public int getGuessesUsed() {
         return guessesUsed;
     }
+
     public int getMaxGuesses() {
         return maxGuesses;
     }

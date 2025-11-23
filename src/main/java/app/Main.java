@@ -1,11 +1,11 @@
 package app;
 
-import javax.swing.*;
+import javax.swing.JFrame;
 
 public class Main {
     public static void main(String[] args) {
-        AppBuilder appBuilder = new AppBuilder();
-        JFrame application = appBuilder
+        final AppBuilder appBuilder = new AppBuilder();
+        final JFrame application = appBuilder
                 .addStartView()
                 .addEndView()
                 .addOptionsView()
@@ -13,6 +13,7 @@ public class Main {
                 .addStatsView()
                 .addStartUseCase()
                 .addGameUseCase()
+                .addEndUseCase()
                 .build();
         application.pack();
         application.setLocationRelativeTo(null);

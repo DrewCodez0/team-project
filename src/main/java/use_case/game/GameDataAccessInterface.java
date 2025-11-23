@@ -10,6 +10,7 @@ public interface GameDataAccessInterface {
     /**
      * Returns a random word with the given length.
      * @param length the length of the word
+     * @param language the language of the word
      * @return a random word with the given length
      * @throws WordNotFoundException If a word could not be found
      */
@@ -18,6 +19,7 @@ public interface GameDataAccessInterface {
     /**
      * Checks if the given word is a valid word.
      * @param word the word to check
+     * @param language the language of the word
      * @return true if the word is valid, false otherwise
      */
     boolean isValidWord(String word, Language language);

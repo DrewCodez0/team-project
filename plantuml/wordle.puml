@@ -18,8 +18,9 @@ abstract class AbstractLetter {
     + {abstract} getStatus(): Status
     + {abstract} setStatus(status: Status): void
     + {abstract} isNull(): boolean
-    + equals(obj: Object): boolean
     + toString(): String
+    + equals(obj: Object): boolean
+    + hashCode(): int
 }
 AbstractLetter --> Status
 
@@ -45,6 +46,7 @@ abstract class AbstractWord {
     + {abstract} isCorrect(): boolean
     + {abstract} toString(): String
     + equals(obj: Object): boolean
+    + hashCode(): int
 }
 AbstractWord --> AbstractLetter
 
@@ -60,6 +62,47 @@ class Word extends AbstractWord {
     + toString(): String
 }
 Word --> AbstractLetter
+
+class WordFactory {
+    - {static} DEFAULT_WORD: String
+    - WordFactory()
+    + {static} createWord(word: String): AbstractWord
+    + {static} createEmptyWord(word: String): AbstractWord
+    + {static} createDefaultWord(word: String): AbstractWord
+    + {static} createWordToGuess(word: String): AbstractWord
+    + {static} updateWord(word: AbstractWord, statuses: Status[]): void
+    - {static} generateCorrectArray(length: int): Status[]
+    + {static} checkGuess(guess: AbstractWord, expected: AbstractWord): Status[]
+    + {static} submitGuess(guess: AbstractWord, expected: AbstractWord): void
+}
+WordFactory --> AbstractWord
+WordFactory --> Status
+WordFactory --> Word
+
+exception WordNotFoundException {
+    + WordNotFoundException(message: String)
+}
+
+class ViewHelper {
+    + {static} LETTER: String
+    + {static} TITLE: String
+    + {static} BUTTON: String
+    + {static} MARGINS: int
+    - ViewHelper()
+    - {static} setTheme(component: JComponent, theme: Theme, type: String): void
+    - {static} setTheme(component: JComponent, theme: Theme): void
+    - {static} createBufferPanel(width: int, height: int, theme: Theme): JPanel
+    - {static} drawGameState(gameState: GameState, g2d: Graphics2D, theme: Theme, size: int, shakeOffset: float): void
+    - {static} drawLetter(g: Graphics2D, letter: AbstractLetter, x: int, y: int, size: int, theme: Theme): void
+    - {static} getTransform(x: float, y: int, size: int): AffineTransform
+    - {static} drawBoxBackground(g: Graphics2D, letter: AbstractLetter, transform: AffineTransform, theme: Theme): void
+    - {static} drawBoxOutline(g: Graphics2D, transform: AffineTransform, theme: Theme): void
+    - {static} drawBoxLetter(g: Graphics2D, letter: AbstractLetter, x: int, y: int, size: int, theme: Theme): void
+}
+ViewHelper --> Theme
+ViewHelper --> GameState
+ViewHelper --> AbstractLetter
+ViewHelper --> AbstractWord
 
 class ViewModel<T> {
     - state: T
@@ -149,113 +192,180 @@ OptionsView --> OptionsController
 
 
 class EndView {
+    - {static} VIEW_NAME: String
+    - endViewModel: EndViewModel
     - endController: EndController
-    - viewName: String
-    + EndView(EndViewModel)
+    + EndView(endViewModel: EndViewModel, startViewModel: StartViewModel)
+    + actionPerformed(e: ActionEvent): void
+    + propertyChange(evt: PropertyChangeEvent): void
+    - updateView(endState: EndState): void
+    + getViewName(): String
+    + setEndController(endController: EndController): void
 }
-EndView --* EndViewModel
-EndView --* EndController
+EndView --> Theme
+EndView --> EndViewModel
+EndView --> EndState
+EndView --> StartViewModel
+EndView --> EndController
+EndView --> ViewHelper
 
 class EndViewModel extends ViewModel {
     + EndViewModel()
 }
-EndViewModel --> GameState
+EndViewModel --> EndState
+
+class EndState {
+     - word: String
+     - won: boolean
+     - guessesUsed: int
+     - maxGuesses: int
+     - message: String
+     + EndState()
+     + getWord(): String
+     + setWord(word: String): void
+     + isWon(): boolean
+     + setWon(won: boolean): void
+     + getGuessesUsed(): int
+     + setGuessesUsed(guessesUsed: int): void
+     + getMaxGuesses(): int
+     + setMaxGuesses(maxGuesses: int): void
+     + getMessage(): String
+     + setMessage(message: String): void
+}
 
 class EndPresenter implements EndOutputBoundary {
-    + EndPresenter(ViewManagerModel, EndViewModel, GameViewModel, StartViewModel, OptionsViewModel)
+    + EndPresenter(ViewManagerModel, EndViewModel, GameViewModel, StartViewModel)
+    + prepareSuccessView(endOutputData: EndOutputData): void
+    + prepareFailView(outputData: EndOutputData): void
     + prepareGameView(): void
-    + prepareOptionsView(): void
     + prepareStartView(): void
 }
+EndPresenter --> ViewManagerModel
 EndPresenter --> EndViewModel
 EndPresenter --> GameViewModel
 EndPresenter --> StartViewModel
-EndPresenter --> OptionsViewModel
+EndPresenter --> EndOutputData
+EndPresenter --> EndState
+
+class EndGameRecord {
+    - word: String
+    - won: boolean
+    - guessesUsed: int
+    + EndGameRecord(word: String, won: boolean, guessesUsed: int)
+    + getWord(): String
+    + isWon(): boolean
+    + getGuessesUsed(): int
+    + toString(): String
+    + equals(obj: Object): boolean
+    + hashCode(): int
+}
+
+class EndOutputData {
+    - word: String
+    - won: boolean
+    - guessesUsed: int
+    - maxGuesses: int
+    - message: String
+    + EndOutputData(word: String, won: boolean, guessesUsed: int, maxGuesses: int)
+    - generateWinMessage(guesses: int): String
+    + getWord(): String
+    + isWon(): boolean
+    + getGuessesUsed(): int
+    + getMaxGuesses(): int
+    + getMessage(): String
+}
 
 interface EndOutputBoundary {
-    + prepareGameView(options: OptionsState): void
-    + prepareOptionsView(): void
-    + prepareStartView(): void
+    + {abstract} prepareSuccessView(endOutputData: EndOutputData): void
+    + {abstract} prepareFailView(outputData: EndOutputData): void
+    + {abstract} prepareGameView(): void
+    + {abstract} prepareStartView(): void
 }
-EndOutputBoundary --> OptionsState
+EndOutputBoundary --> EndOutputData
 
 class EndController {
     + EndController(EndInputBoundary)
-    + execute(): void
+    + execute(word: String, won: boolean, guessesUsed: int, maxGuesses: int): void
+    + switchToStartView(): void
+    + replay(word: String, won: boolean, guessesUsed: int, maxGuesses: int): void
 }
 EndController --> EndInputBoundary
-' EndController --> EndInputData
+EndController --> EndInputData
 
-' class EndInputData {
-
-' }
-
-' class EndState {
-'     - words: AbstractWord[]
-'     - wordToGuess: AbstractWord
-'     + EndState()
-'     + toString(): String
-'     + getWords(): AbstractWord[]
-'     + setWords(words: AbstractWord[]): void
-'     + getWordToGuess(): AbstractWord
-'     + setWordToGuess(wordToGuess: AbstractWord): void
-' }
+class EndInputData {
+    - word: String
+    - won: boolean
+    - guessesUsed: int
+    - maxGuesses: int
+    + EndInputData(word: String, won: boolean, guessesUsed: int, maxGuesses: int)
+    + getWord(): String
+    + isWon(): boolean
+    + getGuessesUsed(): int
+    + getMaxGuesses(): int
+}
 
 interface EndInputBoundary {
-    + {abstract} execute(endInputData: GameState): void
+    + {abstract} execute(endInputData: EndInputData): void
+    + {abstract} prepareStartView(): void
+    + {abstract} prepareNewGame(endInputData: EndInputData): void
 }
-EndInputBoundary --> GameState
+EndInputBoundary --> EndInputData
+
 
 class EndInteractor implements EndInputBoundary {
-    + EndInteractor(EndDataAccessInterface, EndOutputBoundary)
-    + execute(endInputData: GameState): void
+    - endDataAccess: EndDataAccessInterface
+    - endPresenter: EndOutputBoundary
+    + EndInteractor(endDataAccess: EndDataAccessInterface, endOutputBoundary: EndOutputBoundary)
+    + execute(endInputData: endInputData): void
+    + prepareStartView(): void
+    + prepareNewGame(endInputData: EndInputData): void
 }
 EndInteractor --> EndOutputBoundary
 EndInteractor --> EndDataAccessInterface
-EndInteractor --> GameState
-    ' + drawFrame(frame: JFrame): void
-    ' + exportResults(): String
-    ' + copyResults(): void
-interface EndDataAccessInterface
+EndInteractor --> EndInputData
+
+interface EndDataAccessInterface {
+    + {abstract} saveGameRecord(record: EndGameRecord): void
+    + {abstract} getGameRecords(): EndGameRecord[]
+}
+EndDataAccessInterface --> EndGameRecord
 
 class GameViewModel extends ViewModel {
+    + {static} STATE: String
+    + {static} SHAKE: String
+    + {static} NEW_GAME: String
     + GameViewModel()
 }
+GameViewModel --> GameState
 
 class GameView {
     - {static} SQUARE_SIZE: int
     - {static} MARGINS: int
     - {static} VIEW_NAME: String
-    ~ shakeOffset: float
+    - shakeOffset: float
     - gameViewModel: GameViewModel
     - optionsViewModel: OptionsViewModel
     - gameController: GameController
-    - menu: JButton
-    - submit: JButton
-    - gamePanel: JPanel
+'    - menu: JButton
+'    - submit: JButton
     + GameView(GameViewModel, OptionsViewModel)
     + actionPerformed(e: ActionEvent): void
     + propertyChange(evt: PropertyChangeEvent): void
     + paint(g: Graphics): void
-    - setTheme(component: JComponent, theme: Theme): void
-    - drawLetter(g: Graphics2D, letter: AbstractLetter, shape: Shape, x: int, y: int, size: int, current: boolean): void
-    - getTransform(x: float, y: int, size: int): AffineTransform
-    - drawBoxBackground(g: Graphics2D, letter: AbstractLetter, shape: Shape, transform: AffineTransform): void
-    - drawBoxOutline(g: Graphics2D, shape: Shape, transform: AffineTransform): void
-    - drawBoxLetter(g: Graphics2D, letter: AbstractLetter, x: int, y: int, size: int): void
     + getViewName(): String
-    - getTheme(): Theme
-    - createBufferPanel(): JPanel
     + setGameController(gameController: GameController): void
+    - initializeButtons(buttonList: ArrayList<JButton>): JPanel
+    - initializeLayout(title: JLabel, gamePanel: JPanel, buttons: JPanel): void
+    - initializeInputHandlers(): void
+    - getTheme(): Theme
 }
 GameView --> GameViewModel
 GameView --> OptionsViewModel
 GameView --> GameController
 GameView --> GameState
-GameView --> AbstractLetter
-GameView --> AbstractWord
 GameView --* KeyAction
 GameView --* WordShake
+GameView --> ViewHelper
 
 -class KeyAction {
     - view: GameView
@@ -279,10 +389,11 @@ class GameController {
     + {static} BACKSPACE: String
     - gameInteractor: GameInputBoundary
     + GameController(GameInputBoundary)
+    + startNewGame(): void
     + execute(gameInputData: GameState, e: ActionEvent): void
     + executeSubmit(gameInputData: GameState): void
     + switchToStartView(): void
-    + switchToEndView(): void
+    + switchToEndView(gameState: GameState): void
 }
 GameController --> GameInputBoundary
 GameController --> GameState
@@ -299,6 +410,7 @@ interface GameInputBoundary {
     + {abstract} executeLetter(gameInputData: GameState, letter: char): void
     + {abstract} executeSubmit(gameInputData: GameState): void
     + {abstract} executeBackspace(gameInputData: GameState): void
+    + {abstract} prepareNewGame(): void
     + {abstract} prepareStartView(): void
     + {abstract} prepareEndView(gameState: GameState)
 }
@@ -325,7 +437,7 @@ class GamePresenter implements GameOutputBoundary {
     + updateGameView(gameState GameState): void
     + shakeWord(gameState: GameState): void
     + prepareStartView(): void
-    + prepareEndView(): void
+    + prepareEndView(gameState: GameState): void
 }
 GamePresenter --> ViewManagerModel
 GamePresenter --> GameViewModel
@@ -336,16 +448,24 @@ GamePresenter --> GameState
 class GameInteractor implements GameInputBoundary {
     - gameDataAccess: GameDataAccessInterface
     - gamePresenter: GameOutputBoundary
-    + GameInteractor(GameDataAccessInterface, GameOutputBoundary)
+    - endInteractor: EndInputBoundary
+    - optionsViewModel: OptionsViewModel
+    + GameInteractor(GameDataAccessInterface, GameOutputBoundary, EndInputBoundary, OptionsViewModel)
     + executeLetter(gameInputData: GameState, letter: char): void
     + executeSubmit(gameInputData: GameState): void
     + executeBackspace(gameInputData: GameState): void
+    + prepareNewGame(): void
     + prepareStartView(): void
     + prepareEndView(gameState: GameState): void
 }
 GameInteractor --> GameOutputBoundary
 GameInteractor --> GameState
 GameInteractor --> GameDataAccessInterface
+GameInteractor --> WordNotFoundException
+GameInteractor --> WordFactory
+GameInteractor --> EndInputData
+GameInteractor --> EndInputBoundary
+GameInteractor --> OptionsViewModel
 
     ' - wordChecker: WordChecker
     ' - status: GameStatus
@@ -368,6 +488,7 @@ interface GameDataAccessInterface {
     + isValidWord(word: String, language: Language): boolean
 }
 GameDataAccessInterface --> Language
+GameDataAccessInterface --> WordNotFoundException
 
 class GameState {
     - {static} COLORS: Map<Status, String>
@@ -396,8 +517,7 @@ class GameState {
     + getWordToGuess(): AbstractWord
     + nextLetter(character: char): void
     + previousLetter(): void
-    - nextWord(): void
-    - checkGuess(): Status[]
+    + nextWord(): void
     + submit(): void
     + finished(): boolean
 }
@@ -405,13 +525,26 @@ GameState --> AbstractWord
 GameState --> Language
 GameState --> AbstractLetter
 GameState --> Status
+GameState --> WordFactory
 
 class StatsController {
-    + StatsController(StatsInputBoundary)
+    + StatsController(statsInputBoundary: StatsInputBoundary, statsOutputBoundary: StatsOutputBoundary)
     + execute(): void
+    + switchToStartView(): void
 }
 StatsController --> StatsInputBoundary
 StatsController --> StatsInputData
+StatsController --> StatsOutputBoundary
+
+class StatsOutputData {
+    - statsState: StatsState
+    - hasStats: boolean
+    + StatsOutputData(statsState: StatsState, hasStats: boolean)
+    + getStatsState(): StatsState
+    + hasStats(): boolean
+}
+StatsOutputData --> StatsState
+
 class StatsPresenter implements StatsOutputBoundary {
     + StatsPresenter(ViewManagerModel, StatsViewModel, StartViewModel)
     + prepareSuccessView(): void
@@ -426,17 +559,32 @@ StatsPresenter --> StatsOutputData
 class StatsViewModel extends ViewModel {
     + StatsViewModel()
 }
+StatsViewModel --> StatsState
+
 class StatsView {
+    - {static} VIEW_NAME: String
+    - statsViewModel: StatsViewModel
     - statsController: StatsController
-    - viewName: String
     + StatsView(StatsViewModel)
+    - setupUI(): void
+    + actionPerformed(e: ActionEvent): void
+    + propertyChange(evt: PropertyChangeEvent): void
+    - updateStatsDisplay(state: StatsState): void
+    + getViewName(): String
+    + setStatsController(statsController: StatsController): void
 }
 StatsView --> StatsViewModel
 StatsView --> StatsController
+StatsView --> StatsState
+StatsView --> Theme
+StatsView --> ViewHelper
+
 class StatsInputData
+
 interface StatsInputBoundary {
     + {abstract} execute(inputData: StatsInputData): void
 }
+
 class StatsInteractor implements StatsInputBoundary {
     + StatsInteractor(StatsDataAccessInterface, StatsOutputBoundary)
     + execute(inputData: StatsInputData): void
@@ -444,12 +592,34 @@ class StatsInteractor implements StatsInputBoundary {
 StatsInteractor --> StatsInputData
 StatsInteractor --> StatsOutputBoundary
 StatsInteractor --> StatsDataAccessInterface
+
 interface StatsOutputBoundary {
     + prepareSuccessView(): void
     + prepareFailView(): void
     + prepareDefaultView(): void
     + prepareStartView(): void
 }
+
+class StatsState {
+    - totalGames: int
+    - gamesWon: int
+    - currentWinStreak: int
+    - longestWinStreak: int
+    - theme: Theme
+    + StatsState()
+    + getTotalGames(): int
+    + setTotalGames(totalGames: int): void
+    + getGamesWon(): int
+    + setGamesWon(gamesWon: int): void
+    + getCurrentWinStreak(): int
+    + setCurrentWinStreak(currentWinStreak: int): void
+    + getLongestWinStreak(): int
+    + setLongestWinStreak(longestWinStreak: int): void
+    + getTheme(): Theme
+    + setTheme(theme: Theme): void
+}
+StatsState --> Theme
+
 interface StatsDataAccessInterface {
     + getStats(): StatsState
     + saveStats(stats: StatsState): void
@@ -459,72 +629,63 @@ StatsDataAccessInterface --> StatsState
 class StartViewModel extends ViewModel {
     + StartViewModel()
 }
+StartViewModel --> Theme
 
 class StartView {
     - {static} VIEW_NAME: String
-    - startViewModel: StartViewModel
     - startController: StartController
-    - play: JButton
-    - options: JButton
-    - stats: JButton
-    - exit: JButton
+'    - play: JButton
+'    - options: JButton
+'    - stats: JButton
+'    - exit: JButton
     + StartView(StartViewModel)
     + actionPerformed(e: ActionEvent): void
     + propertyChange(evt: PropertyChangeEvent): void
-    - setTheme(component: JComponent, theme: Theme): void
     + getViewName(): String
     + setStartController(): void
 }
 StartView --> Theme
 StartView --> StartViewModel
 StartView --> StartController
-StartView --> OptionsState
+StartView --> ViewHelper
 
 class StartController {
     - startInteractor: StartInputBoundary
     + StartController(startInputBoundary: StartInputBoundary)
     + prepareStartView(): void
-    + switchToGameView(optionsState: OptionsState): void
+    + switchToGameView(): void
     + switchToOptionsView(): void
     + switchToStatsView(): void
 }
 StartController --> StartInputBoundary
-StartController --> OptionsState
 
 interface StartInputBoundary {
     + {abstract} prepareStartView(): void
-    + {abstract} prepareGameView(optionsState: OptionsState): void
+    + {abstract} prepareGameView(): void
     + {abstract} prepareOptionsView(): void
     + {abstract} prepareStatsView(): void
 }
-StartInputBoundary --> OptionsState
 
 class StartInteractor implements StartInputBoundary {
     - startDataAccess: StartDataAccessInterface
-    - gameDataAccess: GameDataAccessInterface
     - startPresenter: StartOutputBoundary
-    + StartInteractor(StartDataAccessInterface, GameDataAccessInterface, StartOutputBoundary)
+    + StartInteractor(StartDataAccessInterface, StartOutputBoundary)
     + prepareStartView(): void
-    + prepareGameView(optionsState: OptionsState): void
+    + prepareGameView(): void
     + prepareOptionsView(): void
     + prepareStatsView(): void
 }
 StartInteractor --> Theme
 StartInteractor --> StartOutputBoundary
 StartInteractor --> StartDataAccessInterface
-StartInteractor --> GameDataAccessInterface
-StartInteractor --> GameState
-StartInteractor --> OptionsState
-StartInteractor --> AbstractWord
 
 interface StartOutputBoundary {
     + {abstract} prepareStartView(theme: Theme): void
-    + {abstract} prepareGameView(gameState: GameState): void
+    + {abstract} prepareGameView(): void
     + {abstract} prepareOptionsView(): void
     + {abstract} prepareStatsView(): void
 }
 StartOutputBoundary --> Theme
-StartOutputBoundary --> GameState
 
 interface StartDataAccessInterface {
     + getDefaultTheme(): Theme
@@ -539,7 +700,7 @@ class StartPresenter implements StartOutputBoundary {
     - statsViewModel: StatsViewModel
     + StartPresenter(ViewManagerModel, StartViewModel, GameViewModel, OptionsViewModel, StatsViewModel)
     + prepareStartView(theme: Theme): void
-    + prepareGameView(gameState: GameState): void
+    + prepareGameView(): void
     + prepareOptionsView(): void
     + prepareStatsView(): void
 }
@@ -549,7 +710,6 @@ StartPresenter --> StartViewModel
 StartPresenter --> GameViewModel
 StartPresenter --> OptionsViewModel
 StartPresenter --> StatsViewModel
-StartPresenter --> GameState
 
 class FileDataAccessObject implements OptionsDataAccessInterface, StatsDataAccessInterface, StartDataAccessInterface, EndDataAccessInterface {
     + getOptions(): OptionsState
@@ -557,22 +717,26 @@ class FileDataAccessObject implements OptionsDataAccessInterface, StatsDataAcces
     + getStats(): StatsState
     + saveStats(stats: StatsState): void
     + getDefaultTheme(): Theme
+    + getGameRecords(): EndGameRecord[]
+    + saveGameRecord(record: EndGameRecord): void
 }
 FileDataAccessObject --> OptionsState
 FileDataAccessObject --> StatsState
 FileDataAccessObject --> Theme
+FileDataAccessObject --> EndGameRecord
 
-class APIDataAccessObject implements GameDataAccessInterface {
+class WordDataAccessObject implements GameDataAccessInterface {
     - wordGenerator: WordGenerator
     - wordChecker: WordChecker
     - {static} MAX_TRIES: int
-    + APIDataAccessObject(wordGenerator: WordGenerator, wordChecker: WordChecker)
+    + WordDataAccessObject(wordGenerator: WordGenerator, wordChecker: WordChecker)
     + getRandomWord(length: int, language: Language): String
     + isValidWord(word: String, language Language): boolean
 }
-APIDataAccessObject --> WordGenerator
-APIDataAccessObject --> WordChecker
-APIDataAccessObject --> Language
+WordDataAccessObject --> WordGenerator
+WordDataAccessObject --> WordChecker
+WordDataAccessObject --> Language
+WordDataAccessObject --> WordNotFoundException
 
 interface WordGenerator {
     + {abstract} getRandomWord(length: int): String
@@ -582,33 +746,44 @@ WordGenerator --> Language
 
 interface WordChecker {
     + {abstract} isValidWord(word: String, language: Language): boolean
+    + {abstract} getDefinitions(word: String, language: Language): JSONArray
 }
 WordChecker --> Language
 
-abstract class API {
-    # baseUrl: String
+abstract class AbstractAPI {
     # {static} CONTENT_TYPE_LABEL: String
     # {static} CONTENT_TYPE_JSON: String
-    + API(baseUrl: String)
+    # {static} FAIL_STRING: String
+    # baseURL: String
+    + AbstractAPI(baseUrl: String)
     + fetch(params: String): JSONArray
 }
+AbstractAPI --> WordNotFoundException
 
-class APIWordGenerator extends API implements WordGenerator {
-    - {static} languages: Map<Language, String>
+class APIWordGenerator extends AbstractAPI implements WordGenerator {
+    - {static} LANGUAGES: Map<Language, String>
     + APIWordGenerator()
     + getRandomWord(length: int, language: Language): String
 }
 APIWordGenerator --> Language
+APIWordGenerator --> WordNotFoundException
 
-class APIWordChecker extends API implements WordChecker {
+class DebugWordGenerator implements WordGenerator {
+    + getRandomWord(length: int, language: Language): String
+}
+DebugWordGenerator --> Language
+
+class APIWordChecker extends AbstractAPI implements WordChecker {
     - wordData: JSONObject
     - validCache: Map<String, Boolean>
-    - {static} languages: Map<Language, String>
+    - {static} LANGUAGES: Map<Language, String>
+    - {static} JSON_WORD: String
     + APIWordChecker()
     + isValidWord(word: String, language: Language): boolean
     + getDefinitions(word: String, language: Language): JSONArray
 }
 APIWordChecker --> Language
+APIWordChecker --> WordNotFoundException
 
 enum Language {
     ENGLISH
@@ -635,7 +810,7 @@ class AppBuilder {
     - statsView: StatsView
     - statsViewModel: StatsViewModel
     - fileDataAccessObject: FileDataAccessObject
-    - apiDataAccessObject: APIDataAccessObject
+    - wordDataAccessObject: WordDataAccessObject
     + AppBuilder()
     + addStartView(): AppBuilder
     + addEndView(): AppBuilder
@@ -692,13 +867,13 @@ class AppBuilder {
 ' AppBuilder --> StatsInteractor
 ' AppBuilder --> StatsController
 
-' these might be better as static
-' still need to find where theme is set and used
 interface Theme {
     + {abstract} getBackgroundColor(): Color
     + {abstract} getTextColor(): Color
     + {abstract} getOutlineColor(): Color
-    + {abstract} getFont(): Font
+    + {abstract} getLetterFont(): Font
+    + {abstract} getTitleFont(): Font
+    + {abstract} getButtonFont(): Font
     + {abstract} getColorForStatus(status: Status): Color
     + {abstract} getLetterBox(): Shape
 }
@@ -711,14 +886,18 @@ class LightTheme implements Theme {
     - backgroundColor: Color
     - textColor: Color
     - outlineColor: Color
-    - font: Font
+    - letterFont: Font
+    - titleFont: Font
+    - buttonFont: Font
     - statusColors: Map<Status, Color>
     - letterBox: Shape
     + LightTheme()
     + getBackgroundColor(): Color
     + getTextColor(): Color
     + getOutlineColor(): Color
-    + getFont(): Font
+    + getLetterFont(): Font
+    + getTitleFont(): Font
+    + getButtonFont(): Font
     + getColorForStatus(status: Status): Color
     + getLetterBox(): Shape
 }
@@ -728,14 +907,18 @@ class DarkTheme implements Theme {
     - backgroundColor: Color
     - textColor: Color
     - outlineColor: Color
-    - font: Font
+    - letterFont: Font
+    - titleFont: Font
+    - buttonFont: Font
     - statusColors: Map<Status, Color>
     - letterBox: Shape
     + DarkTheme()
     + getBackgroundColor(): Color
     + getTextColor(): Color
     + getOutlineColor(): Color
-    + getFont(): Font
+    + getLetterFont(): Font
+    + getTitleFont(): Font
+    + getButtonFont(): Font
     + getColorForStatus(status: Status): Color
     + getLetterBox(): Shape
 }
@@ -745,14 +928,19 @@ class SusTheme implements Theme {
     - backgroundColor: Color
     - textColor: Color
     - outlineColor: Color
-    - font: Font
+    - letterFont: Font
+    - titleFont: Font
+    - buttonFont: Font
     - statusColors: Map<Status, Color>
     - letterBox: Shape
     + SusTheme()
+    - {static} getPath(): Path2D
     + getBackgroundColor(): Color
     + getTextColor(): Color
     + getOutlineColor(): Color
-    + getFont(): Font
+    + getLetterFont(): Font
+    + getTitleFont(): Font
+    + getButtonFont(): Font
     + getColorForStatus(status: Status): Color
     + getLetterBox(): Shape
 }

@@ -1,11 +1,11 @@
 package use_case.end;
 
 /**
- * The End Use Case
+ * The End Use Case.
  */
 public interface EndInputBoundary {
     /**
-     * Execute the End Use Case
+     * Execute the End Use Case.
      * @param endInputData the input data for this use case
      */
     void execute(EndInputData endInputData);

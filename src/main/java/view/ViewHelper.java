@@ -1,22 +1,28 @@
 package view;
 
+import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+
+import org.jetbrains.annotations.NotNull;
+
 import entity.AbstractLetter;
 import entity.AbstractWord;
 import entity.Theme;
 import interface_adapter.game.GameState;
-import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.geom.AffineTransform;
-
-public class ViewHelper {
+public final class ViewHelper {
     public static final String LETTER = "letter";
     public static final String TITLE = "title";
     public static final String BUTTON = "button";
     public static final int MARGINS = 25;
 
-    private ViewHelper() {}
+    private ViewHelper() {
+    }
 
     /**
      * Applies theme to the component.
@@ -104,10 +110,10 @@ public class ViewHelper {
      * @param theme  the theme to apply to the letter
      */
     private static void drawLetter(Graphics2D g, AbstractLetter letter, float x, int y, int size, Theme theme) {
-        AffineTransform transform = getTransform(x, y, size);
+        final AffineTransform transform = getTransform(x, y, size);
         drawBoxBackground(g, letter, transform, theme);
         drawBoxOutline(g, transform, theme);
-        drawBoxLetter(g, letter, (int)x, y, size, theme);
+        drawBoxLetter(g, letter, (int) x, y, size, theme);
     }
 
     /**
@@ -156,10 +162,10 @@ public class ViewHelper {
      */
     private static void drawBoxLetter(Graphics2D g, AbstractLetter letter, int x, int y, int size, Theme theme) {
         g.setPaint(theme.getTextColor());
-        String c = Character.toString(letter.getCharacter());
-        FontMetrics fm = g.getFontMetrics(theme.getLetterFont());
-        int letterX = x + (size - fm.stringWidth(c)) / 2;
-        int letterY = y + (size - fm.getHeight()) / 2 + fm.getAscent();
+        final String c = Character.toString(letter.getCharacter());
+        final FontMetrics fm = g.getFontMetrics(theme.getLetterFont());
+        final int letterX = x + (size - fm.stringWidth(c)) / 2;
+        final int letterY = y + (size - fm.getHeight()) / 2 + fm.getAscent();
         g.drawString(c, letterX, letterY);
     }
 }

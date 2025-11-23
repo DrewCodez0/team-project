@@ -1,12 +1,12 @@
 package entity;
 
 public class Word extends AbstractWord {
-    private AbstractLetter[] letters;
+    private final AbstractLetter[] letters;
 
     public Word(String word) {
         letters = new AbstractLetter[word.length()];
         for (int i = 0; i < letters.length; i++) {
-            letters[i] = new Letter(word.charAt(i));
+            letters[i] = new Letter(word.charAt(i)); // TODO replace this dependence with the wordfactory
         }
     }
 
@@ -57,8 +57,9 @@ public class Word extends AbstractWord {
         return true;
     }
 
+    @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
+        final StringBuilder result = new StringBuilder();
         for (AbstractLetter letter : letters) {
             result.append(letter.toString());
         }

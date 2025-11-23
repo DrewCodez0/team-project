@@ -1,7 +1,8 @@
 package interface_adapter.game;
 
-import use_case.game.GameInputBoundary;
 import java.awt.event.ActionEvent;
+
+import use_case.game.GameInputBoundary;
 
 public class GameController {
     public static final String ENTER = "ENTER";
@@ -13,12 +14,18 @@ public class GameController {
         this.gameInteractor = gameInputBoundary;
     }
 
-    public void execute(GameState gameInputData, ActionEvent e) {
-        if (e.getSource() == GameController.LETTER) {
-            gameInteractor.executeLetter(gameInputData, e.getActionCommand().charAt(0));
-        } else if (e.getSource() == GameController.ENTER) {
+    public void startNewGame() {
+        gameInteractor.prepareNewGame();
+    }
+
+    public void execute(GameState gameInputData, ActionEvent exp) {
+        if (exp.getSource() == GameController.LETTER) {
+            gameInteractor.executeLetter(gameInputData, exp.getActionCommand().charAt(0));
+        }
+        else if (exp.getSource() == GameController.ENTER) {
             executeSubmit(gameInputData);
-        } else if (e.getSource() == GameController.BACKSPACE) {
+        }
+        else if (exp.getSource() == GameController.BACKSPACE) {
             gameInteractor.executeBackspace(gameInputData);
         }
     }

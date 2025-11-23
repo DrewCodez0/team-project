@@ -10,6 +10,13 @@ public interface WordChecker {
      * @param language the language of the word
      * @return true if the word is valid, false otherwise
      */
-    abstract boolean isValidWord(String word, Language language);
-    abstract JSONArray getDefinitions(String word, Language language);
+    boolean isValidWord(String word, Language language);
+
+    /**
+     * Returns the definitions of the given word.
+     * @param word the word to get the definition of
+     * @param language the language of the word
+     * @return a JSONArray containing the definitions of the word
+     */
+    JSONArray getDefinitions(String word, Language language);
 }

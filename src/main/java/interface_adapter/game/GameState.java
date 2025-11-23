@@ -1,11 +1,12 @@
 package interface_adapter.game;
 
+import java.util.Map;
+
 import data_access.Language;
 import entity.AbstractLetter;
 import entity.AbstractWord;
 import entity.Status;
-import entity.Word;
-import java.util.Map;
+import entity.WordFactory;
 
 public class GameState {
     private static final Map<Status, String> COLORS = Map.ofEntries(
@@ -24,9 +25,8 @@ public class GameState {
     private final AbstractWord wordToGuess;
 
     public GameState() {
-        this.wordToGuess = new Word("ERROR");
-//        this.wordToGuess = null;
-        this.length = 5;
+        this.wordToGuess = WordFactory.createDefaultWord();
+        this.length = 5; // TODO get these from optionsstate once its made
         this.maxGuesses = 6;
         this.language = Language.ENGLISH;
         this.currentGuess = 0;
@@ -66,7 +66,7 @@ public class GameState {
 
     private void initializeEmptyWords() {
         for (int i = 0; i < this.maxGuesses; i++) {
-            this.words[i] = new Word(this.length);
+            this.words[i] = WordFactory.createEmptyWord(this.length);
         }
     }
 
@@ -80,10 +80,12 @@ public class GameState {
     private void initializeCurrentLetter() {
         this.currentLetter = -1;
         while (this.currentLetter < this.length) {
-            AbstractLetter letter = this.words[this.currentGuess].getLetter(this.currentLetter);
+            final AbstractLetter letter = this.words[this.currentGuess].getLetter(this.currentLetter);
             if (letter.getStatus() == Status.INITIAL) {
                 break;
-            } else { // This might cause an error later
+            }
+            else {
+                // This might cause an error later
                 this.currentLetter++;
             }
         }
@@ -91,11 +93,10 @@ public class GameState {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         for (AbstractWord word : words) {
             for (int i = 0; i < word.length(); i++) {
-                AbstractLetter letter = word.getLetter(i);
-                sb.append(COLORS.get(letter.getStatus()));
+                sb.append(COLORS.get(word.getLetter(i).getStatus()));
             }
             sb.append("\n");
         }
@@ -134,6 +135,10 @@ public class GameState {
         return wordToGuess;
     }
 
+    /**
+     * Enters the specified character into this GameState.
+     * @param character the character to enter
+     */
     public void nextLetter(char character) {
         if (currentLetter < this.length - 1) {
             this.currentLetter++;
@@ -141,51 +146,42 @@ public class GameState {
         }
     }
 
+    /**
+     * Removes the current letter of this GameState.
+     */
     public void previousLetter() {
         if (currentLetter >= 0) {
             getCurrentLetter().resetCharacter();
             if (currentLetter == length) {
-                this.currentLetter -= 2; // this shouldnt actually be reached i should probably remove it
-            } else {
+                // this shouldn't actually be reached i should probably remove it
+                this.currentLetter -= 2;
+            }
+            else {
                 this.currentLetter--;
             }
         }
     }
 
-    // This assumes that the word is full
+    /**
+     * Submits the active word in this GameState. Assumes the word is full.
+     */
     public void nextWord() {
         this.currentLetter = -1;
         this.currentGuess++;
     }
 
-    private Status[] checkGuess() { // maybe this shouldnt be in gamestate
-        Status[] statuses = new Status[this.length];
-        for (int i = 0; i < this.length; i++) {
-            char guessChar = words[currentGuess].getLetter(i).getCharacter();
-            char expectedChar = wordToGuess.getLetter(i).getCharacter();
-            if (guessChar == expectedChar) {
-                statuses[i] = Status.CORRECT;
-            } else if (wordToGuess.toString().indexOf(guessChar) != -1) {
-                statuses[i] = Status.PARTIAL;
-            } else {
-                statuses[i] = Status.WRONG;
-            }
-        }
-        return statuses;
-    }
-
+    /**
+     * Submits the active word of this GameState.
+     */
     public void submit() {
-        Status[] statuses = checkGuess();
-        for (int i = 0; i < this.length; i++) {
-            words[currentGuess].getLetter(i).setStatus(statuses[i]);
-        }
-        if (words[currentGuess].isCorrect()) {
-            System.out.println("correct");
-        }
-//        nextWord();
+        WordFactory.submitGuess(words[currentGuess], wordToGuess);
     }
 
+    /**
+     * Check if this GameState is finished.
+     * @return true if either there are no more guesses or the current word is correct, false otherwise
+     */
     public boolean finished() {
-        return currentGuess == maxGuesses || words[currentGuess].isCorrect();
+        return currentGuess + 1 == maxGuesses || words[currentGuess].isCorrect();
     }
 }
