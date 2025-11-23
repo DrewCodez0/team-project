@@ -44,8 +44,9 @@ public class APIWordChecker extends API implements WordChecker {
             if (e.getMessage().equals("Could not convert to JSONArray")) {
                 validCache.put(word, false);
                 return false;
+            } else {
+                throw new WordNotFoundException("Something went wrong: " + e.getMessage());
             }
-            throw new WordNotFoundException("Something went wrong: " + e.getMessage());
         }
         validCache.put(word, true);
         return true;

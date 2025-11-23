@@ -35,6 +35,8 @@ public class GameInteractor implements GameInputBoundary {
                 gamePresenter.updateGameView(gameInputData);
                 if (gameInputData.finished()) {
                     prepareEndView(gameInputData);
+                } else {
+                    gameInputData.nextWord();
                 }
             } else {
                 gamePresenter.shakeWord(gameInputData);

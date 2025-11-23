@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class StartView extends JPanel implements ActionListener, PropertyChangeListener {
     private static final String VIEW_NAME = "start";
@@ -28,26 +30,32 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
         this.startViewModel.addPropertyChangeListener(this);
 
         Theme theme = this.startViewModel.getState();
-        setTheme(this, theme);
+        ViewHelper.setTheme(this, theme);
 
         final JLabel title = new JLabel("Wordle");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        setTheme(title, theme);
+        ViewHelper.setTheme(title, theme, ViewHelper.TITLE);
 
         final JPanel buttons = new JPanel();
+        final ArrayList<JButton> buttonList = new ArrayList<>();
         play = new JButton("Play");
-        buttons.add(play);
+        buttonList.add(play);
         options = new JButton("Options");
-        buttons.add(options);
+        buttonList.add(options);
         stats = new JButton("Stats");
-        buttons.add(stats);
+        buttonList.add(stats);
         exit = new JButton("Exit");
-        buttons.add(exit);
-//        for (JButton button : buttons.get) { //whatever this is
-//            button.setPreferredSize(new Dimension(90, 10));
-//        }
-        buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
-        setTheme(buttons, theme);
+        buttonList.add(exit);
+        for (JButton button : buttonList) {
+            button.setPreferredSize(new Dimension(300, 100));
+            button.setAlignmentX(Component.CENTER_ALIGNMENT);
+            ViewHelper.setTheme(button, theme, ViewHelper.BUTTON);
+            buttons.add(button);
+        }
+
+//        buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
+        buttons.setLayout(new GridLayout(0, 1));
+        ViewHelper.setTheme(buttons, theme);
 
         play.addActionListener(
                 new ActionListener() {
@@ -101,14 +109,9 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         final Theme theme = (Theme) evt.getNewValue();
-        setTheme(this, theme);
+        ViewHelper.setTheme(this, theme);
     }
 
-    private void setTheme(JComponent component, Theme theme) {
-        component.setBackground(theme.getBackgroundColor());
-        component.setForeground(theme.getTextColor());
-        component.setFont(theme.getFont());
-    }
 
     public String getViewName() {return VIEW_NAME;}
 

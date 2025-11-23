@@ -153,7 +153,7 @@ public class GameState {
     }
 
     // This assumes that the word is full
-    private void nextWord() {
+    public void nextWord() {
         this.currentLetter = -1;
         this.currentGuess++;
     }
@@ -182,7 +182,7 @@ public class GameState {
         if (words[currentGuess].isCorrect()) {
             System.out.println("correct");
         }
-        nextWord();
+//        nextWord();
     }
 
     public boolean finished() {

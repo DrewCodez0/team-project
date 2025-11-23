@@ -10,7 +10,7 @@ public class Main {
                 .addEndView()
                 .addOptionsView()
                 .addGameView()
-//                .addStatsView()
+                .addStatsView()
                 .addStartUseCase()
                 .addGameUseCase()
                 .build();
