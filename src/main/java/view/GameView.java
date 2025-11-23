@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
+import javax.swing.BoxLayout;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -29,8 +30,6 @@ import interface_adapter.game.GameViewModel;
 import interface_adapter.options.OptionsViewModel;
 
 public class GameView extends JPanel implements ActionListener, PropertyChangeListener {
-    private static final int SQUARE_SIZE = 80;
-    private static final int MARGINS = 25;
     private static final String VIEW_NAME = "game";
 
     private float shakeOffset;
@@ -39,6 +38,7 @@ public class GameView extends JPanel implements ActionListener, PropertyChangeLi
     private final OptionsViewModel optionsViewModel;
     private GameController gameController;
 
+    private final JPanel gamePanel;
     private final JButton menu;
     private final JButton submit;
 
@@ -55,10 +55,9 @@ public class GameView extends JPanel implements ActionListener, PropertyChangeLi
         title.setHorizontalAlignment(SwingConstants.CENTER);
         ViewHelper.setTheme(title, getTheme(), ViewHelper.TITLE);
 
-        // maybe this should be its own class encapsulated in a buffer
-        final JPanel gamePanel = new JPanel();
-        gamePanel.setPreferredSize(new Dimension(this.optionsViewModel.getState().getLength() * GameView.SQUARE_SIZE,
-                this.optionsViewModel.getState().getMaxGuesses() * GameView.SQUARE_SIZE + 2 * MARGINS));
+        gamePanel = new JPanel();
+        gamePanel.setPreferredSize(new Dimension(this.optionsViewModel.getState().getLength() * ViewHelper.SQUARE_SIZE,
+                this.optionsViewModel.getState().getMaxGuesses() * ViewHelper.SQUARE_SIZE));
         ViewHelper.setTheme(gamePanel, getTheme(), ViewHelper.LETTER);
 
         final ArrayList<JButton> buttonList = new ArrayList<>();
@@ -108,7 +107,7 @@ public class GameView extends JPanel implements ActionListener, PropertyChangeLi
         super.paint(g);
         final Graphics2D g2d = (Graphics2D) g;
         final GameState gameState = this.gameViewModel.getState();
-        ViewHelper.drawGameState(gameState, g2d, getTheme(), GameView.SQUARE_SIZE, shakeOffset);
+        ViewHelper.drawGameState(gameState, g2d, getTheme(), gamePanel.getSize(), shakeOffset);
     }
 
     public String getViewName() {
@@ -134,12 +133,17 @@ public class GameView extends JPanel implements ActionListener, PropertyChangeLi
     private void initializeLayout(JLabel title, JPanel gamePanel, JPanel buttons) {
         final JPanel buffer1 = ViewHelper.createBufferPanel(ViewHelper.MARGINS, 50, getTheme());
         final JPanel buffer2 = ViewHelper.createBufferPanel(ViewHelper.MARGINS, 50, getTheme());
+        final JPanel buffer3 = ViewHelper.createBufferPanel(50, ViewHelper.MARGINS, getTheme());
+        final JPanel bottomPanel = new JPanel();
+        bottomPanel.add(buffer3);
+        bottomPanel.add(buttons);
+        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
         this.setLayout(new BorderLayout());
         this.add(title, BorderLayout.NORTH);
         this.add(gamePanel, BorderLayout.CENTER);
         this.add(buffer1, BorderLayout.WEST);
         this.add(buffer2, BorderLayout.EAST);
-        this.add(buttons, BorderLayout.SOUTH);
+        this.add(bottomPanel, BorderLayout.SOUTH);
     }
 
     private void initializeInputHandlers() {
