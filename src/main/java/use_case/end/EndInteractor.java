@@ -1,9 +1,47 @@
 package use_case.end;
 
-import interface_adapter.game.GameState;
-
 public class EndInteractor implements EndInputBoundary {
-    public EndInteractor(EndDataAccessInterface endDataAccess, EndOutputBoundary endOutputBoundary) {}
+    private final EndDataAccessInterface endDataAccess;
+    private final EndOutputBoundary endPresenter;
 
-    public void execute(GameState endInputData) {}
+    public EndInteractor(EndDataAccessInterface endDataAccess, EndOutputBoundary endOutputBoundary) {
+        this.endDataAccess = endDataAccess;
+        this.endPresenter = endOutputBoundary;
+    }
+
+    @Override
+    public void execute(EndInputData endInputData) {
+        EndGameRecord record = new EndGameRecord(
+                endInputData.getWord(),
+                endInputData.isWon(),
+                endInputData.getGuessesUsed()
+        );
+
+        endDataAccess.saveGameRecord(record);
+
+        EndOutputData outputData = new EndOutputData(
+                endInputData.getWord(),
+                endInputData.isWon(),
+                endInputData.getGuessesUsed(),
+                endInputData.getMaxGuesses()
+        );
+        if (endInputData.isWon()) {
+            endPresenter.prepareSuccessView(outputData);
+        } else {
+            endPresenter.prepareFailView(outputData);
+        }
+    }
+
+    @Override
+    public void prepareStartView() {
+        endPresenter.prepareStartView();
+    }
+
+    @Override
+    public void prepareNewGame(EndInputData endInputData) {
+        endPresenter.prepareGameView(new interface_adapter.options.OptionsState());
+    }
 }
+
+
+
