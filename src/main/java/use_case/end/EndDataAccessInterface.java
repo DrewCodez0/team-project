@@ -1,5 +1,15 @@
 package use_case.end;
 
 public interface EndDataAccessInterface {
-    // Needs a method to save the relevant info from a game to the database
+    /**
+     * Saves a game record to persistent storage
+     * @param record the game record to save
+     */
+    void saveGameRecord(EndGameRecord record);
+
+    /**
+     * Gets all saved game records
+     * @return array of all game records
+     */
+    EndGameRecord[] getGameRecords();
 }
