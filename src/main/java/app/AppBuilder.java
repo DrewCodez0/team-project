@@ -7,7 +7,9 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import data_access.APIWordChecker;
+import data_access.APIWordGenerator;
 import data_access.APIWordGenerator2;
+import data_access.DebugWordGenerator;
 import data_access.FileDataAccessObject;
 import data_access.WordDataAccessObject;
 import entity.Theme;
@@ -84,7 +86,7 @@ public class AppBuilder {
 
     public AppBuilder addEndView() {
         endViewModel = new EndViewModel();
-        endView = new EndView(endViewModel);
+        endView = new EndView(endViewModel, startViewModel);
         cardPanel.add(endView, endView.getViewName());
         return this;
     }
@@ -114,7 +116,7 @@ public class AppBuilder {
         final StartOutputBoundary startOutputBoundary = new StartPresenter(viewManagerModel,
                 startViewModel, gameViewModel, optionsViewModel, statsViewModel);
         final StartInputBoundary startInteractor = new StartInteractor(
-                fileDataAccessObject, wordDataAccessObject, startOutputBoundary);
+                fileDataAccessObject, startOutputBoundary);
 
         final StartController startController = new StartController(startInteractor);
         startView.setStartController(startController);
@@ -139,7 +141,8 @@ public class AppBuilder {
                 endViewModel, gameViewModel, startViewModel, optionsViewModel);
         final EndInputBoundary endInteractor = new EndInteractor(fileDataAccessObject, endOutputBoundary);
 
-        final GameInputBoundary gameInteractor = new GameInteractor(wordDataAccessObject, gameOutputBoundary, endInteractor);
+        final GameInputBoundary gameInteractor = new GameInteractor(wordDataAccessObject, gameOutputBoundary,
+                endInteractor, optionsViewModel);
 
         final GameController gameController = new GameController(gameInteractor);
         gameView.setGameController(gameController);

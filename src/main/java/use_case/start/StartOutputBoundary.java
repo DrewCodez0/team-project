@@ -1,7 +1,6 @@
 package use_case.start;
 
 import entity.Theme;
-import interface_adapter.game.GameState;
 
 /**
  * The output boundary for the Start Use Case.
@@ -15,9 +14,8 @@ public interface StartOutputBoundary {
 
     /**
      * Prepares the game view for the Start Use Case.
-     * @param gameState the gamestate to use for the game
      */
-    void prepareGameView(GameState gameState);
+    void prepareGameView();
 
     /**
      * Prepares the options view for the Start Use Case.

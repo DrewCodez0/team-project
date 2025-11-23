@@ -14,7 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import entity.Theme;
-import interface_adapter.options.OptionsState;
 import interface_adapter.start.StartController;
 import interface_adapter.start.StartViewModel;
 
@@ -59,7 +58,7 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
         play.addActionListener(
                 evt -> {
                     if (evt.getSource().equals(play)) {
-                        startController.switchToGameView(new OptionsState()); //TODO
+                        startController.switchToGameView();
                     }
                 }
         );

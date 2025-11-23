@@ -155,7 +155,8 @@ public class GameState {
             if (currentLetter == length) {
                 // this shouldn't actually be reached i should probably remove it
                 this.currentLetter -= 2;
-            } else {
+            }
+            else {
                 this.currentLetter--;
             }
         }
@@ -174,10 +175,6 @@ public class GameState {
      */
     public void submit() {
         WordFactory.submitGuess(words[currentGuess], wordToGuess);
-        if (words[currentGuess].isCorrect()) {
-            System.out.println("correct");
-        }
-        // nextWord();
     }
 
     /**
@@ -185,6 +182,6 @@ public class GameState {
      * @return true if either there are no more guesses or the current word is correct, false otherwise
      */
     public boolean finished() {
-        return currentGuess == maxGuesses || words[currentGuess].isCorrect();
+        return currentGuess + 1 == maxGuesses || words[currentGuess].isCorrect();
     }
 }

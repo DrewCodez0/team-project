@@ -87,12 +87,19 @@ public class GameView extends JPanel implements ActionListener, PropertyChangeLi
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals("state")) {
-            repaint();
-        }
-        else if (evt.getPropertyName().equals("shake")) {
-            final WordShake shake = new WordShake(this);
-            shake.start();
+        switch (evt.getPropertyName()) {
+            case "state":
+                repaint();
+                break;
+            case "shake":
+                final WordShake shake = new WordShake(this);
+                shake.start();
+                break;
+            case "new":
+                gameController.startNewGame();
+                break;
+            default:
+                break;
         }
     }
 

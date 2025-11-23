@@ -13,6 +13,7 @@ public class Main {
                 .addStatsView()
                 .addStartUseCase()
                 .addGameUseCase()
+                .addEndUseCase()
                 .build();
         application.pack();
         application.setLocationRelativeTo(null);

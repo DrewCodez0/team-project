@@ -1,6 +1,5 @@
 package interface_adapter.start;
 
-import interface_adapter.options.OptionsState;
 import use_case.start.StartInputBoundary;
 
 public class StartController {
@@ -14,8 +13,8 @@ public class StartController {
         startInteractor.prepareStartView();
     }
 
-    public void switchToGameView(OptionsState optionsState) {
-        startInteractor.prepareGameView(optionsState);
+    public void switchToGameView() {
+        startInteractor.prepareGameView();
     }
 
     public void switchToOptionsView() {

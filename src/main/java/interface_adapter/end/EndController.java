@@ -11,7 +11,7 @@ public class EndController {
     }
 
     public void execute(String word, boolean won, int guessesUsed, int maxGuesses) {
-        EndInputData endInputData = new EndInputData(word, won, guessesUsed, maxGuesses);
+        final EndInputData endInputData = new EndInputData(word, won, guessesUsed, maxGuesses);
         endInteractor.execute(endInputData);
     }
 
@@ -20,7 +20,7 @@ public class EndController {
     }
 
     public void replay(String word, boolean won, int guessesUsed, int maxGuesses) {
-        EndInputData inputData = new EndInputData(word, won, guessesUsed, maxGuesses);
+        final EndInputData inputData = new EndInputData(word, won, guessesUsed, maxGuesses);
         endInteractor.prepareNewGame(inputData);
     }
 }

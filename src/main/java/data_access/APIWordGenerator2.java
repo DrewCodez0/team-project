@@ -3,6 +3,8 @@ package data_access;
 import java.util.EnumMap;
 import java.util.Map;
 
+import org.json.JSONArray;
+
 public class APIWordGenerator2 extends AbstractAPI implements WordGenerator {
     private static final Map<Language, String> LANGUAGES = new EnumMap<>(Language.class);
 
@@ -22,11 +24,10 @@ public class APIWordGenerator2 extends AbstractAPI implements WordGenerator {
      */
     @Override
     public String getRandomWord(int length, Language language) {
-//        if (!language.equals(Language.ENGLISH)) {
-//            throw new IllegalArgumentException("Language not supported");
-//        }
-//        JSONArray responseBody = fetch(String.format("?length=%s&type=uppercase", length));
-//        return responseBody.getString(0).toUpperCase();
-        return "ERROR";
+        if (!language.equals(Language.ENGLISH)) {
+            throw new IllegalArgumentException("Language not supported");
+        }
+        final JSONArray responseBody = fetch(String.format("?length=%s&type=uppercase", length));
+        return responseBody.getString(0).toUpperCase();
     }
 }

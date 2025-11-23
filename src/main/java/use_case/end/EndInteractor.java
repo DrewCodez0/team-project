@@ -11,7 +11,7 @@ public class EndInteractor implements EndInputBoundary {
 
     @Override
     public void execute(EndInputData endInputData) {
-        EndGameRecord record = new EndGameRecord(
+        final EndGameRecord record = new EndGameRecord(
                 endInputData.getWord(),
                 endInputData.isWon(),
                 endInputData.getGuessesUsed()
@@ -19,7 +19,7 @@ public class EndInteractor implements EndInputBoundary {
 
         endDataAccess.saveGameRecord(record);
 
-        EndOutputData outputData = new EndOutputData(
+        final EndOutputData outputData = new EndOutputData(
                 endInputData.getWord(),
                 endInputData.isWon(),
                 endInputData.getGuessesUsed(),
@@ -27,7 +27,8 @@ public class EndInteractor implements EndInputBoundary {
         );
         if (endInputData.isWon()) {
             endPresenter.prepareSuccessView(outputData);
-        } else {
+        }
+        else {
             endPresenter.prepareFailView(outputData);
         }
     }
@@ -39,7 +40,7 @@ public class EndInteractor implements EndInputBoundary {
 
     @Override
     public void prepareNewGame(EndInputData endInputData) {
-        endPresenter.prepareGameView(new interface_adapter.options.OptionsState());
+        endPresenter.prepareGameView();
     }
 }
 

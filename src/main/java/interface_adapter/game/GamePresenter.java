@@ -5,7 +5,6 @@ import interface_adapter.end.EndViewModel;
 import interface_adapter.start.StartViewModel;
 import use_case.game.GameOutputBoundary;
 
-
 public class GamePresenter implements GameOutputBoundary {
     private final ViewManagerModel viewManagerModel;
     private final GameViewModel gameViewModel;
@@ -28,7 +27,7 @@ public class GamePresenter implements GameOutputBoundary {
 
     @Override
     public void shakeWord(GameState gameState) {
-        gameViewModel.firePropertyChange("shake");
+        gameViewModel.firePropertyChange(GameViewModel.SHAKE);
     }
 
     @Override

@@ -2,7 +2,6 @@ package interface_adapter.end;
 
 import interface_adapter.ViewManagerModel;
 import interface_adapter.game.GameViewModel;
-import interface_adapter.game.GameState;
 import interface_adapter.options.OptionsState;
 import interface_adapter.options.OptionsViewModel;
 import interface_adapter.start.StartViewModel;
@@ -28,7 +27,7 @@ public class EndPresenter implements EndOutputBoundary {
 
     @Override
     public void prepareSuccessView(EndOutputData endOutputData) {
-        EndState endState = endViewModel.getState();
+        final EndState endState = endViewModel.getState();
         endState.setWord(endOutputData.getWord());
         endState.setWon(true);
         endState.setGuessesUsed(endOutputData.getGuessesUsed());
@@ -44,7 +43,7 @@ public class EndPresenter implements EndOutputBoundary {
 
     @Override
     public void prepareFailView(EndOutputData outputData) {
-        EndState endState = endViewModel.getState();
+        final EndState endState = endViewModel.getState();
         endState.setWord(outputData.getWord());
         endState.setWon(false);
         endState.setGuessesUsed(outputData.getGuessesUsed());
@@ -59,7 +58,9 @@ public class EndPresenter implements EndOutputBoundary {
     }
 
     @Override
-    public void prepareGameView(OptionsState options) {
+    public void prepareGameView() {
+        gameViewModel.firePropertyChange(GameViewModel.NEW_GAME);
+
         viewManagerModel.setState(gameViewModel.getViewName());
         viewManagerModel.firePropertyChange();
     }

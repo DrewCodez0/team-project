@@ -26,12 +26,18 @@ public interface GameInputBoundary {
     void executeBackspace(GameState gameInputData);
 
     /**
+     * Prepares a new game.
+     */
+    void prepareNewGame();
+
+    /**
      * Returns to the start menu.
      */
     void prepareStartView();
 
     /**
      * Prepares the end view.
+     * @param gameState the state of the game
      */
     void prepareEndView(GameState gameState);
 }

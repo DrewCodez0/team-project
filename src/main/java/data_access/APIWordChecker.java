@@ -34,18 +34,17 @@ public class APIWordChecker extends AbstractAPI implements WordChecker {
     @Override
     public boolean isValidWord(String word, Language language) {
         if (validCache.containsKey(word)) {
-//            System.out.println("Word found: " + word);
             return validCache.get(word);
         }
         try {
             final JSONArray data = fetch(String.format("%s/%s", LANGUAGES.get(language), word));
-//            System.out.println(data);
             final JSONObject tempData = data.getJSONObject(0);
-            tempData.getString(JSON_WORD); // This will throw an exception if it does not exist
+            // This will throw an exception if it does not exist
+            tempData.getString(JSON_WORD);
             wordData = tempData;
         }
         catch (JSONException | WordNotFoundException ex) {
-            if (ex.getMessage().equals("Could not convert to JSONArray")) {
+            if (ex.getMessage().equals(FAIL_STRING)) {
                 validCache.put(word, false);
                 return false;
             }

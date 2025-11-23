@@ -44,7 +44,7 @@ public abstract class AbstractWord {
         if (!(obj instanceof AbstractWord)) {
             return false;
         }
-        AbstractWord word = (AbstractWord) obj;
+        final AbstractWord word = (AbstractWord) obj;
         if (word.length() != this.length()) {
             return false;
         }

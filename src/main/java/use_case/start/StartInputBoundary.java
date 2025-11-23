@@ -1,7 +1,5 @@
 package use_case.start;
 
-import interface_adapter.options.OptionsState;
-
 /**
  * Input boundary for the Start Use Case.
  */
@@ -14,9 +12,8 @@ public interface StartInputBoundary {
 
     /**
      * Executes the Game use case.
-     * @param optionsState the options to use for the game
      */
-    void prepareGameView(OptionsState optionsState);
+    void prepareGameView();
 
     /**
      * Executes the Options use case.

@@ -37,6 +37,11 @@ public abstract class AbstractLetter {
     public abstract boolean isNull();
 
     @Override
+    public String toString() {
+        return Character.toString(this.getCharacter());
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -51,10 +56,5 @@ public abstract class AbstractLetter {
     @Override
     public int hashCode() {
         return Character.hashCode(this.getCharacter());
-    }
-
-    @Override
-    public String toString() {
-        return Character.toString(this.getCharacter());
     }
 }
