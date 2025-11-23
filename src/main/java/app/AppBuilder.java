@@ -1,10 +1,15 @@
 package app;
 
-import data_access.APIDataAccessObject;
+import java.awt.CardLayout;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
+
 import data_access.APIWordChecker;
 import data_access.APIWordGenerator2;
 import data_access.FileDataAccessObject;
-import entity.SusTheme;
+import data_access.WordDataAccessObject;
 import entity.Theme;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.end.EndController;
@@ -37,15 +42,17 @@ import use_case.start.StartOutputBoundary;
 import use_case.stats.StatsInputBoundary;
 import use_case.stats.StatsInteractor;
 import use_case.stats.StatsOutputBoundary;
-import view.*;
-
-import javax.swing.*;
-import java.awt.*;
+import view.EndView;
+import view.GameView;
+import view.OptionsView;
+import view.StartView;
+import view.StatsView;
+import view.ViewManager;
 
 public class AppBuilder {
     private final JPanel cardPanel = new JPanel();
     private final CardLayout cardLayout = new CardLayout();
-    final ViewManagerModel viewManagerModel = new ViewManagerModel();
+    private final ViewManagerModel viewManagerModel = new ViewManagerModel();
     private final ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
 
     private StartView startView;
@@ -59,14 +66,16 @@ public class AppBuilder {
     private StatsView statsView;
     private StatsViewModel statsViewModel;
 
-    final FileDataAccessObject fileDataAccessObject = new FileDataAccessObject();
-    final APIDataAccessObject apiDataAccessObject = new APIDataAccessObject(
+    private final FileDataAccessObject fileDataAccessObject = new FileDataAccessObject();
+    private final WordDataAccessObject wordDataAccessObject = new WordDataAccessObject(
             new APIWordGenerator2(), new APIWordChecker());
 
-    public AppBuilder() {cardPanel.setLayout(cardLayout);}
+    public AppBuilder() {
+        cardPanel.setLayout(cardLayout);
+    }
 
     public AppBuilder addStartView() {
-        Theme theme = fileDataAccessObject.getDefaultTheme();
+        final Theme theme = fileDataAccessObject.getDefaultTheme();
         startViewModel = new StartViewModel(theme);
         startView = new StartView(startViewModel);
         cardPanel.add(startView, startView.getViewName());
@@ -105,9 +114,9 @@ public class AppBuilder {
         final StartOutputBoundary startOutputBoundary = new StartPresenter(viewManagerModel,
                 startViewModel, gameViewModel, optionsViewModel, statsViewModel);
         final StartInputBoundary startInteractor = new StartInteractor(
-                fileDataAccessObject, apiDataAccessObject, startOutputBoundary);
+                fileDataAccessObject, wordDataAccessObject, startOutputBoundary);
 
-        StartController startController = new StartController(startInteractor);
+        final StartController startController = new StartController(startInteractor);
         startView.setStartController(startController);
         return this;
     }
@@ -117,7 +126,7 @@ public class AppBuilder {
                 endViewModel, gameViewModel, startViewModel, optionsViewModel);
         final EndInputBoundary endInteractor = new EndInteractor(fileDataAccessObject, endOutputBoundary);
 
-        EndController endController = new EndController(endInteractor);
+        final EndController endController = new EndController(endInteractor);
         endView.setEndController(endController);
         return this;
     }
@@ -125,9 +134,9 @@ public class AppBuilder {
     public AppBuilder addGameUseCase() {
         final GameOutputBoundary gameOutputBoundary = new GamePresenter(viewManagerModel,
                 gameViewModel, startViewModel, endViewModel);
-        final GameInputBoundary gameInteractor = new GameInteractor(apiDataAccessObject, gameOutputBoundary);
+        final GameInputBoundary gameInteractor = new GameInteractor(wordDataAccessObject, gameOutputBoundary);
 
-        GameController gameController = new GameController(gameInteractor);
+        final GameController gameController = new GameController(gameInteractor);
         gameView.setGameController(gameController);
         return this;
     }
@@ -137,7 +146,7 @@ public class AppBuilder {
                 optionsViewModel, startViewModel);
         final OptionsInputBoundary optionsInteractor = new OptionsInteractor(fileDataAccessObject, optionsOutputBoundary);
 
-        OptionsController optionsController = new OptionsController(optionsInteractor);
+        final OptionsController optionsController = new OptionsController(optionsInteractor);
         optionsView.setOptionsController(optionsController);
         return this;
     }
@@ -147,7 +156,7 @@ public class AppBuilder {
                 statsViewModel, startViewModel);
         final StatsInputBoundary statsInteractor = new StatsInteractor(fileDataAccessObject, statsOutputBoundary);
 
-        StatsController statsController = new StatsController(statsInteractor, statsOutputBoundary); //Added statsOutputBoundary
+        final StatsController statsController = new StatsController(statsInteractor, statsOutputBoundary); //Added statsOutputBoundary
         statsView.setStatsController(statsController);
         return this;
     }

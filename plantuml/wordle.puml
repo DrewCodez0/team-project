@@ -18,8 +18,9 @@ abstract class AbstractLetter {
     + {abstract} getStatus(): Status
     + {abstract} setStatus(status: Status): void
     + {abstract} isNull(): boolean
-    + equals(obj: Object): boolean
     + toString(): String
+    + equals(obj: Object): boolean
+    + hashCode(): int
 }
 AbstractLetter --> Status
 
@@ -45,6 +46,7 @@ abstract class AbstractWord {
     + {abstract} isCorrect(): boolean
     + {abstract} toString(): String
     + equals(obj: Object): boolean
+    + hashCode(): int
 }
 AbstractWord --> AbstractLetter
 

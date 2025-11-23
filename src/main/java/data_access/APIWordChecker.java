@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 public class APIWordChecker extends AbstractAPI implements WordChecker {
     private static final Map<Language, String> LANGUAGES = new EnumMap<>(Language.class);
+    private static final String JSON_WORD = "word";
     private JSONObject wordData;
     private final Map<String, Boolean> validCache;
 
@@ -40,7 +41,7 @@ public class APIWordChecker extends AbstractAPI implements WordChecker {
             final JSONArray data = fetch(String.format("%s/%s", LANGUAGES.get(language), word));
 //            System.out.println(data);
             final JSONObject tempData = data.getJSONObject(0);
-            tempData.getString("word"); // This will throw an exception if it does not exist
+            tempData.getString(JSON_WORD); // This will throw an exception if it does not exist
             wordData = tempData;
         }
         catch (JSONException | WordNotFoundException ex) {
@@ -58,14 +59,14 @@ public class APIWordChecker extends AbstractAPI implements WordChecker {
 
     @Override
     public JSONArray getDefinitions(String word, Language language) {
-        if (wordData != null && wordData.getString("word").equals(word)) {
+        if (wordData != null && wordData.getString(JSON_WORD).equals(word)) {
             return wordData.getJSONArray("meanings");
         }
         final JSONArray data = fetch(String.format("%s/%s", LANGUAGES.get(language), word));
         try {
             final JSONObject tempData = data.getJSONObject(0);
             // This will throw an exception if it does not exist
-            tempData.getString("word");
+            tempData.getString(JSON_WORD);
             wordData = tempData;
             return tempData.getJSONArray("meanings");
         }

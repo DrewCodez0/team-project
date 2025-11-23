@@ -3,21 +3,21 @@ package data_access;
 import use_case.game.GameDataAccessInterface;
 
 /**
- * DAO for game data implemented using APIs.
+ * DAO for game data to generate and check words.
  */
-public class APIDataAccessObject implements GameDataAccessInterface {
+public class WordDataAccessObject implements GameDataAccessInterface {
     private static final int MAX_TRIES = 10;
     private final WordGenerator wordGenerator;
     private final WordChecker wordChecker;
 
     /**
-     * Construct this DAO for generating and checking words with an API.
+     * Construct this DAO for generating and checking words.
      * @param wordGenerator the word generator to use in this DAO
      * @param wordChecker the word checker to use in this DAO
      */
-    public APIDataAccessObject(WordGenerator wordGenerator, WordChecker wordChecker) {
+    public WordDataAccessObject(WordGenerator wordGenerator, WordChecker wordChecker) {
         this.wordGenerator = wordGenerator;
-        this.wordChecker = wordChecker; // TODO this doesnt actually specify APIs i could just make it wordDAO
+        this.wordChecker = wordChecker;
     }
 
     /**

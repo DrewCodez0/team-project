@@ -55,4 +55,9 @@ public abstract class AbstractWord {
         }
         return true;
     }
+
+    @Override
+    public int hashCode() {
+        return this.toString().hashCode();
+    }
 }

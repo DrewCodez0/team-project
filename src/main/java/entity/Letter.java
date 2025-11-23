@@ -39,6 +39,9 @@ public class Letter extends AbstractLetter {
     @Override
     public void setStatus(Status status) {
         this.status = status;
+        System.out.println("hash: " + Integer.toBinaryString(this.hashCode()));
+        System.out.println("character: " + Integer.toBinaryString(this.character));
+        System.out.println("status: " + Integer.toBinaryString(this.status.hashCode()));
     }
 
     @Override

@@ -44,13 +44,17 @@ public abstract class AbstractLetter {
         if (!(obj instanceof AbstractLetter)) {
             return false;
         }
-        AbstractLetter letter = (AbstractLetter) obj;
-        return (this.getCharacter() == letter.getCharacter()) && (this.getStatus() == letter.getStatus());
+        final AbstractLetter letter = (AbstractLetter) obj;
+        return this.getCharacter() == letter.getCharacter() && this.getStatus() == letter.getStatus();
+    }
+
+    @Override
+    public int hashCode() {
+        return Character.hashCode(this.getCharacter());
     }
 
     @Override
     public String toString() {
-        final Character character = this.getCharacter();
-        return character.toString();
+        return Character.toString(this.getCharacter());
     }
 }
