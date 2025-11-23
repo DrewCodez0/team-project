@@ -1,14 +1,19 @@
 package use_case.game;
 
 import interface_adapter.game.GameState;
+import use_case.end.EndInputBoundary;
+import use_case.end.EndInputData;
+
 
 public class GameInteractor implements GameInputBoundary {
     private final GameDataAccessInterface gameDataAccess;
     private final GameOutputBoundary gamePresenter;
+    private final EndInputBoundary endInteractor;
 
-    public GameInteractor(GameDataAccessInterface gameDataAccess, GameOutputBoundary gameOutputBoundary) {
+    public GameInteractor(GameDataAccessInterface gameDataAccess, GameOutputBoundary gameOutputBoundary, EndInputBoundary endInputBoundary) {
         this.gameDataAccess = gameDataAccess;
         this.gamePresenter = gameOutputBoundary;
+        this.endInteractor = endInputBoundary;
     }
 
     @Override
@@ -59,6 +64,13 @@ public class GameInteractor implements GameInputBoundary {
 
     @Override
     public void prepareEndView(GameState gameState) {
-        gamePresenter.prepareEndView(gameState);
+        String word = gameState.getWordToGuess().toString();
+        boolean won = gameState.getCurrentGuess() < gameState.getMaxGuesses() &&
+                gameState.getWords()[gameState.getCurrentGuess()].isCorrect();
+        int guessesUsed = gameState.getCurrentGuess() + 1;
+        int maxGuesses = gameState.getMaxGuesses();
+
+        EndInputData endInputData = new EndInputData(word, won, guessesUsed, maxGuesses);
+        endInteractor.execute(endInputData);
     }
 }

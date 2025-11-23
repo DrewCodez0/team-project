@@ -6,16 +6,24 @@ import interface_adapter.options.OptionsState;
  * The output boundary for the End Use Case
  */
 public interface EndOutputBoundary {
-    /**
-     * Prepares the game view for the End Use Case.
-     * @param options the options for a new game
-     */
-    void prepareGameView(OptionsState options);
 
     /**
-     * Prepares the options view for the End Use Case.
+     * Prepares the success view for the End Use Case.
+     * @param outputData the output data containing game results
      */
-    void prepareOptionsView();
+    void prepareSuccessView(EndOutputData outputData);
+
+    /**
+     * Prepares the fail view for the End Use Case.
+     * @param outputData the output data containing game results
+     */
+    void prepareFailView(EndOutputData outputData);
+
+    /**
+     * Prepares the game view for a new game.
+     * @param options contains the options for a new game
+     */
+    void prepareGameView(OptionsState options);
 
     /**
      * Prepares the start view for the End Use Case.

@@ -134,7 +134,12 @@ public class AppBuilder {
     public AppBuilder addGameUseCase() {
         final GameOutputBoundary gameOutputBoundary = new GamePresenter(viewManagerModel,
                 gameViewModel, startViewModel, endViewModel);
-        final GameInputBoundary gameInteractor = new GameInteractor(wordDataAccessObject, gameOutputBoundary);
+
+        final EndOutputBoundary endOutputBoundary = new EndPresenter(viewManagerModel,
+                endViewModel, gameViewModel, startViewModel, optionsViewModel);
+        final EndInputBoundary endInteractor = new EndInteractor(fileDataAccessObject, endOutputBoundary);
+
+        final GameInputBoundary gameInteractor = new GameInteractor(wordDataAccessObject, gameOutputBoundary, endInteractor);
 
         final GameController gameController = new GameController(gameInteractor);
         gameView.setGameController(gameController);

@@ -10,8 +10,40 @@ public class EndGameRecord {
         this.won = won;
         this.guessesUsed = guessesUsed;
     }
-    public String getWord() { return word; }
-    public boolean isWon() { return won; }
-    public int getGuessesUsed() { return guessesUsed; }
 
+    public String getWord() {
+        return word;
+    }
+
+    public boolean isWon() {
+        return won;
+    }
+
+    public int getGuessesUsed() {
+        return guessesUsed;
+    }
+
+    @Override
+    public String toString() {
+        return "EndGameRecord{" + "word='" + word + '\'' + ", " +
+                "won=" + won + ", guessesUsed=" + guessesUsed + '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        EndGameRecord that = (EndGameRecord) obj;
+        return won == that.won && guessesUsed == that.guessesUsed &&
+                word.equals(that.word);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = word.hashCode();
+        result = 31 * result + (won ? 1 : 0);
+        result = 31 * result + guessesUsed;
+        return result;
+    }
 }
