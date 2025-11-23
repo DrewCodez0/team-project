@@ -125,7 +125,12 @@ public class AppBuilder {
     public AppBuilder addGameUseCase() {
         final GameOutputBoundary gameOutputBoundary = new GamePresenter(viewManagerModel,
                 gameViewModel, startViewModel, endViewModel);
-        final GameInputBoundary gameInteractor = new GameInteractor(apiDataAccessObject, gameOutputBoundary);
+
+        final EndOutputBoundary endOutputBoundary = new EndPresenter(viewManagerModel,
+                endViewModel, gameViewModel, startViewModel, optionsViewModel);
+        final EndInputBoundary endInteractor = new EndInteractor(fileDataAccessObject, endOutputBoundary);
+
+        final GameInputBoundary gameInteractor = new GameInteractor(apiDataAccessObject, gameOutputBoundary, endInteractor);
 
         GameController gameController = new GameController(gameInteractor);
         gameView.setGameController(gameController);
@@ -147,7 +152,7 @@ public class AppBuilder {
                 statsViewModel, startViewModel);
         final StatsInputBoundary statsInteractor = new StatsInteractor(fileDataAccessObject, statsOutputBoundary);
 
-        StatsController statsController = new StatsController(statsInteractor, statsOutputBoundary); //Added statsOutputBoundary
+        StatsController statsController = new StatsController(statsInteractor);
         statsView.setStatsController(statsController);
         return this;
     }
