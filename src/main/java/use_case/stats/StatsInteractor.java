@@ -2,7 +2,6 @@ package use_case.stats;
 
 import entity.Theme;
 
-
 public class StatsInteractor implements StatsInputBoundary {
     private final StatsDataAccessInterface statsDataAccess;
     private final StatsOutputBoundary statsOutputBoundary;

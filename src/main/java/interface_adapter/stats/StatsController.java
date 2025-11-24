@@ -10,10 +10,16 @@ public class StatsController {
         this.statsInteractor = statsInteractor;
     }
 
+    /**
+     * Executes the primary action to load and display statistics.
+     */
     public void execute() {
         statsInteractor.execute(new StatsInputData());
     }
 
+    /**
+     * Initiates the process of switching back to the start menu view.
+     */
     public void switchToStartView() {
         statsInteractor.prepareStartView();
     }

@@ -1,10 +1,6 @@
 package interface_adapter.stats;
 
-
 import entity.Theme;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class StatsState {
     private int totalGames;
@@ -13,7 +9,7 @@ public class StatsState {
     private int longestWinStreak;
     private Theme theme;
 
-    public StatsState(){
+    public StatsState() {
         this.totalGames = 0;
         this.gamesWon = 0;
         this.currentWinStreak = 0;
