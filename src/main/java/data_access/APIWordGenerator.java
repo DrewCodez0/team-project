@@ -11,6 +11,11 @@ public class APIWordGenerator extends AbstractAPI implements WordGenerator {
 
     static {
         LANGUAGES.put(Language.ENGLISH, "en");
+        LANGUAGES.put(Language.SPANISH, "es");
+        LANGUAGES.put(Language.ITALIAN, "it");
+        LANGUAGES.put(Language.GERMAN, "ge");
+        LANGUAGES.put(Language.FRENCH, "fr");
+        LANGUAGES.put(Language.PORTUGUESE, "pt-br");
     }
 
     public APIWordGenerator() {
@@ -27,7 +32,8 @@ public class APIWordGenerator extends AbstractAPI implements WordGenerator {
     public String getRandomWord(int length, Language language) {
         final JSONArray responseBody = fetch(String.format("?length=%s&lang=%s", length, LANGUAGES.get(language)));
         try {
-            return responseBody.getJSONObject(0).getString("word").toUpperCase();
+            // return responseBody.getJSONObject(0).getString("word").toUpperCase();
+            return responseBody.getString(0).toUpperCase();
         }
         catch (JSONException ex) {
             throw new WordNotFoundException("Could not fetch word");
