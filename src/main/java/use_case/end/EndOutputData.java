@@ -22,13 +22,14 @@ public class EndOutputData {
     }
 
     private String generateWinMessage(int guesses) {
-        switch (guesses) {
-            case 1:
-                return "First try! The word was: " + word;
-            case 6: // TODO this should be maxGuesses
-                return "That was close! The word was: " + word;
-            default:
-                return "You won! The word was: " + word;
+        if (guesses == 1) {
+            return "First try! The word was: " + word;
+        }
+        else if (guesses ==  maxGuesses) {
+            return "That was close! The word was: " + word;
+        }
+        else {
+            return "You won! The word was: " + word;
         }
     }
 
