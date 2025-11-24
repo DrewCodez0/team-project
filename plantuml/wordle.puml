@@ -87,12 +87,15 @@ class ViewHelper {
     + {static} LETTER: String
     + {static} TITLE: String
     + {static} BUTTON: String
+    + {static} SQUARE_SIZE: int
     + {static} MARGINS: int
+    + {static} SQUARE_SCALE: double
     - ViewHelper()
-    - {static} setTheme(component: JComponent, theme: Theme, type: String): void
-    - {static} setTheme(component: JComponent, theme: Theme): void
-    - {static} createBufferPanel(width: int, height: int, theme: Theme): JPanel
-    - {static} drawGameState(gameState: GameState, g2d: Graphics2D, theme: Theme, size: int, shakeOffset: float): void
+    + {static} setTheme(component: JComponent, theme: Theme, type: String): void
+    + {static} setTheme(component: JComponent, theme: Theme): void
+    + {static} createBufferPanel(width: int, height: int, theme: Theme): JPanel
+    + {static} drawGameState(gameState: GameState, g2d: Graphics2D, theme: Theme, panelSize: Dimension, shakeOffset: float): void
+    - {static} getSquareSize(gameState: GameState, panelSize: Dimension): int[]
     - {static} drawLetter(g: Graphics2D, letter: AbstractLetter, x: int, y: int, size: int, theme: Theme): void
     - {static} getTransform(x: float, y: int, size: int): AffineTransform
     - {static} drawBoxBackground(g: Graphics2D, letter: AbstractLetter, transform: AffineTransform, theme: Theme): void
@@ -339,13 +342,12 @@ class GameViewModel extends ViewModel {
 GameViewModel --> GameState
 
 class GameView {
-    - {static} SQUARE_SIZE: int
-    - {static} MARGINS: int
     - {static} VIEW_NAME: String
     - shakeOffset: float
     - gameViewModel: GameViewModel
     - optionsViewModel: OptionsViewModel
     - gameController: GameController
+'    - gamePanel: JPanel
 '    - menu: JButton
 '    - submit: JButton
     + GameView(GameViewModel, OptionsViewModel)

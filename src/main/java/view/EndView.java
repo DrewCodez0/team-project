@@ -130,7 +130,7 @@ public class EndView extends JPanel implements ActionListener, PropertyChangeLis
             titleLabel.setForeground(new Color(200, 80, 80));
         }
         messageLabel.setText(endState.getMessage());
-        wordLabel.setText("Word: " + endState.getWord());
+        //wordLabel.setText("Word: " + endState.getWord());
 
         if (endState.isWon()) {
             statsLabel.setText("You found the word in " + endState.getGuessesUsed() + " guesses.");
