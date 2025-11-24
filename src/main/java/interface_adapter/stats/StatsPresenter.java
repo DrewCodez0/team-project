@@ -1,5 +1,6 @@
 package interface_adapter.stats;
 
+import entity.Theme;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.start.StartViewModel;
 import use_case.stats.StatsOutputBoundary;
@@ -24,11 +25,9 @@ public class StatsPresenter implements StatsOutputBoundary {
     }
 
     @Override
-    public void prepareSuccessView() {
-        if (outputData != null && outputData.hasStats()) {
-            statsViewModel.setState(outputData.getStatsState());
-            statsViewModel.firePropertyChange();
-        }
+    public void prepareSuccessView(Theme theme) {
+        statsViewModel.setState(theme);
+        statsViewModel.firePropertyChange();
     }
 
     @Override
@@ -38,11 +37,7 @@ public class StatsPresenter implements StatsOutputBoundary {
 
     @Override
     public void prepareDefaultView() {
-        if (outputData != null) {
-            statsViewModel.setState(outputData.getStatsState());
-        } else {
-            statsViewModel.setState(new StatsState());
-        }
+        statsViewModel.setState(null);
         statsViewModel.firePropertyChange();
     }
 

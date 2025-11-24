@@ -106,7 +106,8 @@ public class AppBuilder {
     }
 
     public AppBuilder addStatsView() {
-        statsViewModel = new StatsViewModel();
+        final Theme theme = fileDataAccessObject.getDefaultTheme();
+        statsViewModel = new StatsViewModel(theme);
         statsView = new StatsView(statsViewModel);
         cardPanel.add(statsView, statsView.getViewName());
         return this;
@@ -164,7 +165,7 @@ public class AppBuilder {
                 statsViewModel, startViewModel);
         final StatsInputBoundary statsInteractor = new StatsInteractor(fileDataAccessObject, statsOutputBoundary);
 
-        final StatsController statsController = new StatsController(statsInteractor, statsOutputBoundary); //Added statsOutputBoundary
+        final StatsController statsController = new StatsController(statsInteractor);
         statsView.setStatsController(statsController);
         return this;
     }

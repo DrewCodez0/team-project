@@ -1,11 +1,14 @@
 package use_case.stats;
 
+import entity.Theme;
+
 public interface StatsOutputBoundary {
     /**
      * Prepares the success view for the Stats Use Case.
-     * This displays the user's stats.
+     * This displays the user's stats
+     * @param theme get stats
      */
-    void prepareSuccessView();
+    void prepareSuccessView(Theme theme);
 
     /**
      * Prepares the failure view for the Stats Use Case.

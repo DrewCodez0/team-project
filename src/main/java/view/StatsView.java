@@ -14,9 +14,9 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.List;
 
-public class StatsView extends JPanel implements ActionListener, PropertyChangeListener {
+public class StatsView extends JPanel implements ActionListener {
     private final String viewName = "stats";
-    private final StatsViewModel statsViewModel;
+    private final StatsViewModel statsViewModel = null;
     private StatsController statsController;
 
     private JLabel gamesPlayedLabel;
@@ -24,86 +24,78 @@ public class StatsView extends JPanel implements ActionListener, PropertyChangeL
     private JLabel currentStreakLabel;
     private JLabel maxStreakLabel;
     private JButton backButton;
-    private JPanel distributionPanel;
 
     public StatsView(StatsViewModel statsViewModel) {
-        this.statsViewModel = statsViewModel;
-        this.statsViewModel.addPropertyChangeListener(this);
 
-        setupUI();
-    }
-
-    private void setupUI() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setAlignmentX(Component.CENTER_ALIGNMENT);
+        final Theme theme = statsViewModel.getState();
+        ViewHelper.setTheme(this, theme);
 
-        StatsState currentState = this.statsViewModel.getState();
-        if (currentState.getTheme() != null) {
-            Theme theme = currentState.getTheme();
-            ViewHelper.setTheme(this, theme);
-        }
-
-        JLabel title = new JLabel("Statistics");
+        final JLabel title = new JLabel("Statistics");
+        title.setForeground(Color.WHITE);
+        ViewHelper.setTheme(title, theme, ViewHelper.TITLE);
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        title.setFont(new Font("Arial", Font.BOLD, 24));
 
-
-        gamesPlayedLabel = new JLabel("Games Played: 0");
+        gamesPlayedLabel = new JLabel("Games Played: ");
+        gamesPlayedLabel.setForeground(Color.WHITE);
+        ViewHelper.setTheme(gamesPlayedLabel, theme, ViewHelper.BUTTON);
         gamesPlayedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        winRateLabel = new JLabel("Win Rate: 0%");
+        winRateLabel = new JLabel("Win Rate: ");
+        winRateLabel.setForeground(Color.WHITE);
+        ViewHelper.setTheme(winRateLabel, theme, ViewHelper.BUTTON);
         winRateLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        currentStreakLabel = new JLabel("Current Streak: 0");
+        currentStreakLabel = new JLabel("Current Streak: ");
+        currentStreakLabel.setForeground(Color.WHITE);
+        ViewHelper.setTheme(currentStreakLabel, theme, ViewHelper.BUTTON);
         currentStreakLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        maxStreakLabel = new JLabel("Max Streak: 0");
+        maxStreakLabel = new JLabel("Max Streak: ");
+        maxStreakLabel.setForeground(Color.WHITE);
+        ViewHelper.setTheme(maxStreakLabel, theme, ViewHelper.BUTTON);
         maxStreakLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        backButton = new JButton("Back");
-        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        backButton.addActionListener(this);
-
-        // Initialize distributionPanel to avoid NullPointerException
-        distributionPanel = new JPanel();
-        distributionPanel.setLayout(new BoxLayout(distributionPanel, BoxLayout.Y_AXIS));
-        distributionPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        add(Box.createVerticalStrut(20));
         add(title);
-        add(Box.createVerticalStrut(20));
+        add(Box.createVerticalStrut(40));
         add(gamesPlayedLabel);
+        add(Box.createVerticalStrut(40));
         add(winRateLabel);
+        add(Box.createVerticalStrut(40));
         add(currentStreakLabel);
+        add(Box.createVerticalStrut(40));
         add(maxStreakLabel);
-        add(Box.createVerticalStrut(10));
-        add(distributionPanel);
-        add(Box.createVerticalStrut(20));
+        add(Box.createVerticalStrut(40));
+
+        backButton = new JButton("Back");
+        backButton.addActionListener(this);
+        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        ViewHelper.setTheme(backButton, theme, ViewHelper.BUTTON);
         add(backButton);
     }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(backButton)) {
             if (statsController != null) {
-                statsController.switchToStartView();
+                //statsController.switchToStartView();
             }
         }
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        if ("state".equals(evt.getPropertyName())) {
-            StatsState state = statsViewModel.getState();
-            updateStatsDisplay(state);
-
-            // Also update the theme if it can change
-            if (state.getTheme() != null) {
-                Theme theme = state.getTheme();
-                ViewHelper.setTheme(this, theme);
-            }
-        }
-    }
+//    public void propertyChange(PropertyChangeEvent evt) {
+//        if ("state".equals(evt.getPropertyName())) {
+//            StatsState state = statsViewModel.getState();
+//            updateStatsDisplay(state);
+//
+//            // Also update the theme if it can change
+//            if (state.getTheme() != null) {
+//                Theme theme = state.getTheme();
+//                ViewHelper.setTheme(this, theme);
+//            }
+//        }
+//    }
 
     private void updateStatsDisplay(StatsState state) {
         gamesPlayedLabel.setText("Games Played: " + state.getTotalGames());

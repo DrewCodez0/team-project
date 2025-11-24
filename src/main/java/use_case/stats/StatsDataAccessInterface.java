@@ -1,5 +1,6 @@
 package use_case.stats;
 
+import entity.Theme;
 import interface_adapter.stats.StatsState;
 
 /**
@@ -17,4 +18,10 @@ public interface StatsDataAccessInterface {
      * @param stats the StatsState representing the stats to save
      */
     void saveStats(StatsState stats);
+
+    /**
+     * Returns the default theme.
+     * @return the default theme
+     */
+    Theme getDefaultTheme();
 }
