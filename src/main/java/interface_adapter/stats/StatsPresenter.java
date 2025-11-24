@@ -42,7 +42,7 @@ public class StatsPresenter implements StatsOutputBoundary {
     }
 
     @Override
-    public void prepareStartView() {
+    public void prepareStartView(Theme theme) {
         viewManagerModel.setState(startViewModel.getViewName());
         viewManagerModel.firePropertyChange();
     }

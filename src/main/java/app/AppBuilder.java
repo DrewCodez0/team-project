@@ -109,6 +109,11 @@ public class AppBuilder {
         final Theme theme = fileDataAccessObject.getDefaultTheme();
         statsViewModel = new StatsViewModel(theme);
         statsView = new StatsView(statsViewModel);
+        final StatsOutputBoundary statsOutputBoundary = new StatsPresenter(viewManagerModel,
+                statsViewModel, startViewModel);
+        final StatsInputBoundary statsInteractor = new StatsInteractor(fileDataAccessObject, statsOutputBoundary);
+        final StatsController statsController = new StatsController(statsInteractor);
+        statsView.setStatsController(statsController);
         cardPanel.add(statsView, statsView.getViewName());
         return this;
     }

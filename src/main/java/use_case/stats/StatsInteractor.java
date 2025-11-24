@@ -1,8 +1,6 @@
 package use_case.stats;
 
 import entity.Theme;
-import interface_adapter.stats.StatsPresenter;
-import interface_adapter.stats.StatsState;
 
 
 public class StatsInteractor implements StatsInputBoundary {
@@ -19,4 +17,10 @@ public class StatsInteractor implements StatsInputBoundary {
         final Theme theme = statsDataAccess.getDefaultTheme();
         statsOutputBoundary.prepareSuccessView(theme);
     }
+
+    @Override
+    public void prepareStartView() {
+        statsOutputBoundary.prepareStartView(statsDataAccess.getDefaultTheme());
+    }
+
 }

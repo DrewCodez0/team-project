@@ -24,6 +24,8 @@ public class StatsView extends JPanel implements ActionListener {
     private JLabel currentStreakLabel;
     private JLabel maxStreakLabel;
     private JButton backButton;
+    private JButton importButton;
+    private JButton exportButton;
 
     public StatsView(StatsViewModel statsViewModel) {
 
@@ -72,15 +74,37 @@ public class StatsView extends JPanel implements ActionListener {
         backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         ViewHelper.setTheme(backButton, theme, ViewHelper.BUTTON);
         add(backButton);
+
+        final JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        ViewHelper.setTheme(buttonPanel, theme, ViewHelper.BUTTON);
+        buttonPanel.add(Box.createHorizontalGlue());
+
+        importButton = new JButton("Import");
+        importButton.addActionListener(this);
+        ViewHelper.setTheme(importButton, theme, ViewHelper.BUTTON);
+        buttonPanel.add(importButton);
+        buttonPanel.add(Box.createHorizontalStrut(20));
+
+        exportButton = new JButton("Export");
+        exportButton.addActionListener(this);
+        ViewHelper.setTheme(exportButton, theme, ViewHelper.BUTTON);
+        buttonPanel.add(exportButton);
+        buttonPanel.add(Box.createHorizontalGlue());
+        add(buttonPanel);
     }
 
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(backButton)) {
-            if (statsController != null) {
-                //statsController.switchToStartView();
-            }
+            statsController.switchToStartView();
+        }
+        else if (e.getSource().equals(importButton)) {
+
+        }
+        else if (e.getSource().equals(exportButton)){
+
         }
     }
 

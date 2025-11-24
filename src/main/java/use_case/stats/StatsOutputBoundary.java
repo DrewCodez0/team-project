@@ -25,6 +25,7 @@ public interface StatsOutputBoundary {
     /**
      * Prepares the start view for the Stats Use Case.
      * This returns the user to the main menu.
+     * @param theme get stats theme
      */
-    void prepareStartView();
+    void prepareStartView(Theme theme);
 }

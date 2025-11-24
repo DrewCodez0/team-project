@@ -14,4 +14,7 @@ public class StatsController {
         statsInteractor.execute(new StatsInputData());
     }
 
+    public void switchToStartView() {
+        statsInteractor.prepareStartView();
+    }
 }
