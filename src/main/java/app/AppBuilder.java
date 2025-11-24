@@ -1,6 +1,8 @@
 package app;
 
 import java.awt.CardLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -52,6 +54,7 @@ import view.StatsView;
 import view.ViewManager;
 
 public class AppBuilder {
+    private static final Dimension DEFAULT_WINDOW_SIZE = new Dimension(486, 713);
     private final JPanel cardPanel = new JPanel();
     private final CardLayout cardLayout = new CardLayout();
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
@@ -70,7 +73,7 @@ public class AppBuilder {
 
     private final FileDataAccessObject fileDataAccessObject = new FileDataAccessObject();
     private final WordDataAccessObject wordDataAccessObject = new WordDataAccessObject(
-            new APIWordGenerator2(), new APIWordChecker());
+            new APIWordGenerator(), new APIWordChecker());
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -164,7 +167,7 @@ public class AppBuilder {
                 statsViewModel, startViewModel);
         final StatsInputBoundary statsInteractor = new StatsInteractor(fileDataAccessObject, statsOutputBoundary);
 
-        final StatsController statsController = new StatsController(statsInteractor, statsOutputBoundary); //Added statsOutputBoundary
+        final StatsController statsController = new StatsController(statsInteractor, statsOutputBoundary);
         statsView.setStatsController(statsController);
         return this;
     }
@@ -172,6 +175,10 @@ public class AppBuilder {
     public JFrame build() {
         final JFrame application = new JFrame("Wordle");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        application.setMinimumSize(DEFAULT_WINDOW_SIZE);
+        application.setSize(DEFAULT_WINDOW_SIZE);
+        // This does not work
+        application.setMaximumSize(Toolkit.getDefaultToolkit().getScreenSize());
 
         application.add(cardPanel);
 
@@ -180,23 +187,4 @@ public class AppBuilder {
 
         return application;
     }
-
-//    public JFrame buildWithKeys() {
-//        final JFrame application = new JFrame("Wordle");
-//        application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//
-//        application.add(cardPanel);
-//        for (Component component : cardPanel.getComponents()) {
-//            if (component instanceof GameView) {
-//                System.out.println("test");
-//                application.addKeyListener((GameView)component);
-//                break;
-//            }
-//        }
-//
-//        viewManagerModel.setState(startView.getViewName());
-//        viewManagerModel.firePropertyChange();
-//
-//        return application;
-//    }
 }
