@@ -3,9 +3,6 @@ package use_case.stats;
 import entity.Theme;
 import interface_adapter.stats.StatsState;
 
-/**
- * DAO interface for the Stats Use Case.
- */
 public interface StatsDataAccessInterface {
     /**
      * Returns the user's stats.
