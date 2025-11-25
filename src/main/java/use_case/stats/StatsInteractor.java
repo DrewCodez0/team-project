@@ -1,7 +1,6 @@
 package use_case.stats;
 
-import interface_adapter.stats.StatsPresenter;
-import interface_adapter.stats.StatsState;
+import entity.Theme;
 
 public class StatsInteractor implements StatsInputBoundary {
     private final StatsDataAccessInterface statsDataAccess;
@@ -14,22 +13,13 @@ public class StatsInteractor implements StatsInputBoundary {
 
     @Override
     public void execute(StatsInputData inputData) {
-        try{
-            StatsState stats = statsDataAccess.getStats();
-
-            if(stats.getTotalGames() == 0){
-                StatsOutputData outputData = new StatsOutputData(stats, false);
-                ((StatsPresenter) statsOutputBoundary).setOutputData(outputData);
-                statsOutputBoundary.prepareDefaultView();
-            } else {
-                StatsOutputData outputData = new StatsOutputData(stats, true);
-                ((StatsPresenter) statsOutputBoundary).setOutputData(outputData);
-                statsOutputBoundary.prepareDefaultView();
-            }
-        }catch (Exception e){
-            StatsOutputData outputData = new StatsOutputData(new StatsState(), false);
-            ((StatsPresenter) statsOutputBoundary).setOutputData(outputData);
-            statsOutputBoundary.prepareFailView();
-        }
+        final Theme theme = statsDataAccess.getDefaultTheme();
+        statsOutputBoundary.prepareSuccessView(theme);
     }
+
+    @Override
+    public void prepareStartView() {
+        statsOutputBoundary.prepareStartView(statsDataAccess.getDefaultTheme());
+    }
+
 }

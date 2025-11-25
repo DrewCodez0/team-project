@@ -2,22 +2,25 @@ package interface_adapter.stats;
 
 import use_case.stats.StatsInputBoundary;
 import use_case.stats.StatsInputData;
-import use_case.stats.StatsOutputBoundary;
 
 public class StatsController {
     private final StatsInputBoundary statsInteractor;
-    private final StatsOutputBoundary statsOutputBoundary; // For view navigation
 
-    public StatsController(StatsInputBoundary statsInteractor, StatsOutputBoundary statsOutputBoundary) {
+    public StatsController(StatsInputBoundary statsInteractor) {
         this.statsInteractor = statsInteractor;
-        this.statsOutputBoundary = statsOutputBoundary;
     }
 
+    /**
+     * Executes the primary action to load and display statistics.
+     */
     public void execute() {
         statsInteractor.execute(new StatsInputData());
     }
 
+    /**
+     * Initiates the process of switching back to the start menu view.
+     */
     public void switchToStartView() {
-        statsOutputBoundary.prepareStartView();
+        statsInteractor.prepareStartView();
     }
 }

@@ -3,6 +3,7 @@ package use_case.start;
 import entity.Theme;
 
 public class StartInteractor implements StartInputBoundary {
+
     private final StartDataAccessInterface startDataAccess;
     private final StartOutputBoundary startPresenter;
 

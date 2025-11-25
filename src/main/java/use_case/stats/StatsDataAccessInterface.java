@@ -1,10 +1,8 @@
 package use_case.stats;
 
+import entity.Theme;
 import interface_adapter.stats.StatsState;
 
-/**
- * DAO interface for the Stats Use Case.
- */
 public interface StatsDataAccessInterface {
     /**
      * Returns the user's stats.
@@ -17,4 +15,10 @@ public interface StatsDataAccessInterface {
      * @param stats the StatsState representing the stats to save
      */
     void saveStats(StatsState stats);
+
+    /**
+     * Returns the default theme.
+     * @return the default theme
+     */
+    Theme getDefaultTheme();
 }
