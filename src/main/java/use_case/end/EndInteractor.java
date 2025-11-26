@@ -1,5 +1,7 @@
 package use_case.end;
 
+import entity.Stats;
+
 public class EndInteractor implements EndInputBoundary {
     private final EndDataAccessInterface endDataAccess;
     private final EndOutputBoundary endPresenter;
@@ -11,13 +13,13 @@ public class EndInteractor implements EndInputBoundary {
 
     @Override
     public void execute(EndInputData endInputData) {
-        final EndGameRecord record = new EndGameRecord(
-                endInputData.getWord(),
-                endInputData.isWon(),
-                endInputData.getGuessesUsed()
-        );
-
-        endDataAccess.saveGameRecord(record);
+        Stats stats = endDataAccess.getStats();
+        if (endInputData.isWon()) {
+            stats.recordWin();
+        } else {
+            stats.recordLoss();
+        }
+        endDataAccess.saveStats(stats);
 
         final EndOutputData outputData = new EndOutputData(
                 endInputData.getWord(),
@@ -43,6 +45,3 @@ public class EndInteractor implements EndInputBoundary {
         endPresenter.prepareGameView();
     }
 }
-
-
-

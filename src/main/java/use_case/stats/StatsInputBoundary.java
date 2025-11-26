@@ -1,20 +1,25 @@
 package use_case.stats;
 
-import entity.Theme;
-
-/**
- * Input boundary for the stats use case.
- */
 public interface StatsInputBoundary {
-
     /**
-     * Executes the stats use case.
-     * @param statsInputData the input data for the stats use case
+     * Executes the primary action to load and display statistics.
+     * @param inputData the input data
      */
-    void execute(StatsInputData statsInputData);
+    void execute(StatsInputData inputData);
 
     /**
-     * Enables Start View.
+     * Prepares the start view.
      */
     void prepareStartView();
+
+    /**
+     * Executes the export stats action.
+     */
+    void exportStats();
+
+    /**
+     * Executes the import stats action.
+     * @param importInputData The file to import from.
+     */
+    void importStats(StatsImportInputData importInputData);
 }

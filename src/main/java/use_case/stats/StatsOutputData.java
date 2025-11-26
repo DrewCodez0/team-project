@@ -1,17 +1,15 @@
 package use_case.stats;
 
-import interface_adapter.stats.StatsState;
+import entity.Stats;
 
 public class StatsOutputData {
-    private final StatsState statsState;
-    private final boolean hasStats;
+    private final Stats stats;
 
-    public StatsOutputData(StatsState statsState, boolean hasStats) {
-        this.statsState = statsState;
-        this.hasStats = hasStats;
+    public StatsOutputData(Stats stats) {
+        this.stats = stats;
     }
 
-    public StatsState getStatsState() {
-        return statsState;
+    public Stats getStats() {
+        return stats;
     }
 }

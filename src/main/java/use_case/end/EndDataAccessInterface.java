@@ -1,15 +1,17 @@
 package use_case.end;
 
+import entity.Stats;
+
 public interface EndDataAccessInterface {
     /**
-     * Saves a game record to persistent storage.
-     * @param record the game record to save
+     * Returns the user's stats.
+     * @return the Stats representing the user's stats
      */
-    void saveGameRecord(EndGameRecord record);
+    Stats getStats();
 
     /**
-     * Gets all saved game records.
-     * @return array of all game records
+     * Saves the user's stats.
+     * @param stats the Stats representing the stats to save
      */
-    EndGameRecord[] getGameRecords();
+    void saveStats(Stats stats);
 }
