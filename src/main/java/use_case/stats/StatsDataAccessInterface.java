@@ -1,8 +1,9 @@
 package use_case.stats;
 
+import java.io.IOException;
+
 import entity.Stats;
 import entity.Theme;
-import java.io.IOException;
 
 public interface StatsDataAccessInterface {
     /**

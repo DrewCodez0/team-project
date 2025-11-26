@@ -11,6 +11,7 @@ public interface StatsOutputBoundary {
     /**
      * Prepares the failure view for the Stats Use Case.
      * This executes when the DAO fails to get the stats data.
+     * @param message the error message
      */
     void prepareFailView(String message);
 

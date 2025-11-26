@@ -12,18 +12,30 @@ public class StartController {
         this.statsController = statsController;
     }
 
+    /**
+     * Executes the primary action to load start view of the game.
+     */
     public void prepareStartView() {
         startInteractor.prepareStartView();
     }
 
+    /**
+     * Initiates the process of switching to the game view.
+     */
     public void switchToGameView() {
         startInteractor.prepareGameView();
     }
 
+    /**
+     * Initiates the process of switching to the options view.
+     */
     public void switchToOptionsView() {
         startInteractor.prepareOptionsView();
     }
 
+    /**
+     * Initiates the process of switching to the stats view.
+     */
     public void switchToStatsView() {
         statsController.execute();
         startInteractor.prepareStatsView();

@@ -13,10 +13,11 @@ public class EndInteractor implements EndInputBoundary {
 
     @Override
     public void execute(EndInputData endInputData) {
-        Stats stats = endDataAccess.getStats();
+        final Stats stats = endDataAccess.getStats();
         if (endInputData.isWon()) {
             stats.recordWin();
-        } else {
+        }
+        else {
             stats.recordLoss();
         }
         endDataAccess.saveStats(stats);

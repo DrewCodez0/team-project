@@ -45,14 +45,14 @@ public class StatsPresenter implements StatsOutputBoundary {
 
     @Override
     public void prepareExportSuccessView(String message) {
-        StatsState statsState = statsViewModel.getState();
+        final StatsState statsState = statsViewModel.getState();
         statsState.setExportMessage(message);
         statsViewModel.firePropertyChange();
     }
 
     @Override
     public void prepareExportFailView(String message) {
-        StatsState statsState = statsViewModel.getState();
+        final StatsState statsState = statsViewModel.getState();
         statsState.setExportMessage(message);
         statsViewModel.firePropertyChange();
     }

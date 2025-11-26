@@ -29,11 +29,17 @@ public class Stats {
         return wins;
     }
 
+    /**
+     * Returns the user's win percentage.
+     * @return gets Win rate amount
+     */
     public double getWinPercentage() {
-        if (gamesPlayed == 0) {
-            return 0.0;
+        double winRate = 0.0;
+        final int percentageMultiplier = 100;
+        if (gamesPlayed != 0) {
+            winRate = ((double) wins / gamesPlayed) * percentageMultiplier;
         }
-        return ((double) wins / gamesPlayed) * 100;
+        return winRate;
     }
 
     public int getCurrentStreak() {
@@ -44,6 +50,9 @@ public class Stats {
         return maxStreak;
     }
 
+    /**
+     * Increments teh amount of wins.
+     */
     public void recordWin() {
         gamesPlayed++;
         wins++;
@@ -53,6 +62,9 @@ public class Stats {
         }
     }
 
+    /**
+     * Increments the amount of losses.
+     */
     public void recordLoss() {
         gamesPlayed++;
         currentStreak = 0;

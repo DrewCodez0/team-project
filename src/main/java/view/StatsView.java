@@ -1,12 +1,5 @@
 package view;
 
-import entity.DarkTheme;
-import entity.Theme;
-import interface_adapter.stats.StatsController;
-import interface_adapter.stats.StatsState;
-import interface_adapter.stats.StatsViewModel;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,8 +7,16 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 
+import javax.swing.*;
+
+import entity.DarkTheme;
+import entity.Theme;
+import interface_adapter.stats.StatsController;
+import interface_adapter.stats.StatsState;
+import interface_adapter.stats.StatsViewModel;
+
 public class StatsView extends JPanel implements ActionListener, PropertyChangeListener {
-    public final String viewName = "stats";
+    private final String viewName = "stats";
     private final StatsViewModel statsViewModel;
     private StatsController statsController;
 
@@ -104,14 +105,16 @@ public class StatsView extends JPanel implements ActionListener, PropertyChangeL
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(backButton)) {
             statsController.switchToStartView();
-        } else if (e.getSource().equals(importButton)) {
-            JFileChooser fileChooser = new JFileChooser();
-            int returnValue = fileChooser.showOpenDialog(this);
+        }
+        else if (e.getSource().equals(importButton)) {
+            final JFileChooser fileChooser = new JFileChooser();
+            final int returnValue = fileChooser.showOpenDialog(this);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = fileChooser.getSelectedFile();
+                final File selectedFile = fileChooser.getSelectedFile();
                 statsController.importStats(selectedFile);
             }
-        } else if (e.getSource().equals(exportButton)) {
+        }
+        else if (e.getSource().equals(exportButton)) {
             statsController.exportStats();
         }
     }
@@ -119,9 +122,9 @@ public class StatsView extends JPanel implements ActionListener, PropertyChangeL
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if ("state".equals(evt.getPropertyName())) {
-            StatsState state = (StatsState) evt.getNewValue();
+            final StatsState state = (StatsState) evt.getNewValue();
             updateStatsDisplay(state);
-            String exportMessage = state.getExportMessage();
+            final String exportMessage = state.getExportMessage();
             if (exportMessage != null) {
                 JOptionPane.showMessageDialog(this, exportMessage);
             }

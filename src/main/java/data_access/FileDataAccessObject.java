@@ -1,5 +1,9 @@
 package data_access;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+
 import entity.Stats;
 import entity.Theme;
 import interface_adapter.options.OptionsState;
@@ -7,10 +11,6 @@ import use_case.end.EndDataAccessInterface;
 import use_case.options.OptionsDataAccessInterface;
 import use_case.start.StartDataAccessInterface;
 import use_case.stats.StatsDataAccessInterface;
-
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
 public class FileDataAccessObject implements OptionsDataAccessInterface,
         StatsDataAccessInterface, StartDataAccessInterface, EndDataAccessInterface {
@@ -27,22 +27,23 @@ public class FileDataAccessObject implements OptionsDataAccessInterface,
             return new Stats();
         }
         try (BufferedReader reader = new BufferedReader(new FileReader(statsFile))) {
-            String header = reader.readLine();
+            final String header = reader.readLine();
             if (header == null) {
                 return new Stats();
             }
-            String line = reader.readLine();
+            final String line = reader.readLine();
             if (line == null) {
                 return new Stats();
             }
-            String[] values = line.split(",");
-            int gamesPlayed = Integer.parseInt(values[0]);
-            int wins = Integer.parseInt(values[1]);
-            int currentStreak = Integer.parseInt(values[2]);
-            int maxStreak = Integer.parseInt(values[3]);
+            final String[] values = line.split(",");
+            final int gamesPlayed = Integer.parseInt(values[0]);
+            final int wins = Integer.parseInt(values[1]);
+            final int currentStreak = Integer.parseInt(values[2]);
+            final int maxStreak = Integer.parseInt(values[3]);
 
             return new Stats(gamesPlayed, wins, currentStreak, maxStreak);
-        } catch (IOException | NumberFormatException e) {
+        }
+        catch (IOException | NumberFormatException exception) {
             return new Stats();
         }
     }
@@ -58,8 +59,8 @@ public class FileDataAccessObject implements OptionsDataAccessInterface,
                     stats.getCurrentStreak(),
                     stats.getMaxStreak()));
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        catch (IOException exception) {
+            throw new RuntimeException(exception);
         }
     }
 
@@ -77,7 +78,9 @@ public class FileDataAccessObject implements OptionsDataAccessInterface,
     }
 
     @Override
-    public void saveOptions(OptionsState options) {}
+    public void saveOptions(OptionsState options) {
+
+    }
 
     @Override
     public Theme getDefaultTheme() {
