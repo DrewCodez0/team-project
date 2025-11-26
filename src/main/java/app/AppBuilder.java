@@ -8,10 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import data_access.APIWordChecker;
-import data_access.APIWordGenerator;
-import data_access.FileDataAccessObject;
-import data_access.WordDataAccessObject;
+import data_access.*;
 import entity.Theme;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.end.EndController;
@@ -71,7 +68,7 @@ public class AppBuilder {
 
     private final FileDataAccessObject fileDataAccessObject = new FileDataAccessObject("stats.csv");
     private final WordDataAccessObject wordDataAccessObject = new WordDataAccessObject(
-            new APIWordGenerator(), new APIWordChecker());
+            new APIWordGenerator2(), new APIWordChecker());
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
