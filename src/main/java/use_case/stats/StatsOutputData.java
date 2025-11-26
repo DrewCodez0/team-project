@@ -14,8 +14,4 @@ public class StatsOutputData {
     public StatsState getStatsState() {
         return statsState;
     }
-
-    public boolean hasStats() {
-        return hasStats;
-    }
 }

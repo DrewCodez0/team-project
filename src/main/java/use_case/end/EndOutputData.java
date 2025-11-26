@@ -34,7 +34,7 @@ public class EndOutputData {
             return "That was close! The word was: " + word;
         }
         else {
-            return "The word was: " + word;
+            return "You won! The word was: " + word;
         }
     }
 
