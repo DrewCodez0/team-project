@@ -33,6 +33,7 @@ public class EndPresenter implements EndOutputBoundary {
         endState.setGuessesUsed(endOutputData.getGuessesUsed());
         endState.setMaxGuesses(endOutputData.getMaxGuesses());
         endState.setMessage(endOutputData.getMessage());
+        endState.setGuessHistory(endOutputData.getGuessHistory());
 
         endViewModel.setState(endState);
         endViewModel.firePropertyChange();
@@ -49,6 +50,7 @@ public class EndPresenter implements EndOutputBoundary {
         endState.setGuessesUsed(outputData.getGuessesUsed());
         endState.setMaxGuesses(outputData.getMaxGuesses());
         endState.setMessage(outputData.getMessage());
+        endState.setGuessHistory(outputData.getGuessHistory());
 
         endViewModel.setState(endState);
         endViewModel.firePropertyChange();
