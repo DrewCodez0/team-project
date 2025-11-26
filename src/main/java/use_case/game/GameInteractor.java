@@ -1,6 +1,7 @@
 package use_case.game;
 
 import data_access.WordNotFoundException;
+import entity.AbstractWord;
 import entity.WordFactory;
 import interface_adapter.game.GameState;
 import interface_adapter.options.OptionsState;
@@ -89,8 +90,9 @@ public class GameInteractor implements GameInputBoundary {
                 && gameState.getWords()[gameState.getCurrentGuess()].isCorrect();
         final int guessesUsed = gameState.getCurrentGuess() + 1;
         final int maxGuesses = gameState.getMaxGuesses();
+        final AbstractWord[] guessHistory = gameState.getWords();
 
-        final EndInputData endInputData = new EndInputData(word, won, guessesUsed, maxGuesses);
+        final EndInputData endInputData = new EndInputData(word, won, guessesUsed, maxGuesses, guessHistory);
         endInteractor.execute(endInputData);
     }
 }
