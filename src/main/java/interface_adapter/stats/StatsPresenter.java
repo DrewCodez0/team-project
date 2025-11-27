@@ -25,6 +25,7 @@ public class StatsPresenter implements StatsOutputBoundary {
         statsState.setWinPercentage(outputData.getStats().getWinPercentage());
         statsState.setCurrentStreak(outputData.getStats().getCurrentStreak());
         statsState.setMaxStreak(outputData.getStats().getMaxStreak());
+        statsState.setTheme(outputData.getTheme());
         statsViewModel.setState(statsState);
         statsViewModel.firePropertyChange();
     }

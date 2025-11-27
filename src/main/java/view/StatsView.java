@@ -9,7 +9,6 @@ import java.io.File;
 
 import javax.swing.*;
 
-import entity.DarkTheme;
 import entity.Theme;
 import interface_adapter.stats.StatsController;
 import interface_adapter.stats.StatsState;
@@ -33,36 +32,23 @@ public class StatsView extends JPanel implements ActionListener, PropertyChangeL
         this.statsViewModel.addPropertyChangeListener(this);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        final int lineSpacing = 40;
-
-        final Theme theme = new DarkTheme();
-        ViewHelper.setTheme(this, theme);
 
         final JLabel title = new JLabel("Statistics");
-        title.setForeground(Color.WHITE);
-        ViewHelper.setTheme(title, theme, ViewHelper.TITLE);
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         gamesPlayedLabel = new JLabel("Games Played: ");
-        gamesPlayedLabel.setForeground(Color.WHITE);
-        ViewHelper.setTheme(gamesPlayedLabel, theme, ViewHelper.BUTTON);
         gamesPlayedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         winRateLabel = new JLabel("Win Rate: ");
-        winRateLabel.setForeground(Color.WHITE);
-        ViewHelper.setTheme(winRateLabel, theme, ViewHelper.BUTTON);
         winRateLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         currentStreakLabel = new JLabel("Current Streak: ");
-        currentStreakLabel.setForeground(Color.WHITE);
-        ViewHelper.setTheme(currentStreakLabel, theme, ViewHelper.BUTTON);
         currentStreakLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         maxStreakLabel = new JLabel("Max Streak: ");
-        maxStreakLabel.setForeground(Color.WHITE);
-        ViewHelper.setTheme(maxStreakLabel, theme, ViewHelper.BUTTON);
         maxStreakLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        final int lineSpacing = 40;
         add(title);
         add(Box.createVerticalStrut(lineSpacing));
         add(gamesPlayedLabel);
@@ -79,23 +65,19 @@ public class StatsView extends JPanel implements ActionListener, PropertyChangeL
         backButton = new JButton("Back");
         backButton.addActionListener(this);
         backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        ViewHelper.setTheme(backButton, theme, ViewHelper.BUTTON);
         add(backButton);
 
         final JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        ViewHelper.setTheme(buttonPanel, theme);
         buttonPanel.add(Box.createHorizontalGlue());
 
         importButton = new JButton("Import");
         importButton.addActionListener(this);
-        ViewHelper.setTheme(importButton, theme, ViewHelper.BUTTON);
         buttonPanel.add(importButton);
         buttonPanel.add(Box.createHorizontalStrut(verticalSpacing));
 
         exportButton = new JButton("Export");
         exportButton.addActionListener(this);
-        ViewHelper.setTheme(exportButton, theme, ViewHelper.BUTTON);
         buttonPanel.add(exportButton);
         buttonPanel.add(Box.createHorizontalGlue());
         add(buttonPanel);
@@ -123,7 +105,26 @@ public class StatsView extends JPanel implements ActionListener, PropertyChangeL
     public void propertyChange(PropertyChangeEvent evt) {
         if ("state".equals(evt.getPropertyName())) {
             final StatsState state = (StatsState) evt.getNewValue();
-            updateStatsDisplay(state);
+            final Theme theme = state.getTheme();
+
+            if (theme != null) {
+                ViewHelper.setTheme(this, theme);
+                ViewHelper.setTheme((JLabel) getComponent(0), theme, ViewHelper.TITLE); // Title
+                ViewHelper.setTheme(gamesPlayedLabel, theme, ViewHelper.BUTTON);
+                ViewHelper.setTheme(winRateLabel, theme, ViewHelper.BUTTON);
+                ViewHelper.setTheme(currentStreakLabel, theme, ViewHelper.BUTTON);
+                ViewHelper.setTheme(maxStreakLabel, theme, ViewHelper.BUTTON);
+                ViewHelper.setTheme(backButton, theme, ViewHelper.BUTTON);
+                ViewHelper.setTheme((JPanel) getComponent(11), theme); // buttonPanel
+                ViewHelper.setTheme(importButton, theme, ViewHelper.BUTTON);
+                ViewHelper.setTheme(exportButton, theme, ViewHelper.BUTTON);
+            }
+
+            gamesPlayedLabel.setText(StatsViewModel.GAMES_PLAYED_LABEL + ": " + state.getGamesPlayed());
+            winRateLabel.setText(String.format(StatsViewModel.WIN_PERCENTAGE_LABEL + ": %.1f%%", state.getWinPercentage()));
+            currentStreakLabel.setText(StatsViewModel.CURRENT_STREAK_LABEL + ": " + state.getCurrentStreak());
+            maxStreakLabel.setText(StatsViewModel.MAX_STREAK_LABEL + ": " + state.getMaxStreak());
+
             final String exportMessage = state.getExportMessage();
             if (exportMessage != null) {
                 JOptionPane.showMessageDialog(this, exportMessage);
@@ -133,13 +134,6 @@ public class StatsView extends JPanel implements ActionListener, PropertyChangeL
                 state.setError(null);
             }
         }
-    }
-
-    private void updateStatsDisplay(StatsState state) {
-        gamesPlayedLabel.setText("Games Played: " + state.getGamesPlayed());
-        winRateLabel.setText(String.format("Win Rate: %.1f%%", state.getWinPercentage()));
-        currentStreakLabel.setText("Current Streak: " + state.getCurrentStreak());
-        maxStreakLabel.setText("Max Streak: " + state.getMaxStreak());
     }
 
     public String getViewName() {

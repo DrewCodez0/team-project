@@ -1,10 +1,13 @@
 package interface_adapter.stats;
 
+import entity.Theme;
+
 public class StatsState {
     private int gamesPlayed;
     private double winPercentage;
     private int currentStreak;
     private int maxStreak;
+    private Theme theme;
     private String error;
     private String exportMessage;
 
@@ -38,6 +41,14 @@ public class StatsState {
 
     public void setMaxStreak(int maxStreak) {
         this.maxStreak = maxStreak;
+    }
+
+    public Theme getTheme() {
+        return theme;
+    }
+
+    public void setTheme(Theme theme) {
+        this.theme = theme;
     }
 
     public String getError() {

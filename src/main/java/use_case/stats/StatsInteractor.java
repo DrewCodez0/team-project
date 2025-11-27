@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import entity.Stats;
+import entity.Theme;
 
 public class StatsInteractor implements StatsInputBoundary {
     private final StatsDataAccessInterface statsDataAccess;
@@ -19,7 +20,8 @@ public class StatsInteractor implements StatsInputBoundary {
     @Override
     public void execute(StatsInputData inputData) {
         final Stats stats = statsDataAccess.getStats();
-        final StatsOutputData outputData = new StatsOutputData(stats);
+        final Theme theme = statsDataAccess.getDefaultTheme();
+        final StatsOutputData outputData = new StatsOutputData(stats, theme);
         statsOutputBoundary.prepareSuccessView(outputData);
     }
 
@@ -64,7 +66,8 @@ public class StatsInteractor implements StatsInputBoundary {
             final Stats newStats = new Stats(gamesPlayed, wins, currentStreak, maxStreak);
             statsDataAccess.saveStats(newStats);
 
-            final StatsOutputData outputData = new StatsOutputData(newStats);
+            final Theme theme = statsDataAccess.getDefaultTheme();
+            final StatsOutputData outputData = new StatsOutputData(newStats, theme);
             statsOutputBoundary.prepareSuccessView(outputData);
 
         }
