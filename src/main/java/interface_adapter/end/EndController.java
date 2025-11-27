@@ -1,5 +1,6 @@
 package interface_adapter.end;
 
+import entity.AbstractWord;
 import use_case.end.EndInputBoundary;
 import use_case.end.EndInputData;
 
@@ -10,8 +11,8 @@ public class EndController {
         this.endInteractor = endInputBoundary;
     }
 
-    public void execute(String word, boolean won, int guessesUsed, int maxGuesses) {
-        final EndInputData endInputData = new EndInputData(word, won, guessesUsed, maxGuesses);
+    public void execute(String word, boolean won, int guessesUsed, int maxGuesses, AbstractWord[] guessHistory) {
+        final EndInputData endInputData = new EndInputData(word, won, guessesUsed, maxGuesses, guessHistory);
         endInteractor.execute(endInputData);
     }
 
@@ -19,8 +20,8 @@ public class EndController {
         endInteractor.prepareStartView();
     }
 
-    public void replay(String word, boolean won, int guessesUsed, int maxGuesses) {
-        final EndInputData inputData = new EndInputData(word, won, guessesUsed, maxGuesses);
+    public void replay(String word, boolean won, int guessesUsed, int maxGuesses, AbstractWord[] guessHistory) {
+        final EndInputData inputData = new EndInputData(word, won, guessesUsed, maxGuesses,  guessHistory);
         endInteractor.prepareNewGame(inputData);
     }
 }
