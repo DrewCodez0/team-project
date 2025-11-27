@@ -1,11 +1,14 @@
 package interface_adapter.end;
 
+import entity.AbstractWord;
+
 public class EndState {
     private String word;
     private boolean won;
     private int guessesUsed;
     private int maxGuesses;
     private String message;
+    private AbstractWord[] guessHistory;
 
     public EndState() {
         this.word = "";
@@ -13,6 +16,7 @@ public class EndState {
         this.guessesUsed = 0;
         this.maxGuesses = 6;
         this.message = "";
+        this.guessHistory = null;
     }
 
     public String getWord() {
@@ -53,5 +57,13 @@ public class EndState {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public AbstractWord[]  getGuessHistory() {
+        return guessHistory;
+    }
+
+    public void setGuessHistory(AbstractWord[] guessHistory) {
+        this.guessHistory = guessHistory;
     }
 }

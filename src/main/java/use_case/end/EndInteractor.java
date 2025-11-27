@@ -23,7 +23,8 @@ public class EndInteractor implements EndInputBoundary {
                 endInputData.getWord(),
                 endInputData.isWon(),
                 endInputData.getGuessesUsed(),
-                endInputData.getMaxGuesses()
+                endInputData.getMaxGuesses(),
+                endInputData.getGuessHistory()
         );
         if (endInputData.isWon()) {
             endPresenter.prepareSuccessView(outputData);
@@ -43,6 +44,4 @@ public class EndInteractor implements EndInputBoundary {
         endPresenter.prepareGameView();
     }
 }
-
-
 

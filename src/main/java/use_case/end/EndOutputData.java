@@ -1,23 +1,28 @@
 package use_case.end;
 
+import entity.AbstractWord;
+
 public class EndOutputData {
     private final String word;
     private final boolean won;
     private final int guessesUsed;
     private final int maxGuesses;
     private final String message;
+    private final AbstractWord[] guessHistory;
 
-    public EndOutputData(String word, boolean won, int guessesUsed, int maxGuesses) {
+    public EndOutputData(String word, boolean won, int guessesUsed, int maxGuesses,
+                         AbstractWord[] guessHistory) {
         this.word = word;
         this.won = won;
         this.guessesUsed = guessesUsed;
         this.maxGuesses = maxGuesses;
+        this.guessHistory = guessHistory;
 
         if (won) {
             this.message = generateWinMessage(guessesUsed);
         }
         else {
-            this.message = "You lost! The word was: " + word;
+            this.message = "The word was: " + word;
         }
     }
 
@@ -51,5 +56,9 @@ public class EndOutputData {
 
     public String getMessage() {
         return message;
+    }
+
+    public AbstractWord[] getGuessHistory() {
+        return guessHistory;
     }
 }
