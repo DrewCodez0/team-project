@@ -1,5 +1,8 @@
 package interface_adapter.stats;
 
+import java.io.File;
+
+import use_case.stats.StatsImportInputData;
 import use_case.stats.StatsInputBoundary;
 import use_case.stats.StatsInputData;
 
@@ -22,5 +25,21 @@ public class StatsController {
      */
     public void switchToStartView() {
         statsInteractor.prepareStartView();
+    }
+
+    /**
+     * Initiates the process of exporting the stats.
+     */
+    public void exportStats() {
+        statsInteractor.exportStats();
+    }
+
+    /**
+     * Initiates the process of importing stats from a file.
+     * @param file The file to import from.
+     */
+    public void importStats(File file) {
+        final StatsImportInputData importInputData = new StatsImportInputData(file);
+        statsInteractor.importStats(importInputData);
     }
 }

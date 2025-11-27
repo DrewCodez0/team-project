@@ -3,49 +3,44 @@ package interface_adapter.stats;
 import entity.Theme;
 
 public class StatsState {
-    private int totalGames;
-    private int gamesWon;
-    private int currentWinStreak;
-    private int longestWinStreak;
+    private int gamesPlayed;
+    private double winPercentage;
+    private int currentStreak;
+    private int maxStreak;
     private Theme theme;
+    private String error;
+    private String exportMessage;
 
-    public StatsState() {
-        this.totalGames = 0;
-        this.gamesWon = 0;
-        this.currentWinStreak = 0;
-        this.longestWinStreak = 0;
+    public int getGamesPlayed() {
+        return gamesPlayed;
     }
 
-    public int getTotalGames() {
-        return totalGames;
+    public void setGamesPlayed(int gamesPlayed) {
+        this.gamesPlayed = gamesPlayed;
     }
 
-    public void setTotalGames(int totalGames) {
-        this.totalGames = totalGames;
+    public double getWinPercentage() {
+        return winPercentage;
     }
 
-    public int getGamesWon() {
-        return gamesWon;
+    public void setWinPercentage(double winPercentage) {
+        this.winPercentage = winPercentage;
     }
 
-    public void setGamesWon(int gamesWon) {
-        this.gamesWon = gamesWon;
+    public int getCurrentStreak() {
+        return currentStreak;
     }
 
-    public int getCurrentWinStreak() {
-        return currentWinStreak;
+    public void setCurrentStreak(int currentStreak) {
+        this.currentStreak = currentStreak;
     }
 
-    public void setCurrentWinStreak(int currentWinStreak) {
-        this.currentWinStreak = currentWinStreak;
+    public int getMaxStreak() {
+        return maxStreak;
     }
 
-    public int getLongestWinStreak() {
-        return longestWinStreak;
-    }
-
-    public void setLongestWinStreak(int longestWinStreak) {
-        this.longestWinStreak = longestWinStreak;
+    public void setMaxStreak(int maxStreak) {
+        this.maxStreak = maxStreak;
     }
 
     public Theme getTheme() {
@@ -54,5 +49,21 @@ public class StatsState {
 
     public void setTheme(Theme theme) {
         this.theme = theme;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public String getExportMessage() {
+        return exportMessage;
+    }
+
+    public void setExportMessage(String exportMessage) {
+        this.exportMessage = exportMessage;
     }
 }

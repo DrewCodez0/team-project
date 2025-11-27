@@ -8,12 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import data_access.APIWordChecker;
-import data_access.APIWordGenerator;
-import data_access.APIWordGenerator2;
-import data_access.DebugWordGenerator;
-import data_access.FileDataAccessObject;
-import data_access.WordDataAccessObject;
+import data_access.*;
 import entity.Theme;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.end.EndController;
@@ -71,9 +66,9 @@ public class AppBuilder {
     private StatsView statsView;
     private StatsViewModel statsViewModel;
 
-    private final FileDataAccessObject fileDataAccessObject = new FileDataAccessObject();
+    private final FileDataAccessObject fileDataAccessObject = new FileDataAccessObject("stats.csv");
     private final WordDataAccessObject wordDataAccessObject = new WordDataAccessObject(
-            new APIWordGenerator(), new APIWordChecker());
+            new APIWordGenerator2(), new APIWordChecker());
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -109,25 +104,25 @@ public class AppBuilder {
     }
 
     public AppBuilder addStatsView() {
-        final Theme theme = fileDataAccessObject.getDefaultTheme();
-        statsViewModel = new StatsViewModel(theme);
+        statsViewModel = new StatsViewModel();
         statsView = new StatsView(statsViewModel);
-        final StatsOutputBoundary statsOutputBoundary = new StatsPresenter(viewManagerModel,
-                statsViewModel, startViewModel);
-        final StatsInputBoundary statsInteractor = new StatsInteractor(fileDataAccessObject, statsOutputBoundary);
-        final StatsController statsController = new StatsController(statsInteractor);
-        statsView.setStatsController(statsController);
         cardPanel.add(statsView, statsView.getViewName());
         return this;
     }
 
     public AppBuilder addStartUseCase() {
+        final StatsOutputBoundary statsOutputBoundary = new StatsPresenter(viewManagerModel,
+                statsViewModel, startViewModel);
+        final StatsInputBoundary statsInteractor = new StatsInteractor(fileDataAccessObject, statsOutputBoundary);
+        final StatsController statsController = new StatsController(statsInteractor);
+        statsView.setStatsController(statsController);
+
         final StartOutputBoundary startOutputBoundary = new StartPresenter(viewManagerModel,
                 startViewModel, gameViewModel, optionsViewModel, statsViewModel);
         final StartInputBoundary startInteractor = new StartInteractor(
                 fileDataAccessObject, startOutputBoundary);
 
-        final StartController startController = new StartController(startInteractor);
+        final StartController startController = new StartController(startInteractor, statsController);
         startView.setStartController(startController);
         return this;
     }
@@ -165,16 +160,6 @@ public class AppBuilder {
 
         final OptionsController optionsController = new OptionsController(optionsInteractor);
         optionsView.setOptionsController(optionsController);
-        return this;
-    }
-
-    public AppBuilder addStatsUseCase() {
-        final StatsOutputBoundary statsOutputBoundary = new StatsPresenter(viewManagerModel,
-                statsViewModel, startViewModel);
-        final StatsInputBoundary statsInteractor = new StatsInteractor(fileDataAccessObject, statsOutputBoundary);
-
-        final StatsController statsController = new StatsController(statsInteractor);
-        statsView.setStatsController(statsController);
         return this;
     }
 

@@ -1,17 +1,22 @@
 package use_case.stats;
 
-import interface_adapter.stats.StatsState;
+import entity.Stats;
+import entity.Theme;
 
 public class StatsOutputData {
-    private final StatsState statsState;
-    private final boolean hasStats;
+    private final Stats stats;
+    private final Theme theme;
 
-    public StatsOutputData(StatsState statsState, boolean hasStats) {
-        this.statsState = statsState;
-        this.hasStats = hasStats;
+    public StatsOutputData(Stats stats, Theme theme) {
+        this.stats = stats;
+        this.theme = theme;
     }
 
-    public StatsState getStatsState() {
-        return statsState;
+    public Stats getStats() {
+        return stats;
+    }
+
+    public Theme getTheme() {
+        return theme;
     }
 }
