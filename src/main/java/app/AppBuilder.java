@@ -68,7 +68,7 @@ public class AppBuilder {
 
     private final FileDataAccessObject fileDataAccessObject = new FileDataAccessObject("stats.csv");
     private final WordDataAccessObject wordDataAccessObject = new WordDataAccessObject(
-            new DebugWordGenerator(), new DebugWordChecker());
+            new APIWordGenerator2(), new APIWordChecker2());
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
