@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -23,10 +24,14 @@ import javax.swing.SwingConstants;
 
 import org.jetbrains.annotations.NotNull;
 
+import entity.DarkTheme;
+import entity.LightTheme;
+import entity.SusTheme;
 import entity.Theme;
 import interface_adapter.game.GameController;
 import interface_adapter.game.GameState;
 import interface_adapter.game.GameViewModel;
+import interface_adapter.options.OptionsState;
 import interface_adapter.options.OptionsViewModel;
 
 public class GameView extends JPanel implements ActionListener, PropertyChangeListener {
@@ -38,7 +43,11 @@ public class GameView extends JPanel implements ActionListener, PropertyChangeLi
     private final OptionsViewModel optionsViewModel;
     private GameController gameController;
 
+    private final ArrayList<JButton> buttonList;
+    private final ArrayList<JPanel> bufferList;
+    private final JLabel title;
     private final JPanel gamePanel;
+    private final JPanel buttons;
     private final JButton menu;
     private final JButton submit;
 
@@ -46,29 +55,53 @@ public class GameView extends JPanel implements ActionListener, PropertyChangeLi
         this.gameViewModel = gameViewModel;
         this.gameViewModel.addPropertyChangeListener(this);
         this.optionsViewModel = optionsViewModel;
+        this.optionsViewModel.addPropertyChangeListener(this);
 
         this.addPropertyChangeListener(this);
-
-        ViewHelper.setTheme(this, getTheme());
-
-        final JLabel title = new JLabel("Wordle");
+        title = new JLabel("Wordle");
         title.setHorizontalAlignment(SwingConstants.CENTER);
-        ViewHelper.setTheme(title, getTheme(), ViewHelper.TITLE);
 
         gamePanel = new JPanel();
         gamePanel.setPreferredSize(new Dimension(this.optionsViewModel.getState().getLength() * ViewHelper.SQUARE_SIZE,
                 this.optionsViewModel.getState().getMaxGuesses() * ViewHelper.SQUARE_SIZE));
-        ViewHelper.setTheme(gamePanel, getTheme(), ViewHelper.LETTER);
 
-        final ArrayList<JButton> buttonList = new ArrayList<>();
+        buttonList = new ArrayList<>();
         menu = new JButton("Menu");
         buttonList.add(menu);
         submit = new JButton("Submit");
         buttonList.add(submit);
-        final JPanel buttons = initializeButtons(buttonList);
+        buttons = initializeButtons();
 
-        initializeLayout(title, gamePanel, buttons);
+        bufferList = new ArrayList<>();
+
+        initializeLayout();
         initializeInputHandlers();
+        applyTheme(getTheme());
+
+        /*
+         * This is a temporary solution to test applying theme changes.
+         * Press enter in the terminal to cycle the themes.
+         */
+        (new Thread(() -> {
+            int test = 0;
+            final Scanner scanner = new Scanner(System.in);
+            while (true) {
+                scanner.nextLine();
+                final OptionsState options = this.optionsViewModel.getState();
+                if (test % 3 == 0) {
+                    options.setTheme(new SusTheme());
+                }
+                else if (test % 3 == 1) {
+                    options.setTheme(new LightTheme());
+                }
+                else if (test % 3 == 2) {
+                    options.setTheme(new DarkTheme());
+                }
+                this.optionsViewModel.setState(options);
+                this.optionsViewModel.firePropertyChange(OptionsViewModel.THEME);
+                test++;
+            }
+        })).start();
     }
 
     @Override
@@ -87,15 +120,19 @@ public class GameView extends JPanel implements ActionListener, PropertyChangeLi
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         switch (evt.getPropertyName()) {
-            case "state":
+            case GameViewModel.STATE:
                 repaint();
                 break;
-            case "shake":
+            case GameViewModel.SHAKE:
                 final WordShake shake = new WordShake(this);
                 shake.start();
                 break;
-            case "new":
+            case GameViewModel.NEW_GAME:
                 gameController.startNewGame();
+                break;
+            case OptionsViewModel.THEME:
+                applyTheme(getTheme());
+                repaint();
                 break;
             default:
                 break;
@@ -118,23 +155,38 @@ public class GameView extends JPanel implements ActionListener, PropertyChangeLi
         this.gameController = gameController;
     }
 
-    @NotNull
-    private JPanel initializeButtons(ArrayList<JButton> buttonList) {
-        final JPanel buttons = new JPanel();
+    private void applyTheme(Theme theme) {
+        ViewHelper.setTheme(this, theme);
+        ViewHelper.setTheme(title, theme, ViewHelper.TITLE);
+        ViewHelper.setTheme(gamePanel, theme, ViewHelper.LETTER);
         for (JButton button : buttonList) {
-            ViewHelper.setTheme(button, getTheme(), ViewHelper.BUTTON);
-            button.addActionListener(this);
-            buttons.add(button);
+            ViewHelper.setTheme(button, theme, ViewHelper.BUTTON);
         }
-        ViewHelper.setTheme(buttons, getTheme());
-        return buttons;
+        ViewHelper.setTheme(buttons, theme);
+        for (JPanel panel : bufferList) {
+            ViewHelper.setTheme(panel, theme);
+        }
     }
 
-    private void initializeLayout(JLabel title, JPanel gamePanel, JPanel buttons) {
-        final JPanel buffer1 = ViewHelper.createBufferPanel(ViewHelper.MARGINS, 50, getTheme());
-        final JPanel buffer2 = ViewHelper.createBufferPanel(ViewHelper.MARGINS, 50, getTheme());
-        final JPanel buffer3 = ViewHelper.createBufferPanel(50, ViewHelper.MARGINS, getTheme());
+    @NotNull
+    private JPanel initializeButtons() {
+        final JPanel buttonPanel = new JPanel();
+        for (JButton button : buttonList) {
+            button.addActionListener(this);
+            buttonPanel.add(button);
+        }
+        return buttonPanel;
+    }
+
+    private void initializeLayout() {
+        final JPanel buffer1 = ViewHelper.createBufferPanel(ViewHelper.MARGINS, 50);
+        bufferList.add(buffer1);
+        final JPanel buffer2 = ViewHelper.createBufferPanel(ViewHelper.MARGINS, 50);
+        bufferList.add(buffer2);
+        final JPanel buffer3 = ViewHelper.createBufferPanel(50, ViewHelper.MARGINS);
+        bufferList.add(buffer3);
         final JPanel bottomPanel = new JPanel();
+        bufferList.add(bottomPanel);
         bottomPanel.add(buffer3);
         bottomPanel.add(buttons);
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));

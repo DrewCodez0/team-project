@@ -65,13 +65,11 @@ public final class ViewHelper {
      * Creates an empty JPanel to be used as a buffer.
      * @param width the width of the panel
      * @param height the height of the panel
-     * @param theme the theme to apply to this panel
      * @return a JPanel with the specified dimensions and theme
      */
-    public static JPanel createBufferPanel(int width, int height, Theme theme) {
+    public static JPanel createBufferPanel(int width, int height) {
         final JPanel bufferPanel = new JPanel();
         bufferPanel.setPreferredSize(new Dimension(width, height));
-        setTheme(bufferPanel, theme);
         return bufferPanel;
     }
 
