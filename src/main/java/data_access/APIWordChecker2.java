@@ -5,10 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-public class APIWordChecker extends AbstractAPI implements WordChecker {
+public class APIWordChecker2 extends AbstractAPI implements WordChecker {
     private static final Map<Language, String> LANGUAGES = new EnumMap<>(Language.class);
     private static final String JSON_WORD = "word";
     private JSONObject wordData;
@@ -16,10 +15,14 @@ public class APIWordChecker extends AbstractAPI implements WordChecker {
 
     static {
         LANGUAGES.put(Language.ENGLISH, "en");
+        LANGUAGES.put(Language.FRENCH, "fr");
+        LANGUAGES.put(Language.SPANISH, "es");
+        LANGUAGES.put(Language.ITALIAN, "it");
+        LANGUAGES.put(Language.GERMAN, "de");
     }
 
-    public APIWordChecker() {
-        super("https://api.dictionaryapi.dev/api/v2/entries/");
+    public APIWordChecker2() {
+        super("https://freedictionaryapi.com/api/v1/entries/");
         wordData = null;
         validCache = new HashMap<>();
     }
@@ -33,23 +36,17 @@ public class APIWordChecker extends AbstractAPI implements WordChecker {
      */
     @Override
     public boolean isValidWord(String word, Language language) {
-        if (!language.equals(Language.ENGLISH)) {
-            throw new IllegalArgumentException("Language not supported");
-        }
+        // Not including Language in the validCache will definitely cause bugs later
         if (validCache.containsKey(word)) {
             return validCache.get(word);
         }
-        try {
-            final JSONArray data = fetch(String.format("%s/%s", LANGUAGES.get(language), word));
-            final JSONObject tempData = data.getJSONObject(0);
-            // This will throw an exception if it does not exist
-            tempData.getString(JSON_WORD);
-            wordData = tempData;
-        }
-        catch (JSONException ex) {
+        final JSONArray data = fetch(String.format("%s/%s", LANGUAGES.get(language), word.toLowerCase()));
+        final JSONObject tempData = data.getJSONObject(0);
+        if (tempData.getJSONArray("entries").isEmpty()) {
             validCache.put(word, false);
             return false;
         }
+        wordData = tempData;
         validCache.put(word, true);
         return true;
     }
@@ -59,21 +56,22 @@ public class APIWordChecker extends AbstractAPI implements WordChecker {
         if (wordData != null && wordData.getString(JSON_WORD).equals(word)) {
             return getDefinitionFromJSON(wordData);
         }
-        final JSONArray data = fetch(String.format("%s/%s", LANGUAGES.get(language), word));
-        try {
-            final JSONObject tempData = data.getJSONObject(0);
-            // This will throw an exception if it does not exist
-            tempData.getString(JSON_WORD);
-            wordData = tempData;
-            return getDefinitionFromJSON(wordData);
-        }
-        catch (JSONException ex) {
-            throw new WordNotFoundException("Could not get definition of word");
-        }
+        final JSONArray data = fetch(String.format("%s/%s", LANGUAGES.get(language), word.toLowerCase()));
+        final JSONObject tempData = data.getJSONObject(0);
+        final String definition = getDefinitionFromJSON(tempData);
+        wordData = tempData;
+        return definition;
     }
 
     private static String getDefinitionFromJSON(JSONObject data) {
-        return data.getJSONArray("meanings").getJSONObject(0).getJSONArray("definitions")
-                .getJSONObject(0).getString("definition");
+        final JSONArray entries = data.getJSONArray("entries");
+        if (entries.isEmpty()) {
+            throw new WordNotFoundException("Could not fetch word");
+        }
+        final JSONArray senses = entries.getJSONObject(0).getJSONArray("senses");
+        if (senses.isEmpty()) {
+            throw new WordNotFoundException("Could not get definition of word");
+        }
+        return senses.getJSONObject(0).getString("definition");
     }
 }

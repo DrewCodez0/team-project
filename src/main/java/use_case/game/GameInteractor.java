@@ -1,5 +1,9 @@
 package use_case.game;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+
 import data_access.WordNotFoundException;
 import entity.AbstractWord;
 import entity.WordFactory;
@@ -46,6 +50,7 @@ public class GameInteractor implements GameInputBoundary {
                 gameInputData.submit();
                 gamePresenter.updateGameView(gameInputData);
                 if (gameInputData.finished()) {
+                    copyScoreToClipboard(gameInputData);
                     prepareEndView(gameInputData);
                 }
                 else {
@@ -94,5 +99,10 @@ public class GameInteractor implements GameInputBoundary {
 
         final EndInputData endInputData = new EndInputData(word, won, guessesUsed, maxGuesses, guessHistory);
         endInteractor.execute(endInputData);
+    }
+
+    private void copyScoreToClipboard(GameState state) {
+        final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(new StringSelection(state.toString()), null);
     }
 }

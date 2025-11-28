@@ -94,6 +94,18 @@ public class GameState {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
+        sb.append("Word: ");
+        sb.append(this.wordToGuess.toString());
+        sb.append(", ");
+        if (finished() && !words[getCurrentGuess()].isCorrect()) {
+            sb.append('X');
+        }
+        else {
+            sb.append(getCurrentGuess() + 1);
+        }
+        sb.append('/');
+        sb.append(this.getMaxGuesses());
+        sb.append("\n");
         for (AbstractWord word : words) {
             for (int i = 0; i < word.length(); i++) {
                 sb.append(COLORS.get(word.getLetter(i).getStatus()));

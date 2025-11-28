@@ -5,6 +5,5 @@ public enum Language {
     FRENCH,
     SPANISH,
     ITALIAN,
-    GERMAN,
-    PORTUGUESE
+    GERMAN
 }

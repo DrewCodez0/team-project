@@ -12,7 +12,6 @@ import okhttp3.Response;
 abstract class AbstractAPI {
     protected static final String CONTENT_TYPE_LABEL = "Content-Type";
     protected static final String CONTENT_TYPE_JSON = "application/json";
-    protected static final String FAIL_STRING = "Could not convert to JSONArray";
     protected final String baseURL;
 
     protected AbstractAPI(String baseURL) {
@@ -33,7 +32,7 @@ abstract class AbstractAPI {
                 throw new WordNotFoundException("Could not fetch word");
             }
             if (bodyString.charAt(0) == '{') {
-                throw new JSONException(FAIL_STRING);
+                return new JSONArray("[" + bodyString + "]");
             }
             final JSONArray responseBody = new JSONArray(bodyString);
             if (!responseBody.isEmpty()) {
@@ -44,12 +43,7 @@ abstract class AbstractAPI {
             }
         }
         catch (IOException | JSONException exp) {
-            if (exp.getMessage().equals(FAIL_STRING)) {
-                throw new JSONException(FAIL_STRING);
-            }
-            else {
-                throw new WordNotFoundException("Could not fetch word");
-            }
+            throw new WordNotFoundException("Could not fetch word");
         }
     }
 }
