@@ -59,7 +59,7 @@ public class EndState {
         this.message = message;
     }
 
-    public AbstractWord[]  getGuessHistory() {
+    public AbstractWord[] getGuessHistory() {
         return guessHistory;
     }
 

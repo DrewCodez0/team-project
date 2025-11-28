@@ -6,12 +6,17 @@ import interface_adapter.ViewModel;
  * The View Model for the Game View.
  */
 public class GameViewModel extends ViewModel<GameState> {
-    public static final String STATE = "state";
+    public static final String STATE = "gamestate";
     public static final String SHAKE = "shake";
     public static final String NEW_GAME = "new";
 
     public GameViewModel() {
         super("game");
         setState(new GameState());
+    }
+
+    @Override
+    public void firePropertyChange() {
+        firePropertyChange(STATE);
     }
 }

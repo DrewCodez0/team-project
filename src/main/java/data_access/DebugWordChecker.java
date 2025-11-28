@@ -2,6 +2,8 @@ package data_access;
 
 import java.util.regex.Pattern;
 
+import entity.WordFactory;
+
 /**
  * Debug version of a WordChecker that returns basic results without using an API.
  */
@@ -14,7 +16,7 @@ public class DebugWordChecker implements WordChecker {
      */
     @Override
     public boolean isValidWord(String word, Language language) {
-        return Pattern.matches("^[aA]+$", word);
+        return word.equals(WordFactory.DEFAULT_WORD) || Pattern.matches("^[aA]+$", word);
     }
 
     /**
