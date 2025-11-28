@@ -3,7 +3,7 @@ package entity;
 import java.util.Arrays;
 
 public final class WordFactory {
-    private static final String DEFAULT_WORD = "ERROR";
+    public static final String DEFAULT_WORD = "ERROR";
 
     private WordFactory() {
     }

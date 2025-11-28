@@ -26,66 +26,59 @@ import entity.Theme;
 import interface_adapter.end.EndController;
 import interface_adapter.end.EndState;
 import interface_adapter.end.EndViewModel;
-import interface_adapter.start.StartViewModel;
+import interface_adapter.options.OptionsState;
+import interface_adapter.options.OptionsViewModel;
 
 public class EndView extends JPanel implements ActionListener, PropertyChangeListener {
     private static final String VIEW_NAME = "end";
-    //private final optionsViewModel;
     private final EndViewModel endViewModel;
     private EndController endController;
 
+    private final ArrayList<JButton> buttons;
     private final JLabel titleLabel;
     private final JLabel messageLabel;
-    private final JLabel wordLabel;
+//    private final JLabel wordLabel;
     private final JLabel statsLabel;
     private final JButton playAgain;
     private final JButton export;
     private final JButton menu;
     private final JButton exit;
 
-    public EndView(EndViewModel endViewModel, StartViewModel startViewModel) {
+    public EndView(EndViewModel endViewModel, OptionsViewModel optionsViewModel) {
         this.endViewModel = endViewModel;
         this.endViewModel.addPropertyChangeListener(this);
-
-        final Theme theme = startViewModel.getState();
-        ViewHelper.setTheme(this, theme);
+        optionsViewModel.addPropertyChangeListener(this);
 
         final ArrayList<JLabel> labels = new ArrayList<>();
         titleLabel = new JLabel("Game Over", SwingConstants.CENTER);
-        ViewHelper.setTheme(titleLabel, theme, ViewHelper.TITLE);
         labels.add(titleLabel);
 
         messageLabel = new JLabel("", SwingConstants.CENTER);
-//        messageLabel.setFont(new Font("Verdana", Font.BOLD, 35));
-        ViewHelper.setTheme(messageLabel, theme, ViewHelper.BUTTON);
         labels.add(messageLabel);
 
-        wordLabel = new JLabel("", SwingConstants.CENTER);
-        wordLabel.setFont(new Font("Tahoma", Font.BOLD, 40));
-        labels.add(wordLabel);
+//        wordLabel = new JLabel("", SwingConstants.CENTER);
+//        labels.add(wordLabel);
 
         statsLabel = new JLabel("", SwingConstants.CENTER);
-        statsLabel.setFont(new Font("Verdana", Font.PLAIN, 25));
         labels.add(statsLabel);
 
         for (JLabel label : labels) {
-            ViewHelper.setTheme(label, theme);
             label.setAlignmentX(Component.CENTER_ALIGNMENT);
+            label.setHorizontalTextPosition(SwingConstants.CENTER);
         }
 
-        final ArrayList<JButton> buttonList = new ArrayList<>();
+        buttons = new ArrayList<>();
         playAgain = new JButton("Play Again");
-        buttonList.add(playAgain);
+        buttons.add(playAgain);
         export = new JButton("Export");
-        buttonList.add(export);
+        buttons.add(export);
         menu = new JButton("Main Menu");
-        buttonList.add(menu);
+        buttons.add(menu);
         exit = new JButton("Exit");
-        buttonList.add(exit);
+        buttons.add(exit);
         final Dimension buttonDimension = new Dimension(300, 70);
-        for (JButton button : buttonList) {
+        for (JButton button : buttons) {
             button.setAlignmentX(Component.CENTER_ALIGNMENT);
-            ViewHelper.setTheme(button, theme, ViewHelper.BUTTON);
             button.setPreferredSize(buttonDimension);
             button.addActionListener(this);
         }
@@ -94,14 +87,16 @@ public class EndView extends JPanel implements ActionListener, PropertyChangeLis
 
         final ArrayList<JComponent> components = new ArrayList<>();
         components.addAll(labels);
-        components.addAll(buttonList);
-        final int[] struts = {50, 30, 20, 20, 40, 15, 15, 15};
+        components.addAll(buttons);
+        final int[] struts = {50, 20, 20, 40, 15, 15, 15};
 
         for (int i = 0; i < struts.length; i++) {
             this.add(Box.createVerticalStrut(struts[i]));
             this.add(components.get(i));
         }
         this.add(Box.createVerticalGlue());
+
+        applyTheme(optionsViewModel.getState().getTheme());
     }
 
     @Override
@@ -120,6 +115,20 @@ public class EndView extends JPanel implements ActionListener, PropertyChangeLis
         }
         else if (e.getSource() == exit) {
             System.exit(0);
+        }
+    }
+
+    private void applyTheme(Theme theme) {
+        ViewHelper.setTheme(this, theme);
+        ViewHelper.setTheme(titleLabel, theme, ViewHelper.TITLE);
+        ViewHelper.setTheme(messageLabel, theme, ViewHelper.BUTTON);
+        // messageLabel.setFont(new Font("Verdana", Font.BOLD, 35));
+//        ViewHelper.setTheme(wordLabel, theme);
+//        wordLabel.setFont(new Font("Tahoma", Font.BOLD, 40));
+        ViewHelper.setTheme(statsLabel, theme);
+        statsLabel.setFont(new Font("Verdana", Font.PLAIN, 25));
+        for (JButton button : buttons) {
+            ViewHelper.setTheme(button, theme, ViewHelper.BUTTON);
         }
     }
 
@@ -168,6 +177,10 @@ public class EndView extends JPanel implements ActionListener, PropertyChangeLis
             export.append("The word was ").append(endState.getWord()).append(".");
         }
 
+        // This copies the results to the user's clipboard
+//        final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+//        clipboard.setContents(new StringSelection(export.toString()), null);
+
         final JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Export Score");
 
@@ -179,7 +192,7 @@ public class EndView extends JPanel implements ActionListener, PropertyChangeLis
         final int returnVal = fileChooser.showSaveDialog(this);
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File fileToSave  = fileChooser.getSelectedFile();
+            File fileToSave = fileChooser.getSelectedFile();
 
             if (!fileToSave.toPath().endsWith(".txt")) {
                 fileToSave = new File(fileToSave.getAbsolutePath() + ".txt");
@@ -191,7 +204,7 @@ public class EndView extends JPanel implements ActionListener, PropertyChangeLis
                 JOptionPane.showMessageDialog(this, "Export Success!", "Export",
                         JOptionPane.INFORMATION_MESSAGE);
             }
-            catch (IOException e) {
+            catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, "Export Failed!", "Error",
                         JOptionPane.ERROR_MESSAGE);
             }
@@ -200,9 +213,13 @@ public class EndView extends JPanel implements ActionListener, PropertyChangeLis
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals("state")) {
+        if (evt.getPropertyName().equals(EndViewModel.STATE)) {
             final EndState endState = (EndState) evt.getNewValue();
             updateView(endState);
+        }
+        else if (evt.getPropertyName().equals(OptionsViewModel.THEME)) {
+            final Theme theme = ((OptionsState) evt.getNewValue()).getTheme();
+            applyTheme(theme);
         }
     }
 

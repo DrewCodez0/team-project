@@ -10,12 +10,15 @@ import java.io.File;
 import javax.swing.*;
 
 import entity.Theme;
+import interface_adapter.options.OptionsState;
+import interface_adapter.options.OptionsViewModel;
 import interface_adapter.stats.StatsController;
 import interface_adapter.stats.StatsState;
 import interface_adapter.stats.StatsViewModel;
 
 public class StatsView extends JPanel implements ActionListener, PropertyChangeListener {
-    private final String viewName = "stats";
+    private static final String VIEW_NAME = "stats";
+
     private final StatsViewModel statsViewModel;
     private StatsController statsController;
 
@@ -27,9 +30,10 @@ public class StatsView extends JPanel implements ActionListener, PropertyChangeL
     private final JButton importButton;
     private final JButton exportButton;
 
-    public StatsView(StatsViewModel statsViewModel) {
+    public StatsView(StatsViewModel statsViewModel, OptionsViewModel optionsViewModel) {
         this.statsViewModel = statsViewModel;
         this.statsViewModel.addPropertyChangeListener(this);
+        optionsViewModel.addPropertyChangeListener(this);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -108,16 +112,7 @@ public class StatsView extends JPanel implements ActionListener, PropertyChangeL
             final Theme theme = state.getTheme();
 
             if (theme != null) {
-                ViewHelper.setTheme(this, theme);
-                ViewHelper.setTheme((JLabel) getComponent(0), theme, ViewHelper.TITLE); // Title
-                ViewHelper.setTheme(gamesPlayedLabel, theme, ViewHelper.BUTTON);
-                ViewHelper.setTheme(winRateLabel, theme, ViewHelper.BUTTON);
-                ViewHelper.setTheme(currentStreakLabel, theme, ViewHelper.BUTTON);
-                ViewHelper.setTheme(maxStreakLabel, theme, ViewHelper.BUTTON);
-                ViewHelper.setTheme(backButton, theme, ViewHelper.BUTTON);
-                ViewHelper.setTheme((JPanel) getComponent(11), theme); // buttonPanel
-                ViewHelper.setTheme(importButton, theme, ViewHelper.BUTTON);
-                ViewHelper.setTheme(exportButton, theme, ViewHelper.BUTTON);
+                applyTheme(theme);
             }
 
             gamesPlayedLabel.setText(StatsViewModel.GAMES_PLAYED_LABEL + ": " + state.getGamesPlayed());
@@ -134,10 +129,28 @@ public class StatsView extends JPanel implements ActionListener, PropertyChangeL
                 state.setError(null);
             }
         }
+        else if (evt.getPropertyName().equals(OptionsViewModel.THEME)) {
+            final OptionsState optionsState = (OptionsState) evt.getNewValue();
+            applyTheme(optionsState.getTheme());
+            repaint();
+        }
+    }
+
+    private void applyTheme(Theme theme) {
+        ViewHelper.setTheme(this, theme);
+        ViewHelper.setTheme((JLabel) getComponent(0), theme, ViewHelper.TITLE); // Title
+        ViewHelper.setTheme(gamesPlayedLabel, theme, ViewHelper.BUTTON);
+        ViewHelper.setTheme(winRateLabel, theme, ViewHelper.BUTTON);
+        ViewHelper.setTheme(currentStreakLabel, theme, ViewHelper.BUTTON);
+        ViewHelper.setTheme(maxStreakLabel, theme, ViewHelper.BUTTON);
+        ViewHelper.setTheme(backButton, theme, ViewHelper.BUTTON);
+        ViewHelper.setTheme((JPanel) getComponent(11), theme); // buttonPanel
+        ViewHelper.setTheme(importButton, theme, ViewHelper.BUTTON);
+        ViewHelper.setTheme(exportButton, theme, ViewHelper.BUTTON);
     }
 
     public String getViewName() {
-        return viewName;
+        return VIEW_NAME;
     }
 
     /**

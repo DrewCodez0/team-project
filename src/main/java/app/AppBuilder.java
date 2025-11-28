@@ -68,28 +68,39 @@ public class AppBuilder {
 
     private final FileDataAccessObject fileDataAccessObject = new FileDataAccessObject("stats.csv");
     private final WordDataAccessObject wordDataAccessObject = new WordDataAccessObject(
-            new APIWordGenerator2(), new APIWordChecker2());
+            new DebugWordGenerator(), new DebugWordChecker());
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
     }
 
     public AppBuilder addStartView() {
-        final Theme theme = fileDataAccessObject.getDefaultTheme();
-        startViewModel = new StartViewModel(theme);
-        startView = new StartView(startViewModel);
-        cardPanel.add(startView, startView.getViewName());
+        if (optionsViewModel == null) {
+            this.addOptionsView();
+        }
+        if (startViewModel == null) {
+            final Theme theme = fileDataAccessObject.getDefaultTheme();
+            startViewModel = new StartViewModel(theme);
+            startView = new StartView(startViewModel, optionsViewModel);
+            cardPanel.add(startView, startView.getViewName());
+        }
         return this;
     }
 
     public AppBuilder addEndView() {
+        if (optionsViewModel == null) {
+            this.addStartView();
+        }
         endViewModel = new EndViewModel();
-        endView = new EndView(endViewModel, startViewModel);
+        endView = new EndView(endViewModel, optionsViewModel);
         cardPanel.add(endView, endView.getViewName());
         return this;
     }
 
     public AppBuilder addGameView() {
+        if (optionsViewModel == null) {
+            this.addOptionsView();
+        }
         gameViewModel = new GameViewModel();
         gameView = new GameView(gameViewModel, optionsViewModel);
         cardPanel.add(gameView, gameView.getViewName());
@@ -97,15 +108,20 @@ public class AppBuilder {
     }
 
     public AppBuilder addOptionsView() {
-        optionsViewModel = new OptionsViewModel();
-        optionsView = new OptionsView(optionsViewModel);
-        cardPanel.add(optionsView, optionsView.getViewName());
+        if (optionsViewModel == null) {
+            optionsViewModel = new OptionsViewModel();
+            optionsView = new OptionsView(optionsViewModel);
+            cardPanel.add(optionsView, optionsView.getViewName());
+        }
         return this;
     }
 
     public AppBuilder addStatsView() {
+        if (optionsViewModel == null) {
+            this.addOptionsView();
+        }
         statsViewModel = new StatsViewModel();
-        statsView = new StatsView(statsViewModel);
+        statsView = new StatsView(statsViewModel, optionsViewModel);
         cardPanel.add(statsView, statsView.getViewName());
         return this;
     }
@@ -129,7 +145,7 @@ public class AppBuilder {
 
     public AppBuilder addEndUseCase() {
         final EndOutputBoundary endOutputBoundary = new EndPresenter(viewManagerModel,
-                endViewModel, gameViewModel, startViewModel, optionsViewModel);
+                endViewModel, gameViewModel, startViewModel);
         final EndInputBoundary endInteractor = new EndInteractor(fileDataAccessObject, endOutputBoundary);
 
         final EndController endController = new EndController(endInteractor);
@@ -142,7 +158,7 @@ public class AppBuilder {
                 gameViewModel, startViewModel, endViewModel);
 
         final EndOutputBoundary endOutputBoundary = new EndPresenter(viewManagerModel,
-                endViewModel, gameViewModel, startViewModel, optionsViewModel);
+                endViewModel, gameViewModel, startViewModel);
         final EndInputBoundary endInteractor = new EndInteractor(fileDataAccessObject, endOutputBoundary);
 
         final GameInputBoundary gameInteractor = new GameInteractor(wordDataAccessObject, gameOutputBoundary,
