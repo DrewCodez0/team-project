@@ -15,7 +15,6 @@ public class APIWordGenerator extends AbstractAPI implements WordGenerator {
         LANGUAGES.put(Language.ITALIAN, "it");
         LANGUAGES.put(Language.GERMAN, "ge");
         LANGUAGES.put(Language.FRENCH, "fr");
-        LANGUAGES.put(Language.PORTUGUESE, "pt-br");
     }
 
     public APIWordGenerator() {
@@ -33,7 +32,7 @@ public class APIWordGenerator extends AbstractAPI implements WordGenerator {
         final JSONArray responseBody = fetch(String.format("?length=%s&lang=%s", length, LANGUAGES.get(language)));
         try {
             // return responseBody.getJSONObject(0).getString("word").toUpperCase();
-            System.out.println(responseBody.getString(0).toUpperCase());
+//            System.out.println(responseBody.getString(0).toUpperCase());
             return responseBody.getString(0).toUpperCase();
         }
         catch (JSONException ex) {

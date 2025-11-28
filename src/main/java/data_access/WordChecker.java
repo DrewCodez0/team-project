@@ -1,7 +1,5 @@
 package data_access;
 
-import org.json.JSONArray;
-
 public interface WordChecker {
     /**
      * Checks if the given word is a valid word. For a word to be valid it must be in the dictionary
@@ -14,9 +12,10 @@ public interface WordChecker {
 
     /**
      * Returns the definitions of the given word.
+     *
      * @param word the word to get the definition of
      * @param language the language of the word
-     * @return a JSONArray containing the definitions of the word
+     * @return the definition of the word
      */
-    JSONArray getDefinitions(String word, Language language);
+    String getDefinition(String word, Language language);
 }
