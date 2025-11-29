@@ -1,8 +1,10 @@
 package data_access;
 
+import entity.WordFactory;
+
 public class DebugWordGenerator implements WordGenerator {
     @Override
     public String getRandomWord(int length, Language language) {
-        return "ERROR";
+        return WordFactory.DEFAULT_WORD;
     }
 }
