@@ -23,10 +23,10 @@ import interface_adapter.start.StartViewModel;
 public class StartView extends JPanel implements ActionListener, PropertyChangeListener {
     private static final String VIEW_NAME = "start";
 
-    private StartViewModel startViewModel;
-    private OptionsViewModel optionsViewModel;
-    private StartController startController;
     private final StartViewModel startViewModel;
+    private final OptionsViewModel optionsViewModel;
+    private StartController startController;
+    private final HelpView helpView;
 
     private final JLabel title;
     private final JPanel buttons;
@@ -37,9 +37,11 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
     private final JButton help;
     private final JButton exit;
 
-    public StartView(StartViewModel startViewModel) {
+    public StartView(StartViewModel startViewModel, OptionsViewModel optionsViewModel) {
         this.startViewModel = startViewModel;
-        startViewModel.addPropertyChangeListener(this);
+        this.startViewModel.addPropertyChangeListener(this);
+        this.optionsViewModel = optionsViewModel;
+        this.optionsViewModel.addPropertyChangeListener(this);
 
         title = new JLabel("Wordle");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -110,17 +112,13 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
         this.add(title);
         this.add(buttons);
 
+        helpView = new HelpView((JFrame) SwingUtilities.getWindowAncestor(this));
+
         applyTheme(getTheme());
     }
 
     private void showHelpView() {
-        final Theme theme = startViewModel.getState();
-        final HelpView helpView = new HelpView(
-                (JFrame) SwingUtilities.getWindowAncestor(this),
-                theme
-        );
         helpView.setVisible(true);
-
     }
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -157,6 +155,7 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
             ViewHelper.setTheme(button, theme, ViewHelper.BUTTON);
         }
         ViewHelper.setTheme(buttons, theme);
+        helpView.applyTheme(theme);
     }
 
     /**

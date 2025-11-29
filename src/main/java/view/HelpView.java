@@ -1,55 +1,77 @@
 package view;
 
-import entity.Theme;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
+import entity.Theme;
+
+/**
+ * Custom JDialog to show instructions for how to play the game.
+ */
 public class HelpView extends JDialog {
     private static final String TUTORIAL_FILE = "tutorial.txt";
     private static final int TUTORIAL_WIDTH = 400;
     private static final int TUTORIAL_HEIGHT = 500;
 
-    public HelpView(JFrame frame, Theme theme) {
+    private final JTextArea textArea;
+    private final JScrollPane scrollPane;
+    private final JButton closeButton;
+    private final JPanel buttonPanel;
+
+    public HelpView(JFrame frame) {
         super(frame, "How To Play", true);
 
+        super.setDefaultCloseOperation(HIDE_ON_CLOSE);
         setSize(TUTORIAL_WIDTH, TUTORIAL_HEIGHT);
         setLocationRelativeTo(frame);
         setLayout(new BorderLayout());
 
-        String tutorialFile = loadTutorialFile();
+        final String tutorialFile = loadTutorialFile();
 
-        JTextArea textArea = new JTextArea(tutorialFile);
+        textArea = new JTextArea(tutorialFile);
         textArea.setEditable(false);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
-        textArea.setFont(new Font("Arial", Font.PLAIN, 12));
-        ViewHelper.setTheme(textArea, theme);
+        textArea.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 16));
 
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        ViewHelper.setTheme(scrollPane, theme);
+        scrollPane = new JScrollPane(textArea);
+        closeButton = new JButton("Close");
+        closeButton.addActionListener(evt -> dispose());
 
-        JButton closeButton = new JButton("Close");
-        ViewHelper.setTheme(closeButton, theme, ViewHelper.BUTTON);
-        closeButton.addActionListener(e -> dispose());
-
-        JPanel buttonPanel = new JPanel();
-        ViewHelper.setTheme(buttonPanel, theme);
+        buttonPanel = new JPanel();
         buttonPanel.add(closeButton);
 
         add(scrollPane, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Apply the specified theme to this view.
+     * @param theme the theme to apply
+     */
+    public void applyTheme(Theme theme) {
+        ViewHelper.setTheme(textArea, theme);
+        ViewHelper.setTheme(scrollPane, theme);
+        ViewHelper.setTheme(closeButton, theme, ViewHelper.BUTTON);
+        ViewHelper.setTheme(buttonPanel, theme);
+    }
+
     private String loadTutorialFile() {
-        StringBuilder stringBuilder = new StringBuilder();
+        final StringBuilder stringBuilder = new StringBuilder();
 
         try {
-            InputStream inputStream = getClass().getClassLoader().
-                    getResourceAsStream(TUTORIAL_FILE);
+            final InputStream inputStream = getClass().getClassLoader().getResourceAsStream(TUTORIAL_FILE);
 
             if (inputStream == null) {
                 return "Tutorial file not found!";
@@ -62,7 +84,7 @@ public class HelpView extends JDialog {
                 }
             }
         }
-        catch (IOException e) {
+        catch (IOException ex) {
             return "Error loading tutorial file!";
         }
 
