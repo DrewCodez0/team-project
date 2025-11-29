@@ -20,14 +20,14 @@ public class LightTheme implements Theme {
     public LightTheme() {
         this.backgroundColor = Color.white;
         this.textColor = Color.black;
-        this.outlineColor = Color.gray;
+        this.outlineColor = Color.darkGray;
         this.letterFont = new Font("Tahoma", Font.PLAIN, 50);
         this.titleFont = new Font("Verdana", Font.BOLD, 70);
         this.buttonFont = new Font("Verdana", Font.PLAIN, 30);
         this.statusColors = new EnumMap<>(Status.class);
-        this.statusColors.put(Status.INITIAL, new Color(100, 100, 100));
-        this.statusColors.put(Status.IN_PROGRESS, new Color(120, 120, 120));
-        this.statusColors.put(Status.WRONG, new Color(140, 120, 120));
+        this.statusColors.put(Status.INITIAL, new Color(120, 120, 120));
+        this.statusColors.put(Status.IN_PROGRESS, new Color(140, 140, 140));
+        this.statusColors.put(Status.WRONG, new Color(170, 140, 140));
         this.statusColors.put(Status.PARTIAL, new Color(201, 180, 88));
         this.statusColors.put(Status.CORRECT, new Color(106, 170, 100));
         this.letterBox = new RoundRectangle2D.Double(0, 0, 1.0, 1.0, 0.1, 0.1);

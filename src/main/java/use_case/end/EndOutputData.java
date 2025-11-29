@@ -27,15 +27,17 @@ public class EndOutputData {
     }
 
     private String generateWinMessage(int guesses) {
+        final String prefix;
         if (guesses == 1) {
-            return "First try! The word was: " + word;
+            prefix = "First try!";
         }
-        else if (guesses ==  maxGuesses) {
-            return "That was close! The word was: " + word;
+        else if (guesses == maxGuesses) {
+            prefix = "That was close!";
         }
         else {
-            return "You won! The word was: " + word;
+            prefix = "";
         }
+        return "<html><center>" + prefix + "<br>" + "The word was: " + word + "</center></html>";
     }
 
     public String getWord() {
