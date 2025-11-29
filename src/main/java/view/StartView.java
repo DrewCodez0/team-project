@@ -8,10 +8,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import entity.Theme;
 import interface_adapter.start.StartController;
@@ -21,13 +18,16 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
     private static final String VIEW_NAME = "start";
 
     private StartController startController;
+    private final StartViewModel startViewModel;
 
     private final JButton play;
     private final JButton options;
     private final JButton stats;
+    private final JButton help;
     private final JButton exit;
 
     public StartView(StartViewModel startViewModel) {
+        this.startViewModel = startViewModel;
         startViewModel.addPropertyChangeListener(this);
 
         final Theme theme = startViewModel.getState();
@@ -45,6 +45,8 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
         buttonList.add(options);
         stats = new JButton("Stats");
         buttonList.add(stats);
+        help = new JButton("Help");
+        buttonList.add(help);
         exit = new JButton("Exit");
         buttonList.add(exit);
         for (JButton button : buttonList) {
@@ -79,6 +81,14 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
                 }
         );
 
+        help.addActionListener(
+                evt -> {
+                    if (evt.getSource().equals(help)) {
+                        showHelpView();
+                    }
+                }
+        );
+
         exit.addActionListener(
                 evt -> {
                     if (evt.getSource().equals(exit)) {
@@ -92,6 +102,15 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
         this.add(buttons);
     }
 
+    private void showHelpView() {
+        final Theme theme = startViewModel.getState();
+        final HelpView helpView = new HelpView(
+                (JFrame) SwingUtilities.getWindowAncestor(this),
+                theme
+        );
+        helpView.setVisible(true);
+
+    }
     @Override
     public void actionPerformed(ActionEvent e) {
         // This doesnt need to do anything
