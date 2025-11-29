@@ -1,0 +1,34 @@
+====================
+HOW TO PLAY WORDLE
+====================
+
+OBJECTIVE:
+- Guess the 5 letter long target word in 6 attempts or fewer.
+
+COLOR MEANINGS:
+⬜️⬜️⬜️⬜️⬜️ STEAM
+- Type in any valid word that is 5 characters long and press submit or enter.
+
+🟥🟥🟥🟥🟥 PLUMB
+- If a letter appears red, it does not exist within the target word.
+
+🟨🟥🟨🟥🟥 WINDY
+- If a letter appears yellow, it is in the wrong position.
+
+🟨🟩🟩🟥🟥 CLOTH
+- If a letter appears green, it is in the right position.
+
+🟩🟩🟥🟥🟩 RAZOR
+- The target word could have more than one of the same letter.
+
+- You will have 6 attempts to guess the target word. Good luck!
+
+TIPS:
+- Start with words that have common vowels (A, E, I, O, U)
+- Pay attention to which letters are correct but in wrong positions
+- Use the process of elimination
+
+STATISTICS AND SAVING YOUR SCORES:
+- Your game statistics are tracked automatically.
+- You can view / import / export your statistics in the "Stats" page.
+- You can export your score using the "Export" button in the result screen.
