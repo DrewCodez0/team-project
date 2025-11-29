@@ -26,6 +26,7 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
     private StartViewModel startViewModel;
     private OptionsViewModel optionsViewModel;
     private StartController startController;
+    private final StartViewModel startViewModel;
 
     private final JLabel title;
     private final JPanel buttons;
@@ -33,13 +34,12 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
     private final JButton play;
     private final JButton options;
     private final JButton stats;
+    private final JButton help;
     private final JButton exit;
 
-    public StartView(StartViewModel startViewModel, OptionsViewModel optionsViewModel) {
+    public StartView(StartViewModel startViewModel) {
         this.startViewModel = startViewModel;
-        this.startViewModel.addPropertyChangeListener(this);
-        this.optionsViewModel = optionsViewModel;
-        this.optionsViewModel.addPropertyChangeListener(this);
+        startViewModel.addPropertyChangeListener(this);
 
         title = new JLabel("Wordle");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -52,6 +52,8 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
         buttonList.add(options);
         stats = new JButton("Stats");
         buttonList.add(stats);
+        help = new JButton("Help");
+        buttonList.add(help);
         exit = new JButton("Exit");
         buttonList.add(exit);
         for (JButton button : buttonList) {
@@ -88,6 +90,14 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
                 }
         );
 
+        help.addActionListener(
+                evt -> {
+                    if (evt.getSource().equals(help)) {
+                        showHelpView();
+                    }
+                }
+        );
+
         exit.addActionListener(
                 evt -> {
                     if (evt.getSource().equals(exit)) {
@@ -103,6 +113,15 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
         applyTheme(getTheme());
     }
 
+    private void showHelpView() {
+        final Theme theme = startViewModel.getState();
+        final HelpView helpView = new HelpView(
+                (JFrame) SwingUtilities.getWindowAncestor(this),
+                theme
+        );
+        helpView.setVisible(true);
+
+    }
     @Override
     public void actionPerformed(ActionEvent e) {
         // This doesnt need to do anything
