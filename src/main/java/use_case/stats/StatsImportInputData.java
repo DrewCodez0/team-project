@@ -1,15 +1,14 @@
 package use_case.stats;
 
-import java.io.File;
+public class StatsImportInputData extends ImportStatsInputData {
+    private final String filePath;
 
-public class StatsImportInputData {
-    private final File file;
-
-    public StatsImportInputData(File file) {
-        this.file = file;
+    public StatsImportInputData(String filePath) {
+        super(filePath);
+        this.filePath = filePath;
     }
 
-    public File getFile() {
-        return this.file;
+    public String getFilePath() {
+        return this.filePath;
     }
 }

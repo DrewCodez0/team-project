@@ -73,6 +73,34 @@ public class FileDataAccessObject implements OptionsDataAccessInterface,
     }
 
     @Override
+    public Stats importStats(String filePath) throws IOException {
+        final File file = new File(filePath);
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            reader.readLine(); // Skip header
+            final String line = reader.readLine();
+
+            if (line == null) {
+                throw new IOException("File is empty or has only one line.");
+            }
+
+            final String[] values = line.split(",");
+            if (values.length < 4) {
+                throw new IOException("Invalid file format.");
+            }
+
+            final int gamesPlayed = Integer.parseInt(values[0]);
+            final int wins = Integer.parseInt(values[1]);
+            final int currentStreak = Integer.parseInt(values[2]);
+            final int maxStreak = Integer.parseInt(values[3]);
+
+            return new Stats(gamesPlayed, wins, currentStreak, maxStreak);
+        }
+        catch (NumberFormatException | ArrayIndexOutOfBoundsException exception) {
+            throw new IOException("Invalid file format: " + exception.getMessage());
+        }
+    }
+
+    @Override
     public OptionsState getOptions() {
         return new OptionsState();
     }

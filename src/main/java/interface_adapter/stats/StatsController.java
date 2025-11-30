@@ -2,6 +2,7 @@ package interface_adapter.stats;
 
 import java.io.File;
 
+import use_case.stats.ExportStatsInputData;
 import use_case.stats.StatsImportInputData;
 import use_case.stats.StatsInputBoundary;
 import use_case.stats.StatsInputData;
@@ -31,7 +32,10 @@ public class StatsController {
      * Initiates the process of exporting the stats.
      */
     public void exportStats() {
-        statsInteractor.exportStats();
+        final String downloadsPath = System.getProperty("user.home")
+                + File.separator + "Downloads" + File.separator + "stats.csv";
+        final ExportStatsInputData exportInputData = new ExportStatsInputData(downloadsPath);
+        statsInteractor.exportStats(exportInputData);
     }
 
     /**
@@ -39,7 +43,7 @@ public class StatsController {
      * @param file The file to import from.
      */
     public void importStats(File file) {
-        final StatsImportInputData importInputData = new StatsImportInputData(file);
+        final StatsImportInputData importInputData = new StatsImportInputData(file.getAbsolutePath());
         statsInteractor.importStats(importInputData);
     }
 }

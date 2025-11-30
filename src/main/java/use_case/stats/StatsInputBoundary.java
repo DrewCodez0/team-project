@@ -14,8 +14,9 @@ public interface StatsInputBoundary {
 
     /**
      * Executes the export stats action.
+     * @param exportInputData The input data for exporting stats, including the destination path.
      */
-    void exportStats();
+    void exportStats(ExportStatsInputData exportInputData);
 
     /**
      * Executes the import stats action.
