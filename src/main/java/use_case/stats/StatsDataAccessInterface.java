@@ -30,4 +30,12 @@ public interface StatsDataAccessInterface {
      * @throws IOException if the file copy fails.
      */
     void exportStats(String destinationPath) throws IOException;
+
+    /**
+     * Imports stats from a CSV file.
+     * @param filePath The path to the file to import from.
+     * @return The Stats object parsed from the file.
+     * @throws IOException if the file cannot be read or has invalid format.
+     */
+    Stats importStats(String filePath) throws IOException;
 }

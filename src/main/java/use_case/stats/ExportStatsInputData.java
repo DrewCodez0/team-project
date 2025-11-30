@@ -18,7 +18,7 @@ public class ExportStatsInputData {
      * Gets the file path.
      * @return The file path.
      */
-    String getPath() {
+    public String getPath() {
         return path;
     }
 }

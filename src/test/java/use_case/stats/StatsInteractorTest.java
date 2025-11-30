@@ -92,15 +92,16 @@ class StatsInteractorTest {
         StatsInputBoundary interactor = new StatsInteractor(statsRepository, successPresenter);
         interactor.prepareStartView();
     }
-
+    
     @Test
     void successExportStatsTest() {
         StatsDataAccessInterface statsRepository = new InMemoryStatsDataAccessObject();
         
-        // test stats
+        // Set up test stats
         Stats testStats = new Stats(10, 7, 3, 5);
         statsRepository.saveStats(testStats);
 
+        // This creates a presenter that tests whether the test case is as we expect.
         StatsOutputBoundary successPresenter = new StatsOutputBoundary() {
             @Override
             public void prepareSuccessView(StatsOutputData outputData) {
@@ -120,6 +121,7 @@ class StatsInteractorTest {
             @Override
             public void prepareExportSuccessView(String message) {
                 assertTrue(message.contains("Stats exported successfully"));
+                // The actual path will be dynamically generated, so we just check for parts
                 assertTrue(message.contains("Downloads"));
                 assertTrue(message.contains("stats.csv"));
             }
@@ -130,13 +132,21 @@ class StatsInteractorTest {
             }
         };
 
+        // Construct the expected downloads path
+        final String downloadsPath = System.getProperty("user.home")
+                + File.separator + "Downloads" + File.separator + "stats.csv";
+        final ExportStatsInputData exportInputData = new ExportStatsInputData(downloadsPath);
+
         StatsInputBoundary interactor = new StatsInteractor(statsRepository, successPresenter);
-        interactor.exportStats();
+        interactor.exportStats(exportInputData);
     }
 
     @Test
     void failureExportStatsNoStatsTest() {
         StatsDataAccessInterface statsRepository = new InMemoryStatsDataAccessObject();
+        // Don't save any stats - this should cause export to fail
+
+        // This creates a presenter that tests whether the test case is as we expect.
         StatsOutputBoundary failurePresenter = new StatsOutputBoundary() {
             @Override
             public void prepareSuccessView(StatsOutputData outputData) {
@@ -164,8 +174,13 @@ class StatsInteractorTest {
             }
         };
 
+        // Construct a dummy downloads path for the input data
+        final String downloadsPath = System.getProperty("user.home")
+                + File.separator + "Downloads" + File.separator + "stats.csv";
+        final ExportStatsInputData exportInputData = new ExportStatsInputData(downloadsPath);
+
         StatsInputBoundary interactor = new StatsInteractor(statsRepository, failurePresenter);
-        interactor.exportStats();
+        interactor.exportStats(exportInputData);
     }
 
     @Test
@@ -178,7 +193,7 @@ class StatsInteractorTest {
             writer.write("15,12,4,6\n");
         }
 
-        StatsImportInputData importInputData = new StatsImportInputData(importFile);
+        StatsImportInputData importInputData = new StatsImportInputData(importFile.getAbsolutePath());
 
         StatsOutputBoundary successPresenter = new StatsOutputBoundary() {
             @Override
@@ -222,7 +237,7 @@ class StatsInteractorTest {
         File importFile = tempDir.resolve("empty_stats.csv").toFile();
         importFile.createNewFile();
 
-        StatsImportInputData importInputData = new StatsImportInputData(importFile);
+        StatsImportInputData importInputData = new StatsImportInputData(importFile.getAbsolutePath());
 
         StatsOutputBoundary failurePresenter = new StatsOutputBoundary() {
             @Override
@@ -265,7 +280,7 @@ class StatsInteractorTest {
 
         }
 
-        StatsImportInputData importInputData = new StatsImportInputData(importFile);
+        StatsImportInputData importInputData = new StatsImportInputData(importFile.getAbsolutePath());
 
         StatsOutputBoundary failurePresenter = new StatsOutputBoundary() {
             @Override
@@ -310,7 +325,7 @@ class StatsInteractorTest {
             writer.write("15,12,4\n"); // Only 3 values instead of 4
         }
 
-        StatsImportInputData importInputData = new StatsImportInputData(importFile);
+        StatsImportInputData importInputData = new StatsImportInputData(importFile.getAbsolutePath());
 
         StatsOutputBoundary failurePresenter = new StatsOutputBoundary() {
             @Override
@@ -354,7 +369,7 @@ class StatsInteractorTest {
             writer.write("not_a_number,12,4,6\n"); // Invalid number format
         }
 
-        StatsImportInputData importInputData = new StatsImportInputData(importFile);
+        StatsImportInputData importInputData = new StatsImportInputData(importFile.getAbsolutePath());
 
         StatsOutputBoundary failurePresenter = new StatsOutputBoundary() {
             @Override
@@ -484,7 +499,7 @@ class StatsInteractorTest {
             writer.write("15,,4,6\n"); // Empty wins value
         }
 
-        StatsImportInputData importInputData = new StatsImportInputData(importFile);
+        StatsImportInputData importInputData = new StatsImportInputData(importFile.getAbsolutePath());
 
         StatsOutputBoundary failurePresenter = new StatsOutputBoundary() {
             @Override
@@ -528,7 +543,7 @@ class StatsInteractorTest {
             writer.write("15,12,4,6,100,200\n"); // 6 values instead of 4
         }
 
-        StatsImportInputData importInputData = new StatsImportInputData(importFile);
+        StatsImportInputData importInputData = new StatsImportInputData(importFile.getAbsolutePath());
 
         // Note: Current implementation only checks < 4, so 5+ columns will pass
         // It only uses the first 4 values, ignoring extras
@@ -580,7 +595,7 @@ class StatsInteractorTest {
             writer.write("\n"); // Another blank line
         }
 
-        StatsImportInputData importInputData = new StatsImportInputData(importFile);
+        StatsImportInputData importInputData = new StatsImportInputData(importFile.getAbsolutePath());
 
         // Current implementation only reads first data line, so trailing newlines are ignored
         StatsOutputBoundary successPresenter = new StatsOutputBoundary() {
@@ -628,7 +643,7 @@ class StatsInteractorTest {
             writer.write("1000000,500000,1000,2000\n"); // Large numbers
         }
 
-        StatsImportInputData importInputData = new StatsImportInputData(importFile);
+        StatsImportInputData importInputData = new StatsImportInputData(importFile.getAbsolutePath());
 
         StatsOutputBoundary successPresenter = new StatsOutputBoundary() {
             @Override

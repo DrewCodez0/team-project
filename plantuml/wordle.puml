@@ -1,4 +1,5 @@
 @startuml Wordle
+
 'https://plantuml.com/class-diagram
 skinparam groupInheritance 2
 skinparam Linetype ortho
@@ -81,6 +82,22 @@ WordFactory --> Word
 
 exception WordNotFoundException {
     + WordNotFoundException(message: String)
+}
+
+class Stats {
+    - gamesPlayed: int
+    - wins: int
+    - currentStreak: int
+    - maxStreak: int
+    + Stats()
+    + Stats(gamesPlayed: int, wins: int, currentStreak: int, maxStreak: int)
+    + getGamesPlayed(): int
+    + getWins(): int
+    + getWinPercentage(): double
+    + getCurrentStreak(): int
+    + getMaxStreak(): int
+    + recordWin(): void
+    + recordLoss(): void
 }
 
 class ViewHelper {
@@ -192,7 +209,6 @@ class OptionsView {
 }
 OptionsView --> OptionsViewModel
 OptionsView --> OptionsController
-
 
 class EndView {
     - {static} VIEW_NAME: String
@@ -312,8 +328,8 @@ interface EndInputBoundary {
     + {abstract} prepareStartView(): void
     + {abstract} prepareNewGame(endInputData: EndInputData): void
 }
-EndInputBoundary --> EndInputData
 
+EndInputBoundary --> EndInputData
 
 class EndInteractor implements EndInputBoundary {
     - endDataAccess: EndDataAccessInterface
@@ -417,11 +433,9 @@ interface GameInputBoundary {
     + {abstract} prepareEndView(gameState: GameState)
 }
 GameInputBoundary --> GameState
-
     ' + {abstract} start(): void
     ' + {abstract} getStatus(): GameState
     ' + {abstract} update(input: char): GameState
-
 interface GameOutputBoundary {
     + {abstract} updateGameView(state: GameState): void
     + {abstract} shakeWord(state: GameState): void
@@ -455,7 +469,7 @@ class GameInteractor implements GameInputBoundary {
     + GameInteractor(GameDataAccessInterface, GameOutputBoundary, EndInputBoundary, OptionsViewModel)
     + executeLetter(gameInputData: GameState, letter: char): void
     + executeSubmit(gameInputData: GameState): void
-    + executeBackspace(gameInputData: GameState): void
+    + executeBackspace(gameState: GameState): void
     + prepareNewGame(): void
     + prepareStartView(): void
     + prepareEndView(gameState: GameState): void
@@ -468,7 +482,6 @@ GameInteractor --> WordFactory
 GameInteractor --> EndInputData
 GameInteractor --> EndInputBoundary
 GameInteractor --> OptionsViewModel
-
     ' - wordChecker: WordChecker
     ' - status: GameStatus
     ' + GameInteractor(config: Map<String, Object>)
@@ -476,7 +489,6 @@ GameInteractor --> OptionsViewModel
     ' + getStatus(): GameStatus
     ' + update(input: char): GameStatus
     ' - generateWord(length: int): String
-
 ' class GameOutputData {
 '     - currentGuess: int
 '     - words: AbstractWord[]
@@ -484,7 +496,6 @@ GameInteractor --> OptionsViewModel
 '     + GameOutputData()
 '     + toString(): String
 ' }
-
 interface GameDataAccessInterface {
     + getRandomWord(length: int, language: Language): String
     + isValidWord(word: String, language: Language): boolean
@@ -530,33 +541,43 @@ GameState --> Status
 GameState --> WordFactory
 
 class StatsController {
-    + StatsController(statsInputBoundary: StatsInputBoundary, statsOutputBoundary: StatsOutputBoundary)
+    - statsInteractor: StatsInputBoundary
+    + StatsController(statsInteractor: StatsInputBoundary)
     + execute(): void
     + switchToStartView(): void
+    + exportStats(): void
+    + importStats(file: File): void
 }
 StatsController --> StatsInputBoundary
 StatsController --> StatsInputData
-StatsController --> StatsOutputBoundary
+StatsController --> StatsImportInputData
+StatsController --> ExportStatsInputData
 
 class StatsOutputData {
-    - statsState: StatsState
-    - hasStats: boolean
-    + StatsOutputData(statsState: StatsState, hasStats: boolean)
-    + getStatsState(): StatsState
-    + hasStats(): boolean
+    - stats: Stats
+    - theme: Theme
+    + StatsOutputData(stats: Stats, theme: Theme)
+    + getStats(): Stats
+    + getTheme(): Theme
 }
-StatsOutputData --> StatsState
+StatsOutputData --> Stats
+StatsOutputData --> Theme
 
 class StatsPresenter implements StatsOutputBoundary {
+    - viewManagerModel: ViewManagerModel
+    - statsViewModel: StatsViewModel
+    - startViewModel: StartViewModel
     + StatsPresenter(ViewManagerModel, StatsViewModel, StartViewModel)
-    + prepareSuccessView(): void
-    + prepareFailView(): void
-    + prepareDefaultView(): void
+    + prepareSuccessView(outputData: StatsOutputData): void
+    + prepareFailView(message: String): void
     + prepareStartView(): void
+    + prepareExportSuccessView(message: String): void
+    + prepareExportFailView(message: String): void
 }
 StatsPresenter --> StatsViewModel
 StatsPresenter --> StartViewModel
 StatsPresenter --> StatsOutputData
+StatsPresenter --> StatsState
 
 class StatsViewModel extends ViewModel {
     + StatsViewModel()
@@ -585,48 +606,82 @@ class StatsInputData
 
 interface StatsInputBoundary {
     + {abstract} execute(inputData: StatsInputData): void
+    + {abstract} prepareStartView(): void
+    + {abstract} exportStats(exportInputData: ExportStatsInputData): void
+    + {abstract} importStats(importInputData: StatsImportInputData): void
 }
 
 class StatsInteractor implements StatsInputBoundary {
+    - statsDataAccess: StatsDataAccessInterface
+    - statsOutputBoundary: StatsOutputBoundary
     + StatsInteractor(StatsDataAccessInterface, StatsOutputBoundary)
     + execute(inputData: StatsInputData): void
+    + prepareStartView(): void
+    + exportStats(exportInputData: ExportStatsInputData): void
+    + importStats(importInputData: StatsImportInputData): void
 }
 StatsInteractor --> StatsInputData
 StatsInteractor --> StatsOutputBoundary
 StatsInteractor --> StatsDataAccessInterface
+StatsInteractor --> StatsImportInputData
+StatsInteractor --> ExportStatsInputData
 
 interface StatsOutputBoundary {
-    + prepareSuccessView(): void
-    + prepareFailView(): void
-    + prepareDefaultView(): void
-    + prepareStartView(): void
+    + {abstract} prepareSuccessView(outputData: StatsOutputData): void
+    + {abstract} prepareFailView(message: String): void
+    + {abstract} prepareStartView(): void
+    + {abstract} prepareExportSuccessView(message: String): void
+    + {abstract} prepareExportFailView(message: String): void
 }
+StatsOutputBoundary --> StatsOutputData
 
 class StatsState {
-    - totalGames: int
-    - gamesWon: int
-    - currentWinStreak: int
-    - longestWinStreak: int
+    - gamesPlayed: int
+    - winPercentage: double
+    - currentStreak: int
+    - maxStreak: int
     - theme: Theme
+    - error: String
+    - exportMessage: String
     + StatsState()
-    + getTotalGames(): int
-    + setTotalGames(totalGames: int): void
-    + getGamesWon(): int
-    + setGamesWon(gamesWon: int): void
-    + getCurrentWinStreak(): int
-    + setCurrentWinStreak(currentWinStreak: int): void
-    + getLongestWinStreak(): int
-    + setLongestWinStreak(longestWinStreak: int): void
+    + getGamesPlayed(): int
+    + setGamesPlayed(gamesPlayed: int): void
+    + getWinPercentage(): double
+    + setWinPercentage(winPercentage: double): void
+    + getCurrentStreak(): int
+    + setCurrentStreak(currentStreak: int): void
+    + getMaxStreak(): int
+    + setMaxStreak(maxStreak: int): void
     + getTheme(): Theme
     + setTheme(theme: Theme): void
+    + getError(): String
+    + setError(error: String): void
+    + getExportMessage(): String
+    + setExportMessage(exportMessage: String): void
 }
 StatsState --> Theme
 
 interface StatsDataAccessInterface {
-    + getStats(): StatsState
-    + saveStats(stats: StatsState): void
+    + {abstract} getStats(): Stats
+    + {abstract} saveStats(stats: Stats): void
+    + {abstract} getDefaultTheme(): Theme
+    + {abstract} exportStats(destinationPath: String): void throws IOException
+    + {abstract} importStats(filePath: String): Stats throws IOException
 }
-StatsDataAccessInterface --> StatsState
+StatsDataAccessInterface --> Stats
+StatsDataAccessInterface --> Theme
+
+class StatsImportInputData {
+    - filePath: String
+    + StatsImportInputData(filePath: String)
+    + getFilePath(): String
+}
+
+class ExportStatsInputData {
+    - path: String
+    + ExportStatsInputData(path: String)
+    + getPath(): String
+}
 
 class StartViewModel extends ViewModel {
     + StartViewModel()
@@ -716,14 +771,16 @@ StartPresenter --> StatsViewModel
 class FileDataAccessObject implements OptionsDataAccessInterface, StatsDataAccessInterface, StartDataAccessInterface, EndDataAccessInterface {
     + getOptions(): OptionsState
     + saveOptions(options: OptionsState): void
-    + getStats(): StatsState
-    + saveStats(stats: StatsState): void
+    + getStats(): Stats
+    + saveStats(stats: Stats): void
     + getDefaultTheme(): Theme
+    + exportStats(destinationPath: String): void throws IOException
+    + importStats(filePath: String): Stats throws IOException
     + getGameRecords(): EndGameRecord[]
     + saveGameRecord(record: EndGameRecord): void
 }
 FileDataAccessObject --> OptionsState
-FileDataAccessObject --> StatsState
+FileDataAccessObject --> Stats
 FileDataAccessObject --> Theme
 FileDataAccessObject --> EndGameRecord
 
@@ -733,7 +790,7 @@ class WordDataAccessObject implements GameDataAccessInterface {
     - {static} MAX_TRIES: int
     + WordDataAccessObject(wordGenerator: WordGenerator, wordChecker: WordChecker)
     + getRandomWord(length: int, language: Language): String
-    + isValidWord(word: String, language Language): boolean
+    + isValidWord(word: String, language: Language): boolean
 }
 WordDataAccessObject --> WordGenerator
 WordDataAccessObject --> WordChecker
