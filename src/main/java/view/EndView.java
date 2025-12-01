@@ -4,9 +4,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -19,6 +16,7 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
+import data_access.DefinitionFetcher;
 import entity.AbstractLetter;
 import entity.AbstractWord;
 import entity.Status;
@@ -33,10 +31,12 @@ public class EndView extends JPanel implements ActionListener, PropertyChangeLis
     private static final String VIEW_NAME = "end";
     private final EndViewModel endViewModel;
     private EndController endController;
+    private final DefinitionFetcher definitionFetcher;
 
     private final ArrayList<JButton> buttons;
     private final JLabel titleLabel;
     private final JLabel messageLabel;
+    private final JLabel definitionLabel;
 //    private final JLabel wordLabel;
     private final JLabel statsLabel;
     private final JButton playAgain;
@@ -47,7 +47,9 @@ public class EndView extends JPanel implements ActionListener, PropertyChangeLis
     public EndView(EndViewModel endViewModel, OptionsViewModel optionsViewModel) {
         this.endViewModel = endViewModel;
         this.endViewModel.addPropertyChangeListener(this);
+        this.definitionFetcher = new DefinitionFetcher();
         optionsViewModel.addPropertyChangeListener(this);
+
 
         final ArrayList<JLabel> labels = new ArrayList<>();
         titleLabel = new JLabel("Game Over", SwingConstants.CENTER);
@@ -55,6 +57,9 @@ public class EndView extends JPanel implements ActionListener, PropertyChangeLis
 
         messageLabel = new JLabel("", SwingConstants.CENTER);
         labels.add(messageLabel);
+
+        definitionLabel = new JLabel("Loading definition", SwingConstants.CENTER);
+        labels.add(definitionLabel);
 
 //        wordLabel = new JLabel("", SwingConstants.CENTER);
 //        labels.add(wordLabel);
@@ -88,7 +93,7 @@ public class EndView extends JPanel implements ActionListener, PropertyChangeLis
         final ArrayList<JComponent> components = new ArrayList<>();
         components.addAll(labels);
         components.addAll(buttons);
-        final int[] struts = {50, 20, 20, 40, 15, 15, 15};
+        final int[] struts = {50, 20, 15, 20, 40, 15, 15, 15};
 
         for (int i = 0; i < struts.length; i++) {
             this.add(Box.createVerticalStrut(struts[i]));
@@ -122,6 +127,7 @@ public class EndView extends JPanel implements ActionListener, PropertyChangeLis
         ViewHelper.setTheme(this, theme);
         ViewHelper.setTheme(titleLabel, theme, ViewHelper.TITLE);
         ViewHelper.setTheme(messageLabel, theme, ViewHelper.BUTTON);
+        ViewHelper.setTheme(definitionLabel, theme);
         // messageLabel.setFont(new Font("Verdana", Font.BOLD, 35));
 //        ViewHelper.setTheme(wordLabel, theme);
 //        wordLabel.setFont(new Font("Tahoma", Font.BOLD, 40));
@@ -238,6 +244,46 @@ public class EndView extends JPanel implements ActionListener, PropertyChangeLis
         if (endState.isWon()) {
             statsLabel.setText("You found the word in " + endState.getGuessesUsed() + " guesses.");
         }
+
+        getDefinition(endState.getWord());
+    }
+
+    /**
+     * Fetches the word definition in a background thread to avoid blocking the UI.
+     * @param word the word to get the definition for
+     */
+    private void getDefinition(String word) {
+        definitionLabel.setText("Loading definition...");
+
+        SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
+            @Override
+            protected String doInBackground() {
+                return definitionFetcher.getDefinition(word);
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    String definition = get();
+                    definitionLabel.setText(wrapText(definition,60));
+                }
+
+                catch (Exception e) {
+                    definitionLabel.setText("Definition unavailable.");
+                }
+            }
+        };
+
+        worker.execute();
+    }
+
+    private String wrapText(String text, int maxLength) {
+        if (text.length() <= maxLength) {
+            return text;
+        }
+
+        return "<html><div style='text-align: center; width: 500px;'>"
+                + text + "</div></html>";
     }
 
     public String getViewName() {
