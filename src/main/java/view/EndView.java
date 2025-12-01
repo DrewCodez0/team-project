@@ -132,6 +132,7 @@ public class EndView extends JPanel implements ActionListener, PropertyChangeLis
 //        ViewHelper.setTheme(wordLabel, theme);
 //        wordLabel.setFont(new Font("Tahoma", Font.BOLD, 40));
         ViewHelper.setTheme(statsLabel, theme);
+        definitionLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
         statsLabel.setFont(new Font("Verdana", Font.PLAIN, 25));
         for (JButton button : buttons) {
             ViewHelper.setTheme(button, theme, ViewHelper.BUTTON);
@@ -255,7 +256,7 @@ public class EndView extends JPanel implements ActionListener, PropertyChangeLis
     private void getDefinition(String word) {
         definitionLabel.setText("Loading definition...");
 
-        SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
+        final SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
             @Override
             protected String doInBackground() {
                 return definitionFetcher.getDefinition(word);
@@ -264,11 +265,10 @@ public class EndView extends JPanel implements ActionListener, PropertyChangeLis
             @Override
             protected void done() {
                 try {
-                    String definition = get();
-                    definitionLabel.setText(wrapText(definition,60));
+                    final String definition = get();
+                    definitionLabel.setText(wrapText(definition, 60));
                 }
-
-                catch (Exception e) {
+                catch (Exception ex) {
                     definitionLabel.setText("Definition unavailable.");
                 }
             }
@@ -282,7 +282,7 @@ public class EndView extends JPanel implements ActionListener, PropertyChangeLis
             return text;
         }
 
-        return "<html><div style='text-align: center; width: 500px;'>"
+        return "<html><div style='text-align: center;'>"
                 + text + "</div></html>";
     }
 
