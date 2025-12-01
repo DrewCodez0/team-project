@@ -37,4 +37,27 @@ public class EndInputData {
     public AbstractWord[] getGuessHistory() {
         return guessHistory;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof EndInputData)) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        final EndInputData other = (EndInputData) obj;
+        for (int i = 0; i < this.guessHistory.length; i++) {
+            if (!this.guessHistory[i].equals(other.guessHistory[i])) {
+                return false;
+            }
+        }
+        final boolean w = this.word.equals(other.word);
+        final boolean wn = this.won == other.won;
+        final boolean gu = this.guessesUsed == other.guessesUsed;
+        final boolean mg = this.maxGuesses == other.maxGuesses;
+        final boolean ghl = this.guessHistory.length == other.guessHistory.length;
+
+        return w && wn && gu && mg && ghl;
+    }
 }

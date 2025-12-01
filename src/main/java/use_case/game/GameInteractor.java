@@ -4,7 +4,6 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 
-import data_access.WordNotFoundException;
 import entity.AbstractWord;
 import entity.WordFactory;
 import interface_adapter.game.GameState;
@@ -64,15 +63,9 @@ public class GameInteractor implements GameInputBoundary {
     @Override
     public void prepareNewGame() {
         final OptionsState optionsState = optionsViewModel.getState();
-        try {
-            final String word = gameDataAccess.getRandomWord(optionsState.getLength(), optionsState.getLanguage());
-            final GameState gameState = new GameState(WordFactory.createWordToGuess(word),
-                    optionsState.getMaxGuesses());
-            gamePresenter.updateGameView(gameState);
-        }
-        catch (WordNotFoundException ex) {
-            System.out.println(ex.getMessage());
-        }
+        final String word = gameDataAccess.getRandomWord(optionsState.getLength(), optionsState.getLanguage());
+        final GameState gameState = new GameState(WordFactory.createWordToGuess(word), optionsState.getMaxGuesses());
+        gamePresenter.updateGameView(gameState);
     }
 
     @Override
@@ -83,8 +76,7 @@ public class GameInteractor implements GameInputBoundary {
     @Override
     public void prepareEndView(GameState gameState) {
         final String word = gameState.getWordToGuess().toString();
-        final boolean won = gameState.getCurrentGuess() < gameState.getMaxGuesses()
-                && gameState.getWords()[gameState.getCurrentGuess()].isCorrect();
+        final boolean won = gameState.getWords()[gameState.getCurrentGuess()].isCorrect();
         final int guessesUsed = gameState.getCurrentGuess() + 1;
         final int maxGuesses = gameState.getMaxGuesses();
         final AbstractWord[] guessHistory = gameState.getWords();
