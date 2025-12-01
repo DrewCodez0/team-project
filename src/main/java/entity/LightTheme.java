@@ -17,6 +17,7 @@ public class LightTheme implements Theme {
     private final Map<Status, Color> statusColors;
     private final Shape letterBox;
 
+    @SuppressWarnings("checkstyle:MagicNumber")
     public LightTheme() {
         this.backgroundColor = Color.white;
         this.textColor = Color.black;

@@ -3,6 +3,8 @@ package data_access;
 import org.json.JSONArray;
 
 public class APIWordGenerator2 extends AbstractAPI implements WordGenerator {
+    private static final int MAX_LENGTH = 9;
+
     public APIWordGenerator2() {
         super("https://random-word-api.vercel.app/api");
     }
@@ -19,7 +21,7 @@ public class APIWordGenerator2 extends AbstractAPI implements WordGenerator {
         if (!language.equals(Language.ENGLISH)) {
             throw new IllegalArgumentException("Language not supported");
         }
-        if (length > 9) {
+        if (length > MAX_LENGTH) {
             throw new IllegalArgumentException("Length above 9 not supported");
         }
         final JSONArray responseBody = fetch(String.format("?length=%s&type=uppercase", length));

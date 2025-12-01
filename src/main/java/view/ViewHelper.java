@@ -15,6 +15,8 @@ import entity.AbstractWord;
 import entity.Theme;
 import interface_adapter.game.GameState;
 
+// This class uses many instances of variables called "x" and "y"
+@SuppressWarnings("checkstyle:ParameterName")
 public final class ViewHelper {
     public static final String LETTER = "letter";
     public static final String TITLE = "title";

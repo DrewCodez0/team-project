@@ -242,16 +242,6 @@
         <module name="MissingDeprecated"/>
         <module name="MissingOverride"/>
         <module name="PackageAnnotation"/>
-        <module name="SuppressWarnings">
-            <property name="format" value="^((?!unchecked|deprecation|rawtypes|resource).)*$"/>
-            <message key="suppressed.warning.not.allowed"
-                     value="The warning ''{0}'' cannot be suppressed at this location.
-           Only few javac warnings are allowed to suppress.
-           If try to suppress checkstyle/pmd/..... violation please do this in their config file.
-           If you try to suppress IntelliJ IDEA inspection,
-           please use javadoc block tag @noinspection"
-            />
-        </module>
         <module name="SuppressWarningsHolder"/>
 
         <!-- Block Checks -->
@@ -508,11 +498,6 @@
         <module name="PackageDeclaration"/>
         <module name="ParameterAssignment"/>
         <module name="RequireThis"/>
-        <module name="ReturnCount">
-            <property name="max" value="1"/>
-            <property name="maxForVoid" value="0"/>
-            <property name="format" value="^create"/>
-        </module>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
         <module name="StringLiteralEquality"/>
@@ -739,7 +724,7 @@
         <module name="AbbreviationAsWordInName">
             <property name="ignoreFinal" value="false"/>
             <property name="allowedAbbreviationLength" value="0"/>
-            <property name="allowedAbbreviations" value="AST,HTML,ID,JSON"/>
+            <property name="allowedAbbreviations" value="AST,HTML,ID,JSON,API,URL"/>
         </module>
         <module name="AbstractClassName"/>
         <module name="ClassTypeParameterName"/>
@@ -756,7 +741,6 @@
         </module>
         <module name="MethodName"/>
         <module name="MethodTypeParameterName"/>
-        <module name="PackageName"/>
         <module name="ParameterName">
             <property name="format" value="^(id)|([a-z][a-z0-9][a-zA-Z0-9]+)$"/>
             <property name="ignoreOverridden" value="true"/>

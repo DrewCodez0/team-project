@@ -31,14 +31,6 @@ public class GameInteractor implements GameInputBoundary {
     public void executeLetter(GameState gameInputData, char letter) {
         gameInputData.nextLetter(letter);
         gamePresenter.updateGameView(gameInputData);
-//        if (gameInputData.getWordToGuess() == null) {
-//            try {
-//                gameDataAccess.getRandomWord(gameInputData.getLength(), gameInputData.getLanguage());
-//            } catch (WordNotFoundException e) {
-//                System.out.println(e.getMessage());
-//            }
-//        }
-//        System.out.println(gameDataAccess.getRandomWord(5, "en"));
     }
 
     @Override

@@ -8,7 +8,16 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 
 import data_access.Language;
 import entity.DarkTheme;
@@ -120,6 +129,7 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
     private void showHelpView() {
         helpView.setVisible(true);
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         // This doesnt need to do anything
@@ -163,6 +173,7 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
      * JOptionPane with the relevant options and creates an OptionsState from the results.
      * @return the OptionsState corresponding to the selected values.
      */
+    @SuppressWarnings("checkstyle:ExecutableStatementCount")
     private OptionsState getOptions() {
         final OptionsState initialState = this.optionsViewModel.getState();
         final SpinnerNumberModel maxGuessesModel = new SpinnerNumberModel(initialState.getMaxGuesses(), 1, 20, 1);

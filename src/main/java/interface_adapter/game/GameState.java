@@ -9,6 +9,7 @@ import entity.Status;
 import entity.WordFactory;
 
 public class GameState {
+    @SuppressWarnings({"checkstyle:MultipleStringLiterals", "checkstyle:RegexpSinglelineJava"})
     private static final Map<Status, String> COLORS = Map.ofEntries(
             Map.entry(Status.INITIAL, "⬛"),
             Map.entry(Status.IN_PROGRESS, "⬛"),
@@ -26,7 +27,7 @@ public class GameState {
 
     public GameState() {
         this.wordToGuess = WordFactory.createDefaultWord();
-        this.length = 5; // TODO get these from optionsstate once its made
+        this.length = this.wordToGuess.length();
         this.maxGuesses = 6;
         this.language = Language.ENGLISH;
         this.currentGuess = 0;

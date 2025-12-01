@@ -12,7 +12,7 @@ import okhttp3.Response;
 abstract class AbstractAPI {
     protected static final String CONTENT_TYPE_LABEL = "Content-Type";
     protected static final String CONTENT_TYPE_JSON = "application/json";
-    protected final String baseURL;
+    private final String baseURL;
 
     protected AbstractAPI(String baseURL) {
         this.baseURL = baseURL;
