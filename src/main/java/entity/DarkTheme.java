@@ -17,6 +17,7 @@ public class DarkTheme implements Theme {
     private final Map<Status, Color> statusColors;
     private final Shape letterBox;
 
+    @SuppressWarnings("checkstyle:MagicNumber")
     public DarkTheme() {
         this.backgroundColor = Color.black;
         this.textColor = Color.white;

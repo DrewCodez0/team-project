@@ -67,6 +67,7 @@ public class GameView extends JPanel implements ActionListener, PropertyChangeLi
 
         buttonList = new ArrayList<>();
         menu = new JButton("Menu");
+        menu.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "none");
         buttonList.add(menu);
         submit = new JButton("Submit");
         buttonList.add(submit);

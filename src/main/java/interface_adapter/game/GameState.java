@@ -9,6 +9,7 @@ import entity.Status;
 import entity.WordFactory;
 
 public class GameState {
+    @SuppressWarnings({"checkstyle:MultipleStringLiterals", "checkstyle:RegexpSinglelineJava"})
     private static final Map<Status, String> COLORS = Map.ofEntries(
             Map.entry(Status.INITIAL, "⬛"),
             Map.entry(Status.IN_PROGRESS, "⬛"),
@@ -26,7 +27,7 @@ public class GameState {
 
     public GameState() {
         this.wordToGuess = WordFactory.createDefaultWord();
-        this.length = 5; // TODO get these from optionsstate once its made
+        this.length = this.wordToGuess.length();
         this.maxGuesses = 6;
         this.language = Language.ENGLISH;
         this.currentGuess = 0;
@@ -61,7 +62,7 @@ public class GameState {
     }
 
     public GameState(AbstractWord wordToGuess, AbstractWord[] words) {
-        this(wordToGuess, words.length, Language.ENGLISH);
+        this(wordToGuess, words, Language.ENGLISH);
     }
 
     private void initializeEmptyWords() {
@@ -113,6 +114,31 @@ public class GameState {
             sb.append("\n");
         }
         return sb.toString().trim();
+    }
+
+    @SuppressWarnings("checkstyle:EqualsHashCode")
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof GameState)) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        final GameState other = (GameState) obj;
+        for (int i = 0; i < this.maxGuesses; i++) {
+            if (!this.words[i].equals(other.words[i])) {
+                return false;
+            }
+        }
+        final boolean l = this.length == other.length;
+        final boolean mg = this.maxGuesses == other.maxGuesses;
+        final boolean cg = this.currentGuess == other.currentGuess;
+        final boolean cl = this.currentLetter == other.currentLetter;
+        final boolean lang = this.language == other.language;
+        final boolean wtg = this.wordToGuess.equals(other.wordToGuess);
+
+        return l && mg && cg && cl && lang && wtg;
     }
 
     public int getLength() {

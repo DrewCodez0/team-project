@@ -1,13 +1,20 @@
 package view;
 
-import java.awt.*;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.util.ArrayList;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import entity.Theme;
 import interface_adapter.options.OptionsState;
@@ -18,6 +25,8 @@ import interface_adapter.stats.StatsViewModel;
 
 public class StatsView extends JPanel implements ActionListener, PropertyChangeListener {
     private static final String VIEW_NAME = "stats";
+    private static final int LINE_SPACING = 40;
+    private static final int VERTICAL_SPACING = 20;
 
     private final StatsViewModel statsViewModel;
     private StatsController statsController;
@@ -37,34 +46,27 @@ public class StatsView extends JPanel implements ActionListener, PropertyChangeL
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
+        final ArrayList<JLabel> labelList = new ArrayList<>();
         final JLabel title = new JLabel("Statistics");
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        labelList.add(title);
 
         gamesPlayedLabel = new JLabel("Games Played: ");
-        gamesPlayedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        labelList.add(gamesPlayedLabel);
 
         winRateLabel = new JLabel("Win Rate: ");
-        winRateLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        labelList.add(winRateLabel);
 
         currentStreakLabel = new JLabel("Current Streak: ");
-        currentStreakLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        labelList.add(currentStreakLabel);
 
         maxStreakLabel = new JLabel("Max Streak: ");
-        maxStreakLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        labelList.add(maxStreakLabel);
 
-        final int lineSpacing = 40;
-        add(title);
-        add(Box.createVerticalStrut(lineSpacing));
-        add(gamesPlayedLabel);
-        add(Box.createVerticalStrut(lineSpacing));
-        add(winRateLabel);
-        add(Box.createVerticalStrut(lineSpacing));
-        add(currentStreakLabel);
-        add(Box.createVerticalStrut(lineSpacing));
-        add(maxStreakLabel);
-        add(Box.createVerticalStrut(lineSpacing));
-
-        final int verticalSpacing = 20;
+        for (JLabel label : labelList) {
+            label.setAlignmentX(Component.CENTER_ALIGNMENT);
+            this.add(label);
+            this.add(Box.createVerticalStrut(LINE_SPACING));
+        }
 
         backButton = new JButton("Back");
         backButton.addActionListener(this);
@@ -78,7 +80,7 @@ public class StatsView extends JPanel implements ActionListener, PropertyChangeL
         importButton = new JButton("Import");
         importButton.addActionListener(this);
         buttonPanel.add(importButton);
-        buttonPanel.add(Box.createHorizontalStrut(verticalSpacing));
+        buttonPanel.add(Box.createHorizontalStrut(VERTICAL_SPACING));
 
         exportButton = new JButton("Export");
         exportButton.addActionListener(this);

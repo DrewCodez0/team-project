@@ -9,9 +9,9 @@ public abstract class AbstractLetter {
 
     /**
      * Sets the character associated with this AbstractLetter.
-     * @param c the character to set
+     * @param character the character to set
      */
-    public abstract void setCharacter(char c);
+    public abstract void setCharacter(char character);
 
     /**
      * Resets the character associated with this AbstractLetter to a null state.

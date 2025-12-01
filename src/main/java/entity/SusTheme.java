@@ -9,7 +9,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-public class SusTheme implements Theme { // TODO make this extend darktheme to simplify things or just change stuff
+public class SusTheme implements Theme {
     private final Color backgroundColor;
     private final Color textColor;
     private final Color outlineColor;
@@ -19,6 +19,7 @@ public class SusTheme implements Theme { // TODO make this extend darktheme to s
     private final Map<Status, Color> statusColors;
     private final Shape letterBox;
 
+    @SuppressWarnings("checkstyle:MagicNumber")
     public SusTheme() {
         this.backgroundColor = Color.black;
         this.textColor = Color.white;
@@ -35,6 +36,7 @@ public class SusTheme implements Theme { // TODO make this extend darktheme to s
         this.letterBox = getPath();
     }
 
+    @SuppressWarnings("checkstyle:MagicNumber")
     @NotNull
     private static Path2D getPath() {
         final Path2D path = new Path2D.Float();

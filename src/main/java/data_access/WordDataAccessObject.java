@@ -2,6 +2,8 @@ package data_access;
 
 import use_case.game.GameDataAccessInterface;
 
+import java.util.regex.Pattern;
+
 /**
  * DAO for game data to generate and check words.
  */
@@ -45,6 +47,6 @@ public class WordDataAccessObject implements GameDataAccessInterface {
      */
     @Override
     public boolean isValidWord(String word, Language language) {
-        return this.wordChecker.isValidWord(word, language);
+        return Pattern.matches("^[a-zA-Z]+$", word) && this.wordChecker.isValidWord(word, language);
     }
 }

@@ -48,6 +48,8 @@ import view.StartView;
 import view.StatsView;
 import view.ViewManager;
 
+@SuppressWarnings({"checkstyle:ClassDataAbstractionCoupling",
+    "checkstyle:ClassFanOutComplexity"})
 public class AppBuilder {
     private static final Dimension DEFAULT_WINDOW_SIZE = new Dimension(486, 713);
     private final JPanel cardPanel = new JPanel();
@@ -68,12 +70,16 @@ public class AppBuilder {
 
     private final FileDataAccessObject fileDataAccessObject = new FileDataAccessObject("stats.csv");
     private final WordDataAccessObject wordDataAccessObject = new WordDataAccessObject(
-            new APIWordGenerator2(), new APIWordChecker2());
+            new APIWordGenerator(), new APIWordChecker2());
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
     }
 
+    /**
+     * Add the Start view to this AppBuilder.
+     * @return this AppBuilder with the Start view
+     */
     public AppBuilder addStartView() {
         if (optionsViewModel == null) {
             this.addOptionsView();
@@ -87,6 +93,10 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Add the End view to this AppBuilder.
+     * @return this AppBuilder with the End view
+     */
     public AppBuilder addEndView() {
         if (optionsViewModel == null) {
             this.addStartView();
@@ -97,6 +107,10 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Add the Game view to this AppBuilder.
+     * @return this AppBuilder with the Game view
+     */
     public AppBuilder addGameView() {
         if (optionsViewModel == null) {
             this.addOptionsView();
@@ -107,6 +121,10 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Add the Options view to this AppBuilder.
+     * @return this AppBuilder with the Options view
+     */
     public AppBuilder addOptionsView() {
         if (optionsViewModel == null) {
             optionsViewModel = new OptionsViewModel();
@@ -116,6 +134,10 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Add the Stats view to this AppBuilder.
+     * @return this AppBuilder with the Stats view
+     */
     public AppBuilder addStatsView() {
         if (optionsViewModel == null) {
             this.addOptionsView();
@@ -126,6 +148,10 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Add the Start use case to this AppBuilder.
+     * @return this AppBuilder with the Start use case
+     */
     public AppBuilder addStartUseCase() {
         final StatsOutputBoundary statsOutputBoundary = new StatsPresenter(viewManagerModel,
                 statsViewModel, startViewModel);
@@ -143,6 +169,10 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Add the End use case to this AppBuilder.
+     * @return this AppBuilder with the End use case
+     */
     public AppBuilder addEndUseCase() {
         final EndOutputBoundary endOutputBoundary = new EndPresenter(viewManagerModel,
                 endViewModel, gameViewModel, startViewModel);
@@ -153,6 +183,10 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Add the Game use case to this AppBuilder.
+     * @return this AppBuilder with the Game use case
+     */
     public AppBuilder addGameUseCase() {
         final GameOutputBoundary gameOutputBoundary = new GamePresenter(viewManagerModel,
                 gameViewModel, startViewModel, endViewModel);
@@ -169,16 +203,25 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Add the Options use case to this AppBuilder.
+     * @return this AppBuilder with the Options use case
+     */
     public AppBuilder addOptionsUseCase() {
         final OptionsOutputBoundary optionsOutputBoundary = new OptionsPresenter(viewManagerModel,
                 optionsViewModel, startViewModel);
-        final OptionsInputBoundary optionsInteractor = new OptionsInteractor(fileDataAccessObject, optionsOutputBoundary);
+        final OptionsInputBoundary optionsInteractor = new OptionsInteractor(
+                fileDataAccessObject, optionsOutputBoundary);
 
         final OptionsController optionsController = new OptionsController(optionsInteractor);
         optionsView.setOptionsController(optionsController);
         return this;
     }
 
+    /**
+     * Build the frame for this AppBuilder.
+     * @return the JFrame with the properties of this AppBuilder
+     */
     public JFrame build() {
         final JFrame application = new JFrame("Wordle");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

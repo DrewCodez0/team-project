@@ -31,8 +31,6 @@ public class APIWordGenerator extends AbstractAPI implements WordGenerator {
     public String getRandomWord(int length, Language language) {
         final JSONArray responseBody = fetch(String.format("?length=%s&lang=%s", length, LANGUAGES.get(language)));
         try {
-            // return responseBody.getJSONObject(0).getString("word").toUpperCase();
-//            System.out.println(responseBody.getString(0).toUpperCase());
             return responseBody.getString(0).toUpperCase();
         }
         catch (JSONException ex) {
