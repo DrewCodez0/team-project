@@ -10,13 +10,15 @@ import use_case.start.StartDataAccessInterface;
 
 public class FileDataAccessObject implements OptionsDataAccessInterface,
         StatsDataAccessInterface, StartDataAccessInterface, EndDataAccessInterface {
-    @Override
+
     public OptionsState getOptions() {
-        return new OptionsState();
+        return SettingsStore.get();
     }
 
     @Override
-    public void saveOptions(OptionsState options) {}
+    public void saveOptions(OptionsState options) {
+        SettingsStore.save(options);
+    }
 
     @Override
     public StatsState getStats() {
@@ -28,6 +30,6 @@ public class FileDataAccessObject implements OptionsDataAccessInterface,
 
     @Override
     public Theme getDefaultTheme() {
-        return getOptions().getTheme();
+        return SettingsStore.get().getTheme();
     }
 }

@@ -3,7 +3,14 @@ package interface_adapter.options;
 import use_case.options.OptionsInputBoundary;
 
 public class OptionsController {
-    public OptionsController(OptionsInputBoundary optionsInputBoundary) {}
+    private final OptionsInputBoundary interactor;
 
-    public void execute(OptionsState newState) {}
+    public OptionsController(OptionsInputBoundary optionsInputBoundary) {
+        this.interactor = optionsInputBoundary;
+
+    }
+
+    public void execute(OptionsState newState) {
+        interactor.execute(newState);
+    }
 }

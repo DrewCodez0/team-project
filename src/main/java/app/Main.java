@@ -9,6 +9,7 @@ public class Main {
                 .addStartView()
                 .addEndView()
                 .addOptionsView()
+                .addOptionsUseCase()
                 .addGameView()
 //                .addStatsView()
                 .addStartUseCase()

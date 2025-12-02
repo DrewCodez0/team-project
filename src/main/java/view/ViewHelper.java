@@ -22,6 +22,7 @@ public class ViewHelper {
      * @param theme the theme to be applied
      * @param type the type of font to set
      */
+
     public static void setTheme(JComponent component, Theme theme, String type) {
         component.setBackground(theme.getBackgroundColor());
         component.setForeground(theme.getTextColor());

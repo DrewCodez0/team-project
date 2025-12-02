@@ -1,14 +1,19 @@
 package use_case.game;
 
+import data_access.SettingsStore;
 import interface_adapter.game.GameState;
+import interface_adapter.game.GameViewModel;
+import interface_adapter.options.OptionsState;
 
 public class GameInteractor implements GameInputBoundary {
     private final GameDataAccessInterface gameDataAccess;
     private final GameOutputBoundary gamePresenter;
+    private GameViewModel gameViewModel = null;
 
-    public GameInteractor(GameDataAccessInterface gameDataAccess, GameOutputBoundary gameOutputBoundary) {
+    public GameInteractor(GameDataAccessInterface gameDataAccess, GameOutputBoundary gameOutputBoundary, GameViewModel gameViewModel) {
         this.gameDataAccess = gameDataAccess;
         this.gamePresenter = gameOutputBoundary;
+        this.gameViewModel = gameViewModel;
     }
 
     @Override
@@ -52,7 +57,17 @@ public class GameInteractor implements GameInputBoundary {
 
     @Override
     public void prepareStartView() {
-        gamePresenter.prepareStartView();
+        OptionsState s = SettingsStore.get();
+        GameState gameState = gameViewModel.getState();
+        String newWord = gameDataAccess.getRandomWord(s.getLength(), s.getLanguage());
+        gameState.setWordToGuess(newWord);
+        gameState.setLength(s.getLength());
+        gameState.setMaxGuesses(s.getMaxGuesses());
+        gameState.setLanguage(s.getLanguage());
+        gameState.setTheme(s.getTheme());
+        gameState.resetWords();
+
+        gamePresenter.updateGameView(gameState);
     }
     @Override
     public void prepareEndView(GameState gameState) {

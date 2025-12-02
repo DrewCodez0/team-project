@@ -1,11 +1,12 @@
 package interface_adapter.game;
 
 import data_access.Language;
-import entity.AbstractLetter;
-import entity.AbstractWord;
-import entity.Status;
-import entity.Word;
+import entity.*;
+
 import java.util.Map;
+import data_access.SettingsStore;
+import interface_adapter.options.OptionsState;
+import entity.Theme;
 
 public class GameState {
     private static final Map<Status, String> COLORS = Map.ofEntries(
@@ -15,23 +16,25 @@ public class GameState {
             Map.entry(Status.PARTIAL, "\uD83D\uDFE8"),
             Map.entry(Status.CORRECT, "\uD83D\uDFE9")
     );
-    private final int length;
-    private final int maxGuesses;
-    private final Language language;
+    private int length;
+    private int maxGuesses;
+    private Language language;
     private int currentGuess;
     private int currentLetter;
     private final AbstractWord[] words;
-    private final AbstractWord wordToGuess;
+    private AbstractWord wordToGuess;
+    private Theme theme;
 
     public GameState() {
-        this.wordToGuess = new Word("ERROR");
-//        this.wordToGuess = null;
-        this.length = 5;
-        this.maxGuesses = 6;
-        this.language = Language.ENGLISH;
+        OptionsState s = SettingsStore.get();
+        this.length = s.getLength();
+        this.maxGuesses = s.getMaxGuesses();
+        this.language = s.getLanguage();
+        this.theme = s.getTheme();
         this.currentGuess = 0;
         this.currentLetter = -1;
         this.words = new AbstractWord[this.maxGuesses];
+        this.wordToGuess = new Word("ERROR");
         initializeEmptyWords();
     }
 
@@ -117,6 +120,9 @@ public class GameState {
     public int getCurrentGuess() {
         return currentGuess;
     }
+    public Theme getTheme() {
+        return theme;
+    }
 
     public AbstractLetter getCurrentLetter() {
         return this.words[this.currentGuess].getLetter(this.currentLetter);
@@ -133,6 +139,21 @@ public class GameState {
     public AbstractWord getWordToGuess() {
         return wordToGuess;
     }
+
+    public void setLength(int length) {
+        this.length = length;
+        for (int i = 0; i < maxGuesses; i++) {
+            words[i] = new Word(this.length);
+        }
+    }
+    public void setMaxGuesses(int max) {
+        this.maxGuesses = max;
+        for (int i = 0; i < words.length; i++) {
+            words[i] = new Word(this.length);
+        }
+    }
+    public void setLanguage(Language lang) { this.language = lang; }
+    public void setTheme(Theme theme) { this.theme = theme; }
 
     public void nextLetter(char character) {
         if (currentLetter < this.length - 1) {
@@ -187,5 +208,21 @@ public class GameState {
 
     public boolean finished() {
         return currentGuess == maxGuesses || words[currentGuess].isCorrect();
+    }
+
+    public void setWordToGuess(String newWord) {
+        wordToGuess = new Word(newWord);
+    }
+
+    public void resetGame() {
+        resetWords();
+    }
+
+    public void resetWords() {
+        for (int i = 0; i < maxGuesses; i++) {
+            words[i] = new Word(length);
+        }
+        currentGuess = 0;
+        currentLetter = -1;
     }
 }

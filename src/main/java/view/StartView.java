@@ -1,6 +1,8 @@
 package view;
 
+import data_access.SettingsStore;
 import entity.Theme;
+import interface_adapter.game.GameState;
 import interface_adapter.options.OptionsState;
 import interface_adapter.start.StartController;
 import interface_adapter.start.StartViewModel;
@@ -59,9 +61,8 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
         play.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent evt) {
-                        if (evt.getSource().equals(play)) {
-                            startController.switchToGameView(new OptionsState()); //TODO
-                        }
+                        if (startController == null) return;
+                        startController.startNewGame();
                     }
                 }
         );
@@ -103,7 +104,9 @@ public class StartView extends JPanel implements ActionListener, PropertyChangeL
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {}
+    public void actionPerformed(ActionEvent e) {
+
+    }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
