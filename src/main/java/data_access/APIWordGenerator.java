@@ -13,7 +13,7 @@ public class APIWordGenerator extends AbstractAPI implements WordGenerator {
         LANGUAGES.put(Language.ENGLISH, "en");
         LANGUAGES.put(Language.SPANISH, "es");
         LANGUAGES.put(Language.ITALIAN, "it");
-        LANGUAGES.put(Language.GERMAN, "ge");
+        LANGUAGES.put(Language.GERMAN, "de");
         LANGUAGES.put(Language.FRENCH, "fr");
     }
 
