@@ -1,6 +1,6 @@
 # Wordle Team Project Group 24
 
-We all know what wordle but we made wordle with a twist, "What if you can increase the word length?", "What if you can increase the amount of guessses you can make?" and that is what we did.
+We all know what wordle is but we made wordle with a twist, "What if you can increase the word length?", "What if you can increase the amount of guessses you can make?" and that is what we did.
 
 User Stories
 1.	As a user I want to play wordle.
