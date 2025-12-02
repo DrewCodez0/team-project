@@ -77,17 +77,36 @@ public final class WordFactory {
      */
     public static Status[] checkGuess(AbstractWord guess, AbstractWord expected) {
         final Status[] statuses = new Status[guess.length()];
+        final char[] expectedChars = expected.toString().toCharArray();
+        final boolean[] used = new boolean[expected.length()];
+
         for (int i = 0; i < guess.length(); i++) {
             final char guessChar = guess.getLetter(i).getCharacter();
             final char expectedChar = expected.getLetter(i).getCharacter();
             if (guessChar == expectedChar) {
                 statuses[i] = Status.CORRECT;
+                used[i] = true;
             }
-            else if (expected.toString().indexOf(guessChar) != -1) {
-                statuses[i] = Status.PARTIAL;
-            }
-            else {
-                statuses[i] = Status.WRONG;
+        }
+        
+
+        for (int i = 0; i < guess.length(); i++) {
+            if (statuses[i] != Status.CORRECT) {
+                final char guessChar = guess.getLetter(i).getCharacter();
+                boolean found = false;
+
+                for (int j = 0; j < expectedChars.length; j++) {
+                    if (!used[j] && expectedChars[j] == guessChar) {
+                        statuses[i] = Status.PARTIAL;
+                        used[j] = true;
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    statuses[i] = Status.WRONG;
+                }
             }
         }
         return statuses;
